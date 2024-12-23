@@ -1,104 +1,97 @@
-/* General Styles */
-body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-    line-height: 1.6;
-    color: #333;
-}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RiskLabIG</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Hero Section -->
+    <header class="hero-section">
+        <div class="container">
+            <h1>Welcome to RiskLabIG</h1>
+            <p>Your trusted source for fixed life insurance product education.</p>
+            <a href="#features" class="cta-button">Learn More</a>
+        </div>
+    </header>
 
-/* Hero Section */
-.hero-section {
-    background: darkorange;
-    color: white;
-    text-align: center;
-    padding: 50px 20px;
-}
+    <!-- Features Section -->
+    <section id="features" class="features-section">
+        <div class="container">
+            <h2>Explore Our Fixed Life Insurance Options</h2>
+            <div class="features-grid">
+                <div class="feature-item">
+                    <h3>Term Insurance</h3>
+                    <p>Affordable coverage for a specific period.</p>
+                </div>
+                <div class="feature-item">
+                    <h3>Whole Life Insurance</h3>
+                    <p>Lifetime coverage with a savings component.</p>
+                </div>
+                <div class="feature-item">
+                    <h3>Universal Life Insurance</h3>
+                    <p>Flexible premiums and lifelong protection.</p>
+                </div>
+                <div class="feature-item">
+                    <h3>Fixed Annuities</h3>
+                    <p>Guaranteed income for your financial peace of mind.</p>
+                </div>
+            </div>
+        </div>
+    </section>
 
-.hero-section .cta-button {
-    display: inline-block;
-    margin-top: 20px;
-    padding: 10px 20px;
-    background: white;
-    color: darkorange;
-    text-decoration: none;
-    border-radius: 5px;
-}
+    <!-- Calculator Section -->
+    <section id="calculator" class="calculator-section">
+        <div class="container">
+            <h2>Life Insurance Gap Analysis Calculator</h2>
+            <p>Enter your details to analyze your life insurance gap:</p>
+            <form>
+                <label for="income">Annual Income:</label>
+                <input type="number" id="income" name="income" required>
+                
+                <label for="expenses">Annual Expenses:</label>
+                <input type="number" id="expenses" name="expenses" required>
+                
+                <label for="savings">Current Savings:</label>
+                <input type="number" id="savings" name="savings" required>
+                
+                <label for="years">Years to Cover:</label>
+                <input type="number" id="years" name="years" required>
+                
+                <button type="submit">Calculate</button>
+            </form>
+        </div>
+    </section>
 
-/* Features Section */
-.features-section {
-    padding: 40px 20px;
-    background: #f9f9f9;
-}
+    <!-- Contact Section -->
+    <section id="contact" class="contact-section">
+        <div class="container">
+            <h2>Request More Information</h2>
+            <form>
+                <label for="name">Name:</label>
+                <input type="text" id="name" name="name" required>
+                
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" required>
+                
+                <label for="phone">Phone:</label>
+                <input type="tel" id="phone" name="phone" required>
+                
+                <label for="message">Message:</label>
+                <textarea id="message" name="message" rows="4" required></textarea>
+                
+                <button type="submit">Submit</button>
+            </form>
+        </div>
+    </section>
 
-.features-section h2 {
-    text-align: center;
-    margin-bottom: 20px;
-}
-
-.features-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 20px;
-}
-
-.feature-item {
-    background: white;
-    padding: 20px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    text-align: center;
-}
-
-/* Calculator Section */
-.calculator-section {
-    padding: 40px 20px;
-    background: #fff;
-}
-
-.calculator-section form {
-    display: grid;
-    gap: 10px;
-}
-
-.calculator-section label {
-    font-weight: bold;
-}
-
-.calculator-section input,
-.calculator-section button {
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-}
-
-.calculator-section button {
-    background: darkorange;
-    color: white;
-    border: none;
-    cursor: pointer;
-}
-
-/* Contact Section */
-.contact-section {
-    padding: 40px 20px;
-    background: #f9f9f9;
-}
-
-.contact-section form {
-    display: grid;
-    gap: 10px;
-}
-
-.contact-section textarea {
-    resize: none;
-}
-
-/* Footer */
-.footer {
-    text-align: center;
-    background: #333;
-    color: white;
-    padding: 10px 20px;
-}
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 RiskLabIG. Educating you on fixed life insurance products and fixed annuities.</p>
+        </div>
+    </footer>
+</body>
+</html>
 
