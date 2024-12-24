@@ -135,9 +135,14 @@
             const debt = parseFloat(document.getElementById('debt').value);
             const savings = parseFloat(document.getElementById('savings').value);
             const existingInsurance = parseFloat(document.getElementById('existing-insurance').value);
+            const numChildren = parseInt(document.getElementById('num-children').value);
+            const collegeType = document.getElementById('college-type').value;
+
+            const collegeCost = collegeType === 'state' ? 144000 : 280000;
+            const totalCollegeCost = numChildren * collegeCost;
 
             const totalRequiredForIncome = income / 0.05; // Lifetime income at 5% withdrawal rate
-            const totalAmountNeeded = totalRequiredForIncome + debt - savings;
+            const totalAmountNeeded = totalRequiredForIncome + debt + totalCollegeCost - savings;
             const gap = totalAmountNeeded - existingInsurance;
 
             const resultContainer = document.getElementById('calculator-result');
@@ -148,6 +153,7 @@
                 <ul>
                     <li>Total Income Needed (Lifetime): $${totalRequiredForIncome.toFixed(2)}</li>
                     <li>Outstanding Debt: $${debt.toFixed(2)}</li>
+                    <li>Total College Cost for ${numChildren} Child(ren): $${totalCollegeCost.toFixed(2)}</li>
                     <li>Current Savings: $${savings.toFixed(2)}</li>
                     <li>Existing Life Insurance: $${existingInsurance.toFixed(2)}</li>
                 </ul>
@@ -188,6 +194,17 @@
 
                 <label for="existing-insurance">Existing Life Insurance:</label>
                 <input type="number" id="existing-insurance" name="existing-insurance" required>
+
+                <label for="num-children">Number of Children:</label>
+                <select id="num-children" name="num-children" required>
+                    ${[...Array(13).keys()].map(i => `<option value="${i + 1}">${i + 1}</option>`).join('')}
+                </select>
+
+                <label for="college-type">Type of College:</label>
+                <select id="college-type" name="college-type" required>
+                    <option value="state">State School</option>
+                    <option value="private">Private School</option>
+                </select>
 
                 <button type="submit">Calculate</button>
             </form>
@@ -230,5 +247,6 @@
     </section>
 </body>
 </html>
+
 
 
