@@ -179,7 +179,7 @@
     <section id="contact" class="contact-section">
         <div class="container">
             <h2>Request More Information</h2>
-            <form action="https://script.google.com/macros/s/AKfycby4Cgx4eSn9-vYEGQ8WjYZM-7PzBm1oHO6d9YFANak1w4CDRJlcTDu-hE4PBW935ukHHQ/exec" method="POST">
+            <form id="contactForm" onsubmit="submitForm(event)">
                 <label for="name">Name:</label>
                 <input type="text" id="name" name="name" required>
                 
@@ -210,6 +210,34 @@
             <p>&copy; 2024 RiskLabIG. Educating you on fixed life insurance products and fixed annuities.</p>
         </div>
     </footer>
+
+    <script>
+        function submitForm(event) {
+            event.preventDefault(); // Prevent default form submission
+            const form = document.getElementById('contactForm');
+            const formData = new FormData(form);
+
+            fetch("https://script.google.com/macros/s/AKfycby4Cgx4eSn9-vYEGQ8WjYZM-7PzBm1oHO6d9YFANak1w4CDRJlcTDu-hE4PBW935ukHHQ/exec", {
+                method: "POST",
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    form.innerHTML = `
+                        <h2>Thank You!</h2>
+                        <p>Your submission has been received. We will contact you shortly.</p>
+                    `;
+                } else {
+                    alert("There was an error. Please try again.");
+                }
+            })
+            .catch(error => {
+                console.error("Error:", error);
+                alert("Submission failed. Please try again later.");
+            });
+        }
+    </script>
 </body>
 </html>
 
