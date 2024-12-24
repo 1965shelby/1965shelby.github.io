@@ -155,8 +155,8 @@
             let breakdownHTML = `
                 <h3>Breakdown of Results:</h3>
                 <ul>
-                    <li>Total Income Needed (Lifetime): ${formatCurrency(totalRequiredForIncome)}</li>
-                    <li>Outstanding Debt: ${formatCurrency(debt)}</li>
+                    <li>Amount Needed to Replace Annual Income: ${formatCurrency(totalRequiredForIncome)}</li>
+                    <li>Total Outstanding Debt (including Mortgage Balance): ${formatCurrency(debt)}</li>
                     <li>College Cost Per Child: ${formatCurrency(collegeCost)}</li>
                     <li>Total College Cost for ${numChildren} Child(ren): ${formatCurrency(totalCollegeCost)}</li>
                     <li>Current Savings: ${formatCurrency(savings)}</li>
@@ -169,7 +169,7 @@
             if (gap <= 0) {
                 resultContainer.innerHTML = `<h3>Congratulations!</h3><p>You have sufficient coverage.</p>`;
             } else {
-                resultContainer.innerHTML = `<h3>Coverage Gap: ${formatCurrency(gap)}</h3>`;
+                resultContainer.innerHTML = `<h3>Life Insurance Needs Analysis Gap: ${formatCurrency(gap)}</h3>`;
             }
         }
     </script>
@@ -191,7 +191,7 @@
                 <label for="income">Annual Income:</label>
                 <input type="number" id="income" name="income" required>
 
-                <label for="debt">Total Outstanding Debt:</label>
+                <label for="debt">Total Outstanding Debt (including Mortgage Balance):</label>
                 <input type="number" id="debt" name="debt" required>
 
                 <label for="savings">Current Savings (Liquid Assets):</label>
