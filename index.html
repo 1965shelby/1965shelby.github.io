@@ -236,8 +236,8 @@
             const savings = parseFloat(document.getElementById('savings').value);
             const existingInsurance = parseFloat(document.getElementById('existing-insurance').value);
 
-            const totalIncomeNeeded = income * 0.05;
-            const totalAmountNeeded = totalIncomeNeeded + debt - savings;
+            const totalRequiredForIncome = income / 0.05; // Adjust for lifetime income calculation
+            const totalAmountNeeded = totalRequiredForIncome + debt - savings;
             const finalGap = totalAmountNeeded - existingInsurance;
 
             const resultContainer = document.getElementById('calculator-result');
@@ -246,7 +246,7 @@
                 resultContainer.innerHTML = `<h3>Congratulations!</h3><p>You have sufficient coverage.</p>`;
             } else {
                 resultContainer.innerHTML = `<h3>Coverage Gap: $${finalGap.toFixed(2)}</h3>`;
-                generatePieChart(totalIncomeNeeded, debt, savings, existingInsurance);
+                generatePieChart(totalRequiredForIncome, debt, savings, existingInsurance);
             }
         }
 
@@ -343,6 +343,7 @@
     </footer>
 </body>
 </html>
+
 
 
 
