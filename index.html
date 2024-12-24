@@ -4,14 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>RiskLabIG</title>
+    <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@400;700&display=swap" rel="stylesheet">
     <style>
         /* General Styles */
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Exo 2', sans-serif;
             margin: 0;
             padding: 0;
             line-height: 1.6;
-            color: #333;
+            color: #ffffff;
+            background: linear-gradient(135deg, #141e30, #243b55);
         }
 
         .container {
@@ -22,32 +24,53 @@
 
         /* Hero Section */
         .hero-section {
-            background: darkorange;
+            background: linear-gradient(135deg, #ff8008, #ffc837);
             color: white;
             text-align: center;
-            padding: 50px 20px;
+            padding: 60px 20px;
+            box-shadow: 0 4px 20px rgba(255, 128, 8, 0.4);
+        }
+
+        .hero-section h1 {
+            font-size: 3rem;
+            text-shadow: 0 4px 10px rgba(255, 255, 255, 0.5);
+        }
+
+        .hero-section p {
+            font-size: 1.2rem;
+            margin-top: 10px;
         }
 
         .hero-section .cta-button {
             display: inline-block;
             margin-top: 20px;
-            padding: 10px 20px;
-            background: white;
-            color: darkorange;
+            padding: 12px 25px;
+            background: #141e30;
+            color: white;
             text-decoration: none;
-            border-radius: 5px;
+            border-radius: 25px;
             font-weight: bold;
+            text-transform: uppercase;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .hero-section .cta-button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.6);
         }
 
         /* Features Section */
         .features-section {
-            padding: 40px 20px;
-            background: #f9f9f9;
+            padding: 50px 20px;
+            background: #243b55;
         }
 
         .features-section h2 {
             text-align: center;
-            margin-bottom: 20px;
+            margin-bottom: 30px;
+            font-size: 2rem;
+            color: #ff8008;
+            text-shadow: 0 3px 10px rgba(255, 128, 8, 0.6);
         }
 
         .features-grid {
@@ -57,22 +80,41 @@
         }
 
         .feature-item {
-            background: white;
+            background: #1e293b;
             padding: 20px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
             text-align: center;
+            transition: transform 0.3s;
+        }
+
+        .feature-item:hover {
+            transform: translateY(-10px);
+        }
+
+        .feature-item h3 {
+            font-size: 1.5rem;
+            color: #ffc837;
         }
 
         /* Calculator Section */
         .calculator-section {
-            padding: 40px 20px;
-            background: #fff;
+            padding: 50px 20px;
+            background: #141e30;
+        }
+
+        .calculator-section h2 {
+            color: #ffc837;
+            text-align: center;
+            margin-bottom: 20px;
+            text-shadow: 0 3px 10px rgba(255, 200, 55, 0.7);
         }
 
         .calculator-section form {
             display: grid;
-            gap: 10px;
+            gap: 15px;
+            max-width: 500px;
+            margin: 0 auto;
         }
 
         .calculator-section label {
@@ -81,45 +123,81 @@
 
         .calculator-section input,
         .calculator-section button {
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
+            padding: 12px;
+            border: none;
+            border-radius: 25px;
+        }
+
+        .calculator-section input {
+            background: #1e293b;
+            color: white;
         }
 
         .calculator-section button {
-            background: darkorange;
+            background: #ff8008;
             color: white;
-            border: none;
             cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .calculator-section button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 15px rgba(255, 128, 8, 0.7);
         }
 
         /* Contact Section */
         .contact-section {
-            padding: 40px 20px;
-            background: #f9f9f9;
+            padding: 50px 20px;
+            background: #243b55;
+        }
+
+        .contact-section h2 {
+            text-align: center;
+            color: #ff8008;
+            margin-bottom: 20px;
         }
 
         .contact-section form {
             display: grid;
-            gap: 10px;
+            gap: 15px;
+            max-width: 500px;
+            margin: 0 auto;
         }
 
         .contact-section textarea {
             resize: none;
+            background: #1e293b;
+            color: white;
+        }
+
+        .contact-section button {
+            background: #ff8008;
+            color: white;
+            padding: 12px;
+            border: none;
+            border-radius: 25px;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .contact-section button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 15px rgba(255, 128, 8, 0.7);
         }
 
         /* Footer */
         .footer {
             text-align: center;
-            background: #333;
-            color: white;
-            padding: 10px 20px;
+            background: #141e30;
+            color: #ffc837;
+            padding: 20px;
+            text-shadow: 0 2px 5px rgba(255, 200, 55, 0.6);
         }
 
         /* Thank You Message */
         .thank-you-message {
             text-align: center;
             margin-top: 50px;
+            color: white;
         }
     </style>
 </head>
@@ -216,46 +294,7 @@
             <p>&copy; 2024 RiskLabIG. Educating you on fixed life insurance products and fixed annuities.</p>
         </div>
     </footer>
-
-    <script>
-        function submitForm(event) {
-            event.preventDefault(); // Prevent default form submission
-            const form = document.getElementById('contactForm');
-            const formData = new FormData(form);
-
-            fetch("https://script.google.com/macros/s/AKfycby4Cgx4eSn9-vYEGQ8WjYZM-7PzBm1oHO6d9YFANak1w4CDRJlcTDu-hE4PBW935ukHHQ/exec", {
-                method: "POST",
-                body: formData
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    form.innerHTML = `
-                        <div class="thank-you-message">
-                            <h2>Thank You!</h2>
-                            <p>Your submission has been received. We will contact you shortly.</p>
-                        </div>
-                    `;
-                } else {
-                    form.innerHTML = `
-                        <div class="thank-you-message">
-                            <h2>Oops!</h2>
-                            <p>Something went wrong. Please try again later.</p>
-                        </div>
-                    `;
-                }
-            })
-            .catch(error => {
-                console.error("Error:", error);
-                form.innerHTML = `
-                    <div class="thank-you-message">
-                        <h2>Error!</h2>
-                        <p>Submission failed. Please check your connection and try again.</p>
-                    </div>
-                `;
-            });
-        }
-    </script>
 </body>
 </html>
+
 
