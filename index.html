@@ -225,33 +225,6 @@
             font-size: 1.5rem;
             font-weight: 600;
         }
-
-        /* Rotating Wheel */
-        .wheel-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 60px 20px;
-            background: linear-gradient(120deg, #FFFFFF, #F3ECEA);
-        }
-
-        .wheel {
-            width: 200px;
-            height: 200px;
-            border-radius: 50%;
-            border: 10px solid #000DFF;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-            animation: spin 4s linear infinite;
-        }
-
-        @keyframes spin {
-            0% {
-                transform: rotate(0deg);
-            }
-            100% {
-                transform: rotate(360deg);
-            }
-        }
     </style>
 </head>
 <body>
@@ -287,11 +260,6 @@
                 </div>
             </div>
         </div>
-    </section>
-
-    <!-- Rotating Wheel Section -->
-    <section class="wheel-container">
-        <div class="wheel"></div>
     </section>
 
     <!-- Calculator Section -->
