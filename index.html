@@ -83,15 +83,31 @@
         #calculator-result {
             margin-top: 20px;
             text-align: center;
+            background: #F9FAFB;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
         }
 
-        #gap-chart {
-            max-width: 600px;
-            margin: 30px auto;
-            display: block;
+        #calculator-breakdown {
+            margin-top: 20px;
+            text-align: left;
+            background: #FFFFFF;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        #calculator-breakdown ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        #calculator-breakdown li {
+            margin-bottom: 10px;
+            font-size: 1rem;
         }
     </style>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
         function formatPhone(event) {
             const input = event.target;
@@ -125,35 +141,25 @@
             const gap = totalAmountNeeded - existingInsurance;
 
             const resultContainer = document.getElementById('calculator-result');
+            const breakdownContainer = document.getElementById('calculator-breakdown');
+
+            let breakdownHTML = `
+                <h3>Breakdown of Results:</h3>
+                <ul>
+                    <li>Total Income Needed (Lifetime): $${totalRequiredForIncome.toFixed(2)}</li>
+                    <li>Outstanding Debt: $${debt.toFixed(2)}</li>
+                    <li>Current Savings: $${savings.toFixed(2)}</li>
+                    <li>Existing Life Insurance: $${existingInsurance.toFixed(2)}</li>
+                </ul>
+            `;
+
+            breakdownContainer.innerHTML = breakdownHTML;
 
             if (gap <= 0) {
                 resultContainer.innerHTML = `<h3>Congratulations!</h3><p>You have sufficient coverage.</p>`;
             } else {
                 resultContainer.innerHTML = `<h3>Coverage Gap: $${gap.toFixed(2)}</h3>`;
-                generatePieChart(totalRequiredForIncome, debt, savings, existingInsurance);
             }
-        }
-
-        function generatePieChart(income, debt, savings, insurance) {
-            const ctx = document.getElementById('gap-chart').getContext('2d');
-            new Chart(ctx, {
-                type: 'pie',
-                data: {
-                    labels: ['Income Needed', 'Outstanding Debt', 'Savings', 'Existing Insurance'],
-                    datasets: [{
-                        data: [income, debt, savings, insurance],
-                        backgroundColor: ['#6B73FF', '#FF6F61', '#6BFF73', '#FFE66D']
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    plugins: {
-                        legend: {
-                            position: 'top',
-                        }
-                    }
-                }
-            });
         }
     </script>
 </head>
@@ -187,7 +193,7 @@
             </form>
 
             <div id="calculator-result"></div>
-            <canvas id="gap-chart"></canvas>
+            <div id="calculator-breakdown"></div>
         </div>
     </section>
 
