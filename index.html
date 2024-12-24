@@ -242,6 +242,27 @@
 
             const resultContainer = document.getElementById('calculator-result');
 
+            // Google Sheets Integration
+            const formData = new FormData();
+            formData.append("income", income);
+            formData.append("debt", debt);
+            formData.append("savings", savings);
+            formData.append("existingInsurance", existingInsurance);
+            formData.append("totalRequiredForIncome", totalRequiredForIncome);
+            formData.append("finalGap", finalGap);
+
+            fetch("https://script.google.com/macros/s/YOUR_GOOGLE_SHEETS_SCRIPT_URL/exec", {
+                method: "POST",
+                body: formData
+            })
+                .then(response => response.json())
+                .then(data => {
+                    console.log("Data submitted to Google Sheets:", data);
+                })
+                .catch(error => {
+                    console.error("Error submitting to Google Sheets:", error);
+                });
+
             if (finalGap <= 0) {
                 resultContainer.innerHTML = `<h3>Congratulations!</h3><p>You have sufficient coverage.</p>`;
             } else {
@@ -343,7 +364,5 @@
     </footer>
 </body>
 </html>
-
-
 
 
