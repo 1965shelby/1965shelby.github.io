@@ -109,25 +109,6 @@
         }
     </style>
     <script>
-        function formatPhone(event) {
-            const input = event.target;
-            let value = input.value.replace(/\D/g, '');
-            if (value.length > 3 && value.length <= 6) {
-                value = `${value.slice(0, 3)}-${value.slice(3)}`;
-            } else if (value.length > 6) {
-                value = `${value.slice(0, 3)}-${value.slice(3, 6)}-${value.slice(6, 10)}`;
-            }
-            input.value = value;
-        }
-
-        function validateMessageLength(event) {
-            const textarea = event.target;
-            const maxLength = 120;
-            if (textarea.value.length > maxLength) {
-                textarea.value = textarea.value.slice(0, maxLength);
-            }
-        }
-
         function formatCurrency(value) {
             return `$${value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
         }
@@ -142,8 +123,8 @@
             const numChildren = parseInt(document.getElementById('num-children').value);
             const collegeType = document.getElementById('college-type').value;
 
-            const collegeCost = collegeType === 'state' ? 144000 : 280000;
-            const totalCollegeCost = numChildren * collegeCost;
+            const collegeCost = numChildren > 0 && collegeType === 'state' ? 144000 : 280000;
+            const totalCollegeCost = numChildren > 0 ? numChildren * collegeCost : 0;
 
             const totalRequiredForIncome = income / 0.05; // Lifetime income at 5% withdrawal rate
             const totalAmountNeeded = totalRequiredForIncome + debt + totalCollegeCost - savings;
@@ -157,13 +138,19 @@
                 <ul>
                     <li>Amount Needed to Replace Annual Income: ${formatCurrency(totalRequiredForIncome)}</li>
                     <li>Total Outstanding Debt (including Mortgage Balance): ${formatCurrency(debt)}</li>
-                    <li>College Cost Per Child: ${formatCurrency(collegeCost)}</li>
-                    <li>Total College Cost for ${numChildren} Child(ren): ${formatCurrency(totalCollegeCost)}</li>
                     <li>Current Savings: ${formatCurrency(savings)}</li>
                     <li>Existing Life Insurance: ${formatCurrency(existingInsurance)}</li>
-                </ul>
             `;
 
+            // Only include college-related calculations if numChildren > 0
+            if (numChildren > 0) {
+                breakdownHTML += `
+                    <li>College Cost Per Child: ${formatCurrency(collegeCost)}</li>
+                    <li>Total College Cost for ${numChildren} Child(ren): ${formatCurrency(totalCollegeCost)}</li>
+                `;
+            }
+
+            breakdownHTML += `</ul>`;
             breakdownContainer.innerHTML = breakdownHTML;
 
             if (gap <= 0) {
@@ -175,14 +162,6 @@
     </script>
 </head>
 <body>
-    <!-- Header Section -->
-    <header class="info-section">
-        <div class="container">
-            <h2>Welcome to RiskLabIG</h2>
-            <p>Your trusted source for life insurance and financial education.</p>
-        </div>
-    </header>
-
     <!-- Calculator Section -->
     <section id="calculator" class="calculator-section">
         <div class="container">
@@ -207,20 +186,10 @@
                     <option value="2">2</option>
                     <option value="3">3</option>
                     <option value="4">4</option>
-                    <option value="5">5</option>
-                    <option value="6">6</option>
-                    <option value="7">7</option>
-                    <option value="8">8</option>
-                    <option value="9">9</option>
-                    <option value="10">10</option>
-                    <option value="11">11</option>
-                    <option value="12">12</option>
-                    <option value="13">13</option>
                 </select>
 
                 <label for="college-type">Select Type of School:</label>
                 <select id="college-type" name="college-type" required>
-                    <option value="" disabled selected>---Select Type of School---</option>
                     <option value="state">State School</option>
                     <option value="private">Private School</option>
                 </select>
@@ -232,38 +201,5 @@
             <div id="calculator-breakdown"></div>
         </div>
     </section>
-
-    <!-- Request Information Section -->
-    <section id="request-info" class="info-section">
-        <div class="container">
-            <h2>Request Additional Information</h2>
-            <form>
-                <label for="name">Name:</label>
-                <input type="text" id="name" name="name" required>
-
-                <label for="email">Email:</label>
-                <input type="email" id="email" name="email" required>
-
-                <label for="phone">Phone:</label>
-                <input type="text" id="phone" name="phone" oninput="formatPhone(event)" placeholder="xxx-xxx-xxxx" required>
-
-                <label for="insurance-type">Type of Insurance:</label>
-                <select id="insurance-type" name="insurance-type" required>
-                    <option value="term">Term Insurance</option>
-                    <option value="whole">Whole Life</option>
-                    <option value="universal">Universal Insurance</option>
-                </select>
-
-                <label for="amount">Amount of Insurance:</label>
-                <input type="number" id="amount" name="amount" required>
-
-                <label for="message">Message (120 characters max):</label>
-                <textarea id="message" name="message" rows="4" maxlength="120" oninput="validateMessageLength(event)" required></textarea>
-
-                <button type="submit">Submit</button>
-            </form>
-        </div>
-    </section>
 </body>
 </html>
-
