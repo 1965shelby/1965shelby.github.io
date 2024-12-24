@@ -128,6 +128,10 @@
             }
         }
 
+        function formatCurrency(value) {
+            return `$${value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+        }
+
         function submitCalculator(event) {
             event.preventDefault();
 
@@ -151,11 +155,12 @@
             let breakdownHTML = `
                 <h3>Breakdown of Results:</h3>
                 <ul>
-                    <li>Total Income Needed (Lifetime): $${totalRequiredForIncome.toFixed(2)}</li>
-                    <li>Outstanding Debt: $${debt.toFixed(2)}</li>
-                    <li>Total College Cost for ${numChildren} Child(ren): $${totalCollegeCost.toFixed(2)}</li>
-                    <li>Current Savings: $${savings.toFixed(2)}</li>
-                    <li>Existing Life Insurance: $${existingInsurance.toFixed(2)}</li>
+                    <li>Total Income Needed (Lifetime): ${formatCurrency(totalRequiredForIncome)}</li>
+                    <li>Outstanding Debt: ${formatCurrency(debt)}</li>
+                    <li>College Cost Per Child: ${formatCurrency(collegeCost)}</li>
+                    <li>Total College Cost for ${numChildren} Child(ren): ${formatCurrency(totalCollegeCost)}</li>
+                    <li>Current Savings: ${formatCurrency(savings)}</li>
+                    <li>Existing Life Insurance: ${formatCurrency(existingInsurance)}</li>
                 </ul>
             `;
 
@@ -164,7 +169,7 @@
             if (gap <= 0) {
                 resultContainer.innerHTML = `<h3>Congratulations!</h3><p>You have sufficient coverage.</p>`;
             } else {
-                resultContainer.innerHTML = `<h3>Coverage Gap: $${gap.toFixed(2)}</h3>`;
+                resultContainer.innerHTML = `<h3>Coverage Gap: ${formatCurrency(gap)}</h3>`;
             }
         }
     </script>
@@ -213,7 +218,7 @@
                     <option value="13">13</option>
                 </select>
 
-                <label for="college-type">Type of College:</label>
+                <label for="college-type">State or Private College:</label>
                 <select id="college-type" name="college-type" required>
                     <option value="state">State School</option>
                     <option value="private">Private School</option>
@@ -260,6 +265,3 @@
     </section>
 </body>
 </html>
-
-
-
