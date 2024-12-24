@@ -115,6 +115,12 @@
             color: white;
             padding: 10px 20px;
         }
+
+        /* Thank You Message */
+        .thank-you-message {
+            text-align: center;
+            margin-top: 50px;
+        }
     </style>
 </head>
 <body>
@@ -225,16 +231,28 @@
             .then(data => {
                 if (data.success) {
                     form.innerHTML = `
-                        <h2>Thank You!</h2>
-                        <p>Your submission has been received. We will contact you shortly.</p>
+                        <div class="thank-you-message">
+                            <h2>Thank You!</h2>
+                            <p>Your submission has been received. We will contact you shortly.</p>
+                        </div>
                     `;
                 } else {
-                    alert("There was an error. Please try again.");
+                    form.innerHTML = `
+                        <div class="thank-you-message">
+                            <h2>Oops!</h2>
+                            <p>Something went wrong. Please try again later.</p>
+                        </div>
+                    `;
                 }
             })
             .catch(error => {
                 console.error("Error:", error);
-                alert("Submission failed. Please try again later.");
+                form.innerHTML = `
+                    <div class="thank-you-message">
+                        <h2>Error!</h2>
+                        <p>Submission failed. Please check your connection and try again.</p>
+                    </div>
+                `;
             });
         }
     </script>
