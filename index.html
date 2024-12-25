@@ -117,9 +117,15 @@
             return parseFloat(value.replace(/[^0-9.-]+/g, '')) || 0;
         }
 
-        function formatInput(event) {
+        function validateAndFormatInput(event) {
             const input = event.target;
-            const parsedValue = parseCurrency(input.value);
+            let parsedValue = parseCurrency(input.value);
+
+            // Prevent negative numbers
+            if (parsedValue < 0) {
+                parsedValue = 0;
+            }
+
             input.value = formatCurrency(parsedValue);
         }
 
@@ -173,7 +179,7 @@
             const inputsToFormat = ['income', 'debt', 'savings', 'existing-insurance'];
             inputsToFormat.forEach(id => {
                 const input = document.getElementById(id);
-                input.addEventListener('blur', formatInput);
+                input.addEventListener('blur', validateAndFormatInput);
             });
         });
     </script>
@@ -198,11 +204,7 @@
 
                 <label for="num-children">Number of Children:</label>
                 <select id="num-children" name="num-children" required>
-                    <option value="0">0</option>
-                    <option value="1">1</option>
-                    <option value="2">2</option>
-                    <option value="3">3</option>
-                    <option value="4">4</option>
+                    ${[...Array(14).keys()].map(i => `<option value="${i}">${i}</option>`).join('')}
                 </select>
 
                 <label for="college-type">Select Type of School:</label>
