@@ -23,12 +23,12 @@
         }
 
         /* Section Styling */
-        .info-section, .calculator-section {
+        .calculator-section {
             padding: 60px 20px;
             background: #FFFFFF;
         }
 
-        .info-section h2, .calculator-section h2 {
+        .calculator-section h2 {
             color: #000DFF;
             text-align: center;
             font-size: 2.5rem;
@@ -36,7 +36,7 @@
             margin-bottom: 30px;
         }
 
-        .info-section form, .calculator-section form {
+        .calculator-section form {
             display: grid;
             gap: 20px;
             max-width: 600px;
@@ -47,55 +47,54 @@
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
         }
 
-        .info-section label, .calculator-section label {
+        .calculator-section label {
             font-weight: 600;
             margin-bottom: 5px;
         }
 
-        .info-section input, .info-section select, .info-section textarea,
-        .calculator-section input, .calculator-section select, .calculator-section textarea,
-        .info-section button, .calculator-section button {
+        .calculator-section input, 
+        .calculator-section select, 
+        .calculator-section button {
             padding: 12px;
             border: 1px solid #E0E0E0;
             border-radius: 50px;
             font-size: 1rem;
         }
 
-        .info-section input, .info-section select, .info-section textarea,
-        .calculator-section input, .calculator-section select, .calculator-section textarea {
+        .calculator-section input, 
+        .calculator-section select {
             background: #FFFFFF;
             color: #3A3A3A;
         }
 
-        .info-section button, .calculator-section button {
+        .calculator-section button {
             background: #000DFF;
             color: white;
             cursor: pointer;
             transition: all 0.3s ease-in-out;
         }
 
-        .info-section button:hover, .calculator-section button:hover {
+        .calculator-section button:hover {
             background: #6B73FF;
             transform: translateY(-5px);
             box-shadow: 0 5px 15px rgba(107, 115, 255, 0.5);
         }
 
-        #calculator-result {
+        #calculator-result, #calculator-breakdown {
             margin-top: 20px;
             text-align: center;
-            background: #F9FAFB;
             padding: 20px;
             border-radius: 10px;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
         }
 
+        #calculator-result {
+            background: #F9FAFB;
+        }
+
         #calculator-breakdown {
-            margin-top: 20px;
             text-align: left;
             background: #FFFFFF;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
         }
 
         #calculator-breakdown ul {
@@ -106,6 +105,11 @@
         #calculator-breakdown li {
             margin-bottom: 10px;
             font-size: 1rem;
+        }
+
+        /* Remove unused empty containers */
+        .hidden {
+            display: none;
         }
     </style>
     <script>
@@ -152,7 +156,7 @@
             let breakdownHTML = `
                 <h3>Breakdown of Results:</h3>
                 <ul>
-                    <li>Total Capital Needed to Replace Annual Income: ${formatCurrency(totalRequiredForIncome)}</li>
+                    <li>Amount Needed to Replace Annual Income: ${formatCurrency(totalRequiredForIncome)}</li>
                     <li>Total Outstanding Debt (including Mortgage Balance): ${formatCurrency(debt)}</li>
                     <li>Current Savings: ${formatCurrency(savings)}</li>
                     <li>Existing Life Insurance: ${formatCurrency(existingInsurance)}</li>
