@@ -152,7 +152,7 @@
             let breakdownHTML = `
                 <h3>Breakdown of Results:</h3>
                 <ul>
-                    <li>Amount Needed to Replace Annual Income: ${formatCurrency(totalRequiredForIncome)}</li>
+                    <li>Total Capital Needed to Replace Annual Income: ${formatCurrency(totalRequiredForIncome)}</li>
                     <li>Total Outstanding Debt (including Mortgage Balance): ${formatCurrency(debt)}</li>
                     <li>Current Savings: ${formatCurrency(savings)}</li>
                     <li>Existing Life Insurance: ${formatCurrency(existingInsurance)}</li>
@@ -204,7 +204,20 @@
 
                 <label for="num-children">Number of Children:</label>
                 <select id="num-children" name="num-children" required>
-                    ${[...Array(14).keys()].map(i => `<option value="${i}">${i}</option>`).join('')}
+                    <option value="0">0</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                    <option value="7">7</option>
+                    <option value="8">8</option>
+                    <option value="9">9</option>
+                    <option value="10">10</option>
+                    <option value="11">11</option>
+                    <option value="12">12</option>
+                    <option value="13">13</option>
                 </select>
 
                 <label for="college-type">Select Type of School:</label>
@@ -222,3 +235,4 @@
     </section>
 </body>
 </html>
+
