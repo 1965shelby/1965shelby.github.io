@@ -3,36 +3,41 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RiskLabIG</title>
+    <title>RiskLabIG - Calculator & Contact</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
     <style>
-        /* General Styles */
         body {
             font-family: 'Poppins', sans-serif;
             margin: 0;
             padding: 0;
             line-height: 1.6;
-            color: #3A3A3A;
-            background: linear-gradient(120deg, #F3ECEA, #FFFFFF);
+            background-color: #f4f4f9;
+            color: #333;
         }
 
-        .container {
-            width: 90%;
-            max-width: 1200px;
-            margin: 0 auto;
+        /* Welcome Section */
+        .main-content {
+            text-align: center;
+            padding: 50px;
+            background: #FFFFFF;
         }
 
+        .main-content h1 {
+            font-size: 2.5rem;
+            color: #000DFF;
+        }
+
+        /* Calculator Section */
         .calculator-section {
             padding: 60px 20px;
             background: #FFFFFF;
         }
 
         .calculator-section h2 {
-            color: #000DFF;
             text-align: center;
             font-size: 2.5rem;
-            font-weight: 600;
             margin-bottom: 30px;
+            color: #000DFF;
         }
 
         .calculator-section form {
@@ -46,281 +51,228 @@
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
         }
 
-        .calculator-section label {
-            font-weight: 600;
-            margin-bottom: 5px;
-        }
-
-        .calculator-section input, 
-        .calculator-section select, 
+        .calculator-section label,
+        .calculator-section input,
+        .calculator-section select,
         .calculator-section button {
-            padding: 12px;
-            border: 1px solid #E0E0E0;
-            border-radius: 50px;
+            width: 100%;
             font-size: 1rem;
         }
 
-        .calculator-section input, 
+        .calculator-section input,
         .calculator-section select {
-            background: #FFFFFF;
-            color: #3A3A3A;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
         }
 
         .calculator-section button {
             background: #000DFF;
             color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 8px;
             cursor: pointer;
-            transition: all 0.3s ease-in-out;
         }
 
         .calculator-section button:hover {
             background: #6B73FF;
-            transform: translateY(-5px);
-            box-shadow: 0 5px 15px rgba(107, 115, 255, 0.5);
         }
 
-        .calculator-section button:disabled {
-            background: #CCCCCC;
-            cursor: not-allowed;
-            box-shadow: none;
-        }
-
-        /* Modal Styling */
-        .modal {
-            display: none;
+        /* Pop-up Form */
+        .popup {
             position: fixed;
-            z-index: 1000;
-            left: 0;
             top: 0;
+            left: 0;
             width: 100%;
             height: 100%;
-            overflow: auto;
-            background-color: rgba(0, 0, 0, 0.5);
-            align-items: center;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
             justify-content: center;
-        }
-
-        .modal-content {
-            background: #FFFFFF;
-            padding: 20px;
-            border-radius: 15px;
-            max-width: 600px;
-            width: 90%;
-            text-align: center;
-        }
-
-        .modal-form {
-            display: grid;
-            gap: 15px;
-            text-align: left;
-        }
-
-        .modal-form input,
-        .modal-form select {
-            padding: 10px;
-            border: 1px solid #E0E0E0;
-            border-radius: 8px;
-            font-size: 1rem;
-        }
-
-        .modal-form .privacy-check {
-            display: flex;
             align-items: center;
+            visibility: hidden;
+            opacity: 0;
+            transition: visibility 0s, opacity 0.3s;
         }
 
-        .modal-form .privacy-check input {
-            margin-right: 10px;
+        .popup.active {
+            visibility: visible;
+            opacity: 1;
         }
 
-        .modal-buttons {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 20px;
+        .popup .form-container {
+            background: #FFFFFF;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            width: 90%;
+            max-width: 400px;
         }
 
-        .modal-buttons button {
-            background: #000DFF;
-            color: white;
-            padding: 10px 20px;
+        .popup button.close {
+            background: none;
             border: none;
-            border-radius: 50px;
+            font-size: 1.5rem;
+            color: #333;
+            position: absolute;
+            top: 10px;
+            right: 10px;
             cursor: pointer;
-            font-size: 1rem;
-            transition: background 0.3s ease;
         }
 
-        .modal-buttons button:hover:not(:disabled) {
-            background: #6B73FF;
-        }
-
-        .modal-buttons button:disabled {
-            background: #CCCCCC;
-            cursor: not-allowed;
+        .popup button.close:hover {
+            color: #000DFF;
         }
     </style>
     <script>
-        function validateEmail(email) {
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            return emailRegex.test(email);
-        }
-
-        function updateModalFormValidation() {
-            const fields = document.querySelectorAll('.modal-form input[required], .modal-form select[required]');
-            const emailField = document.getElementById('email');
-            const checkbox = document.getElementById('privacy');
-            const submitButton = document.getElementById('modal-submit-button');
-
-            let allFieldsValid = true;
-
-            fields.forEach((field) => {
-                if (!field.value.trim()) {
-                    field.setCustomValidity("This is required information");
-                    field.reportValidity();
-                    allFieldsValid = false;
-                } else {
-                    field.setCustomValidity("");
-                }
-            });
-
-            // Validate email field format
-            if (!validateEmail(emailField.value.trim())) {
-                emailField.setCustomValidity("Please enter a valid email address");
-                emailField.reportValidity();
-                allFieldsValid = false;
-            } else {
-                emailField.setCustomValidity("");
-            }
-
-            // Enable/Disable checkbox based on validation
-            checkbox.disabled = !allFieldsValid;
-            submitButton.disabled = !checkbox.checked;
-        }
-
-        function handleCheckboxChange() {
-            const checkbox = document.getElementById('privacy');
-            const submitButton = document.getElementById('modal-submit-button');
-            submitButton.disabled = !checkbox.checked;
-        }
-
-        function closeInsuranceModal() {
-            document.getElementById('insurance-modal').style.display = 'none';
-        }
-
-        function submitCalculator(event) {
-            event.preventDefault();
-
+        function calculateGap() {
             const income = parseFloat(document.getElementById('income').value.replace(/[^0-9.]/g, '')) || 0;
             const debt = parseFloat(document.getElementById('debt').value.replace(/[^0-9.]/g, '')) || 0;
             const savings = parseFloat(document.getElementById('savings').value.replace(/[^0-9.]/g, '')) || 0;
-            const existingInsurance = parseFloat(document.getElementById('existing-insurance').value.replace(/[^0-9.]/g, '')) || 0;
-            const numChildren = parseInt(document.getElementById('num-children').value) || 0;
-            const collegeType = document.getElementById('college-type').value;
+            const insurance = parseFloat(document.getElementById('insurance').value.replace(/[^0-9.]/g, '')) || 0;
 
-            const collegeCost = numChildren > 0 && collegeType === 'state' ? 144000 : 280000;
-            const totalCollegeCost = numChildren * collegeCost;
+            const totalRequired = (income / 0.05) + debt - savings - insurance;
+            alert(`Estimated Life Insurance Gap: $${totalRequired.toFixed(2)}`);
+        }
 
-            const totalRequiredForIncome = income / 0.05;
-            const totalAmountNeeded = totalRequiredForIncome + debt + totalCollegeCost - savings;
-            const gap = totalAmountNeeded - existingInsurance;
+        function openPopup() {
+            document.getElementById('popup').classList.add('active');
+        }
 
-            const modal = document.getElementById('insurance-modal');
-            const modalContent = document.getElementById('insurance-modal-content');
-            modalContent.innerHTML = `
-                <h3>Analysis Results</h3>
-                <p>Amount Needed to Replace Annual Income: $${totalRequiredForIncome.toLocaleString()}</p>
-                <p>Total Outstanding Debt: $${debt.toLocaleString()}</p>
-                <p>Current Savings: $${savings.toLocaleString()}</p>
-                <p>Existing Life Insurance: $${existingInsurance.toLocaleString()}</p>
-                <p>College Costs for ${numChildren} Children: $${totalCollegeCost.toLocaleString()}</p>
-                <p>Life Insurance Gap: $${gap.toLocaleString()}</p>
-                <form class="modal-form">
-                    <label for="first-name">First Name:</label>
-                    <input type="text" id="first-name" name="first-name" required placeholder="This is required information">
-
-                    <label for="last-name">Last Name:</label>
-                    <input type="text" id="last-name" name="last-name" required placeholder="This is required information">
-
-                    <label for="email">Email:</label>
-                    <input type="email" id="email" name="email" required placeholder="This is required information">
-
-                    <label for="insurance-type">Type of Insurance:</label>
-                    <select id="insurance-type" name="insurance-type" required>
-                        <option value="" disabled selected>This is required information</option>
-                        <option value="term">Term Insurance</option>
-                        <option value="whole">Whole Life Insurance</option>
-                        <option value="universal">Universal Life Insurance</option>
-                        <option value="final-expense">Final Expense Insurance</option>
-                    </select>
-
-                    <label for="coverage-amount">Amount of Coverage:</label>
-                    <input type="text" id="coverage-amount" name="coverage-amount" required placeholder="This is required information">
-
-                    <div class="privacy-check">
-                        <input type="checkbox" id="privacy" disabled>
-                        <label for="privacy">I agree to the <a href="#" target="_blank">privacy policy</a>.</label>
-                    </div>
-
-                    <div class="modal-buttons">
-                        <button id="modal-submit-button" type="submit" disabled>Submit</button>
-                        <button type="button" onclick="closeInsuranceModal()">Close</button>
-                    </div>
-                </form>
-            `;
-            modal.style.display = 'flex';
-
-            const modalFields = document.querySelectorAll('.modal-form input[required], .modal-form select[required]');
-            modalFields.forEach((field) => {
-                field.addEventListener('input', updateModalFormValidation);
-            });
-
-            document.getElementById('privacy').addEventListener('change', handleCheckboxChange);
-            updateModalFormValidation();
+        function closePopup() {
+            document.getElementById('popup').classList.remove('active');
         }
 
         window.addEventListener('DOMContentLoaded', () => {
-            document.querySelector('form').addEventListener('submit', submitCalculator);
+            document.getElementById('calculateButton').addEventListener('click', (e) => {
+                e.preventDefault();
+                calculateGap();
+            });
+
+            document.getElementById('openPopup').addEventListener('click', openPopup);
+            document.getElementById('closePopup').addEventListener('click', closePopup);
         });
     </script>
 </head>
 <body>
+    <!-- Welcome Section -->
+    <div class="main-content">
+        <h1>Welcome to Our Website</h1>
+        <p>Click the button below to get in touch with us!</p>
+        <button id="openPopup">Contact Us</button>
+    </div>
+
     <!-- Calculator Section -->
-    <section id="calculator" class="calculator-section">
-        <div class="container">
-            <h2>Life Insurance Gap Analysis Calculator</h2>
-            <form onsubmit="submitCalculator(event)">
+    <div class="container">
+        <section class="calculator-section">
+            <h2>Life Insurance Gap Calculator</h2>
+            <form>
                 <label for="income">Annual Income:</label>
-                <input type="text" id="income" name="income" required>
+                <input type="text" id="income" placeholder="Enter your annual income">
 
-                <label for="debt">Total Outstanding Debt (including Mortgage Balance):</label>
-                <input type="text" id="debt" name="debt" required>
+                <label for="debt">Debt:</label>
+                <input type="text" id="debt" placeholder="Enter your total debt">
 
-                <label for="savings">Current Savings (Liquid Assets):</label>
-                <input type="text" id="savings" name="savings" required>
+                <label for="savings">Savings:</label>
+                <input type="text" id="savings" placeholder="Enter your savings amount">
 
-                <label for="existing-insurance">Existing Life Insurance:</label>
-                <input type="text" id="existing-insurance" name="existing-insurance" required>
+                <label for="insurance">Existing Insurance:</label>
+                <input type="text" id="insurance" placeholder="Enter your current insurance">
 
-                <label for="num-children">Number of Children:</label>
-                <select id="num-children" name="num-children" required>
-                    <option value="0">0</option>
-                    <option value="1">1</option>
+                <button id="calculateButton">Calculate</button>
+            </form>
+        </section>
+    </div>
+
+    <!-- Contact Us Pop-up -->
+      <div class="popup" id="popup">
+        <div class="form-container">
+            <button class="close" id="closePopup">&times;</button>
+            <h2>Contact Us</h2>
+            <p>To learn more, simply fill out the form, and a Licensed Representative from your state will reach out within 24-48 hours.</p>
+            <form id="popupForm">
+                <label for="name">Full Name</label>
+                <input type="text" id="name" name="name" placeholder="Enter your full name" required>
+
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" placeholder="Enter your email" required>
+
+                <label for="phone">Phone Number</label>
+                <input type="tel" id="phone" name="phone" placeholder="Enter your phone number" required>
+
+                <label for="state">State</label>
+                <select id="state" name="state" required>
+                    <option value="">Select your state</option>
+                    <option value="AL">Alabama</option>
+                    <option value="AK">Alaska</option>
+                    <option value="AZ">Arizona</option>
+                    <option value="AR">Arkansas</option>
+                    <option value="CA">California</option>
+                    <option value="CO">Colorado</option>
+                    <option value="CT">Connecticut</option>
+                    <option value="DE">Delaware</option>
+                    <option value="FL">Florida</option>
+                    <option value="GA">Georgia</option>
+                    <option value="HI">Hawaii</option>
+                    <option value="ID">Idaho</option>
+                    <option value="IL">Illinois</option>
+                    <option value="IN">Indiana</option>
+                    <option value="IA">Iowa</option>
+                    <option value="KS">Kansas</option>
+                    <option value="KY">Kentucky</option>
+                    <option value="LA">Louisiana</option>
+                    <option value="ME">Maine</option>
+                    <option value="MD">Maryland</option>
+                    <option value="MA">Massachusetts</option>
+                    <option value="MI">Michigan</option>
+                    <option value="MN">Minnesota</option>
+                    <option value="MS">Mississippi</option>
+                    <option value="MO">Missouri</option>
+                    <option value="MT">Montana</option>
+                    <option value="NE">Nebraska</option>
+                    <option value="NV">Nevada</option>
+                    <option value="NH">New Hampshire</option>
+                    <option value="NJ">New Jersey</option>
+                    <option value="NM">New Mexico</option>
+                    <option value="NY">New York</option>
+                    <option value="NC">North Carolina</option>
+                    <option value="ND">North Dakota</option>
+                    <option value="OH">Ohio</option>
+                    <option value="OK">Oklahoma</option>
+                    <option value="OR">Oregon</option>
+                    <option value="PA">Pennsylvania</option>
+                    <option value="RI">Rhode Island</option>
+                    <option value="SC">South Carolina</option>
+                    <option value="SD">South Dakota</option>
+                    <option value="TN">Tennessee</option>
+                    <option value="TX">Texas</option>
+                    <option value="UT">Utah</option>
+                    <option value="VT">Vermont</option>
+                    <option value="VA">Virginia</option>
+                    <option value="WA">Washington</option>
+                    <option value="WV">West Virginia</option>
+                    <option value="WI">Wisconsin</option>
+                    <option value="WY">Wyoming</option>
                 </select>
 
-                <label for="college-type">Select Type of School:</label>
-                <select id="college-type" name="college-type" required>
-                    <option value="state">State School</option>
-                    <option value="private">Private School</option>
-                </select>
-
-                <button type="submit">Calculate</button>
+                <button type="submit" class="submit">Submit</button>
             </form>
         </div>
-    </section>
-
-    <!-- Modal -->
-    <div id="insurance-modal" class="modal">
-        <div id="insurance-modal-content" class="modal-content"></div>
     </div>
+
+    <script>
+        const openPopup = document.getElementById('openPopup');
+        const closePopup = document.getElementById('closePopup');
+        const popup = document.getElementById('popup');
+
+        openPopup.addEventListener('click', () => {
+            popup.classList.add('active');
+        });
+
+        closePopup.addEventListener('click', () => {
+            popup.classList.remove('active');
+        });
+    </script>
 </body>
 </html>
 
