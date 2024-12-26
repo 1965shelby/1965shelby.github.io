@@ -192,6 +192,54 @@
             return parseFloat(value.replace(/[^0-9.-]+/g, '')) || 0;
         }
 
+        function validateEmail(email) {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return emailRegex.test(email);
+        }
+
+        function updateModalFormValidation() {
+            const fields = document.querySelectorAll('.modal-form input[required], .modal-form select[required]');
+            const emailField = document.getElementById('email');
+            const emailError = document.getElementById('email-error');
+            const checkbox = document.getElementById('privacy');
+            const submitButton = document.getElementById('modal-submit-button');
+
+            let allFieldsFilled = true;
+            let emailValid = validateEmail(emailField.value);
+
+            // Validate fields
+            fields.forEach((field) => {
+                if (!field.value.trim()) {
+                    allFieldsFilled = false;
+                }
+            });
+
+            // Display email error if invalid
+            if (!emailValid && emailField.value.trim()) {
+                emailError.style.display = 'block';
+            } else {
+                emailError.style.display = 'none';
+            }
+
+            // Enable checkbox only if all fields are filled and email is valid
+            checkbox.disabled = !(allFieldsFilled && emailValid);
+
+            // Enable submit button only if checkbox is checked
+            submitButton.disabled = !(allFieldsFilled && emailValid && checkbox.checked);
+        }
+
+        function handleCheckboxChange() {
+            const checkbox = document.getElementById('privacy');
+            const submitButton = document.getElementById('modal-submit-button');
+            submitButton.disabled = !checkbox.checked; // Enable/Disable the submit button based on checkbox
+        }
+
+        function submitModalForm(event) {
+            event.preventDefault();
+            alert("Form submitted successfully!");
+            closeInsuranceModal();
+        }
+
         function submitCalculator(event) {
             event.preventDefault();
 
@@ -205,7 +253,7 @@
             const collegeCost = numChildren > 0 && collegeType === 'state' ? 144000 : 280000;
             const totalCollegeCost = numChildren > 0 ? numChildren * collegeCost : 0;
 
-            const totalRequiredForIncome = income / 0.05; // Lifetime income at 5% withdrawal rate
+            const totalRequiredForIncome = income / 0.05;
             const totalAmountNeeded = totalRequiredForIncome + debt + totalCollegeCost - savings;
             const gap = totalAmountNeeded - existingInsurance;
 
@@ -253,35 +301,8 @@
                 </form>
             `;
             modal.style.display = 'flex';
-        }
 
-        function updateModalFormValidation() {
-            const fields = document.querySelectorAll('.modal-form input[required], .modal-form select[required]');
-            const checkbox = document.getElementById('privacy');
-            const submitButton = document.getElementById('modal-submit-button');
-
-            let allFieldsFilled = true;
-
-            fields.forEach((field) => {
-                if (!field.value.trim()) {
-                    allFieldsFilled = false;
-                }
-            });
-
-            checkbox.disabled = !allFieldsFilled; // Disable the checkbox if fields are incomplete
-            submitButton.disabled = !allFieldsFilled || !checkbox.checked; // Disable the submit button
-        }
-
-        function handleCheckboxChange() {
-            const checkbox = document.getElementById('privacy');
-            const submitButton = document.getElementById('modal-submit-button');
-            submitButton.disabled = !checkbox.checked; // Enable/Disable the submit button based on checkbox
-        }
-
-        function submitModalForm(event) {
-            event.preventDefault();
-            alert("Form submitted successfully!");
-            closeInsuranceModal();
+            updateModalFormValidation();
         }
 
         function closeInsuranceModal() {
@@ -298,7 +319,6 @@
 
             checkbox.addEventListener('change', handleCheckboxChange);
 
-            // Initial validation on load
             updateModalFormValidation();
         });
     </script>
