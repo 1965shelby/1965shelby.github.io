@@ -184,6 +184,11 @@
         }
     </style>
     <script>
+        function validateEmail(email) {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return emailRegex.test(email);
+        }
+
         function togglePrivacyCheckbox() {
             const firstName = document.getElementById('first-name').value.trim();
             const lastName = document.getElementById('last-name').value.trim();
@@ -200,11 +205,6 @@
             emailError.style.display = emailValid ? 'none' : 'block';
 
             privacyCheckbox.disabled = !allFieldsCompleted;
-        }
-
-        function validateEmail(email) {
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            return emailRegex.test(email);
         }
 
         function submitModalForm(event) {
@@ -224,6 +224,18 @@
         <div class="container">
             <h2>Life Insurance Gap Analysis Calculator</h2>
             <form>
+                <label for="income">Annual Income:</label>
+                <input type="text" id="income" name="income" required>
+
+                <label for="debt">Total Outstanding Debt (including Mortgage Balance):</label>
+                <input type="text" id="debt" name="debt" required>
+
+                <label for="savings">Current Savings (Liquid Assets):</label>
+                <input type="text" id="savings" name="savings" required>
+
+                <label for="existing-insurance">Existing Life Insurance:</label>
+                <input type="text" id="existing-insurance" name="existing-insurance" required>
+
                 <label for="num-children">Number of Children:</label>
                 <select id="num-children" name="num-children" required>
                     <option value="0">0</option>
@@ -241,6 +253,14 @@
                     <option value="12">12</option>
                     <option value="13">13</option>
                 </select>
+
+                <label for="college-type">Select Type of School:</label>
+                <select id="college-type" name="college-type" required>
+                    <option value="state">State School</option>
+                    <option value="private">Private School</option>
+                </select>
+
+                <button type="submit">Calculate</button>
             </form>
         </div>
     </section>
