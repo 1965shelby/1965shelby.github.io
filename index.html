@@ -6,7 +6,6 @@
     <title>RiskLabIG</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
     <style>
-        /* General Styles */
         body {
             font-family: 'Poppins', sans-serif;
             margin: 0;
@@ -22,7 +21,6 @@
             margin: 0 auto;
         }
 
-        /* Calculator Section Styling */
         .calculator-section {
             padding: 60px 20px;
             background: #FFFFFF;
@@ -47,46 +45,6 @@
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
         }
 
-        .calculator-section label {
-            font-weight: 600;
-            margin-bottom: 5px;
-        }
-
-        .calculator-section input, 
-        .calculator-section select, 
-        .calculator-section button {
-            padding: 12px;
-            border: 1px solid #E0E0E0;
-            border-radius: 50px;
-            font-size: 1rem;
-        }
-
-        .calculator-section input, 
-        .calculator-section select {
-            background: #FFFFFF;
-            color: #3A3A3A;
-        }
-
-        .calculator-section button {
-            background: #000DFF;
-            color: white;
-            cursor: pointer;
-            transition: all 0.3s ease-in-out;
-        }
-
-        .calculator-section button:hover {
-            background: #6B73FF;
-            transform: translateY(-5px);
-            box-shadow: 0 5px 15px rgba(107, 115, 255, 0.5);
-        }
-
-        .calculator-section button:disabled {
-            background: #CCCCCC;
-            cursor: not-allowed;
-            box-shadow: none;
-        }
-
-        /* Modal Styling */
         .modal {
             display: none;
             position: fixed;
@@ -108,28 +66,20 @@
             max-width: 600px;
             width: 90%;
             text-align: center;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
         }
 
-        .modal-content h3 {
-            margin-bottom: 20px;
-            color: #000DFF;
-        }
-
-        .modal-content p {
-            font-size: 1rem;
-            color: #3A3A3A;
-            margin-bottom: 20px;
+        .error-note {
+            color: red;
+            font-size: 0.9rem;
+            margin-top: -10px;
+            margin-bottom: 10px;
+            display: none;
         }
 
         .modal-form {
             display: grid;
             gap: 15px;
             text-align: left;
-        }
-
-        .modal-form label {
-            font-weight: 600;
         }
 
         .modal-form input,
@@ -174,14 +124,6 @@
             background: #CCCCCC;
             cursor: not-allowed;
         }
-
-        .error-note {
-            color: red;
-            font-size: 0.9rem;
-            margin-top: -10px;
-            margin-bottom: 10px;
-            display: none;
-        }
     </style>
     <script>
         function validateEmail(email) {
@@ -199,38 +141,30 @@
             let allFieldsFilled = true;
             let emailValid = validateEmail(emailField.value);
 
-            // Validate fields
+            // Validate all fields
             fields.forEach((field) => {
                 if (!field.value.trim()) {
                     allFieldsFilled = false;
                 }
             });
 
-            // Display email error if invalid
+            // Handle email validation
             if (!emailValid && emailField.value.trim()) {
                 emailError.style.display = 'block';
-                allFieldsFilled = false; // Mark as incomplete if email invalid
+                allFieldsFilled = false;
             } else {
                 emailError.style.display = 'none';
             }
 
-            // Enable checkbox only if all fields are filled and email is valid
+            // Enable or disable checkbox based on validation
             checkbox.disabled = !(allFieldsFilled && emailValid);
-
-            // Enable submit button only if checkbox is checked
             submitButton.disabled = !checkbox.checked;
         }
 
         function handleCheckboxChange() {
             const checkbox = document.getElementById('privacy');
             const submitButton = document.getElementById('modal-submit-button');
-            submitButton.disabled = !checkbox.checked; // Enable/Disable submit button
-        }
-
-        function submitModalForm(event) {
-            event.preventDefault();
-            alert("Form submitted successfully!");
-            closeInsuranceModal();
+            submitButton.disabled = !checkbox.checked;
         }
 
         function closeInsuranceModal() {
@@ -239,32 +173,11 @@
 
         function submitCalculator(event) {
             event.preventDefault();
-
-            const income = parseFloat(document.getElementById('income').value.replace(/[^0-9.]/g, '')) || 0;
-            const debt = parseFloat(document.getElementById('debt').value.replace(/[^0-9.]/g, '')) || 0;
-            const savings = parseFloat(document.getElementById('savings').value.replace(/[^0-9.]/g, '')) || 0;
-            const existingInsurance = parseFloat(document.getElementById('existing-insurance').value.replace(/[^0-9.]/g, '')) || 0;
-            const numChildren = parseInt(document.getElementById('num-children').value) || 0;
-            const collegeType = document.getElementById('college-type').value;
-
-            const collegeCost = numChildren > 0 && collegeType === 'state' ? 144000 : 280000;
-            const totalCollegeCost = numChildren * collegeCost;
-
-            const totalRequiredForIncome = income / 0.05;
-            const totalAmountNeeded = totalRequiredForIncome + debt + totalCollegeCost - savings;
-            const gap = totalAmountNeeded - existingInsurance;
-
             const modal = document.getElementById('insurance-modal');
             const modalContent = document.getElementById('insurance-modal-content');
             modalContent.innerHTML = `
                 <h3>Analysis Results</h3>
-                <p>Amount Needed to Replace Annual Income: $${totalRequiredForIncome.toLocaleString()}</p>
-                <p>Total Outstanding Debt: $${debt.toLocaleString()}</p>
-                <p>Current Savings: $${savings.toLocaleString()}</p>
-                <p>Existing Life Insurance: $${existingInsurance.toLocaleString()}</p>
-                <p>College Costs for ${numChildren} Children: $${totalCollegeCost.toLocaleString()}</p>
-                <p>Life Insurance Gap: $${gap.toLocaleString()}</p>
-                <form class="modal-form" onsubmit="submitModalForm(event)">
+                <form class="modal-form">
                     <label for="first-name">First Name:</label>
                     <input type="text" id="first-name" name="first-name" required>
 
@@ -277,6 +190,7 @@
 
                     <label for="insurance-type">Type of Insurance:</label>
                     <select id="insurance-type" name="insurance-type" required>
+                        <option value="">Select</option>
                         <option value="term">Term Insurance</option>
                         <option value="whole">Whole Life Insurance</option>
                         <option value="universal">Universal Life Insurance</option>
@@ -287,7 +201,7 @@
                     <input type="text" id="coverage-amount" name="coverage-amount" required>
 
                     <div class="privacy-check">
-                        <input type="checkbox" id="privacy" name="privacy" disabled>
+                        <input type="checkbox" id="privacy" disabled>
                         <label for="privacy">I agree to the <a href="#" target="_blank">privacy policy</a>.</label>
                     </div>
 
@@ -299,20 +213,17 @@
             `;
             modal.style.display = 'flex';
 
-            updateModalFormValidation();
-        }
-
-        window.addEventListener('DOMContentLoaded', () => {
             const modalFields = document.querySelectorAll('.modal-form input[required], .modal-form select[required]');
-            const checkbox = document.getElementById('privacy');
-
             modalFields.forEach((field) => {
                 field.addEventListener('input', updateModalFormValidation);
             });
 
-            checkbox.addEventListener('change', handleCheckboxChange);
-
+            document.getElementById('privacy').addEventListener('change', handleCheckboxChange);
             updateModalFormValidation();
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            document.querySelector('form').addEventListener('submit', submitCalculator);
         });
     </script>
 </head>
@@ -320,41 +231,20 @@
     <section id="calculator" class="calculator-section">
         <div class="container">
             <h2>Life Insurance Gap Analysis Calculator</h2>
-            <form onsubmit="submitCalculator(event)">
+            <form>
                 <label for="income">Annual Income:</label>
                 <input type="text" id="income" name="income" required>
 
-                <label for="debt">Total Outstanding Debt (including Mortgage Balance):</label>
+                <label for="debt">Total Outstanding Debt:</label>
                 <input type="text" id="debt" name="debt" required>
 
-                <label for="savings">Current Savings (Liquid Assets):</label>
+                <label for="savings">Current Savings:</label>
                 <input type="text" id="savings" name="savings" required>
-
-                <label for="existing-insurance">Existing Life Insurance:</label>
-                <input type="text" id="existing-insurance" name="existing-insurance" required>
 
                 <label for="num-children">Number of Children:</label>
                 <select id="num-children" name="num-children" required>
                     <option value="0">0</option>
                     <option value="1">1</option>
-                    <option value="2">2</option>
-                    <option value="3">3</option>
-                    <option value="4">4</option>
-                    <option value="5">5</option>
-                    <option value="6">6</option>
-                    <option value="7">7</option>
-                    <option value="8">8</option>
-                    <option value="9">9</option>
-                    <option value="10">10</option>
-                    <option value="11">11</option>
-                    <option value="12">12</option>
-                    <option value="13">13</option>
-                </select>
-
-                <label for="college-type">Select Type of School:</label>
-                <select id="college-type" name="college-type" required>
-                    <option value="state">State School</option>
-                    <option value="private">Private School</option>
                 </select>
 
                 <button type="submit">Calculate</button>
@@ -362,9 +252,9 @@
         </div>
     </section>
 
-    <!-- Modal -->
     <div id="insurance-modal" class="modal">
-        <div class="modal-content" id="insurance-modal-content"></div>
+        <div id="insurance-modal-content" class="modal-content"></div>
     </div>
 </body>
 </html>
+
