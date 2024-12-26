@@ -242,17 +242,40 @@
                     <input type="text" id="coverage-amount" name="coverage-amount" required>
 
                     <div class="privacy-check">
-                        <input type="checkbox" id="privacy" name="privacy" required>
+                        <input type="checkbox" id="privacy" name="privacy" disabled>
                         <label for="privacy">I agree to the <a href="#" target="_blank">privacy policy</a>.</label>
                     </div>
 
                     <div class="modal-buttons">
-                        <button id="modal-submit-button" type="submit">Submit</button>
+                        <button id="modal-submit-button" type="submit" disabled>Submit</button>
                         <button type="button" onclick="closeInsuranceModal()">Close</button>
                     </div>
                 </form>
             `;
             modal.style.display = 'flex';
+        }
+
+        function updateModalFormValidation() {
+            const fields = document.querySelectorAll('.modal-form input[required], .modal-form select[required]');
+            const checkbox = document.getElementById('privacy');
+            const submitButton = document.getElementById('modal-submit-button');
+
+            let allFieldsFilled = true;
+
+            fields.forEach((field) => {
+                if (!field.value.trim()) {
+                    allFieldsFilled = false;
+                }
+            });
+
+            checkbox.disabled = !allFieldsFilled; // Disable the checkbox if fields are incomplete
+            submitButton.disabled = !allFieldsFilled || !checkbox.checked; // Disable the submit button
+        }
+
+        function handleCheckboxChange() {
+            const checkbox = document.getElementById('privacy');
+            const submitButton = document.getElementById('modal-submit-button');
+            submitButton.disabled = !checkbox.checked; // Enable/Disable the submit button based on checkbox
         }
 
         function submitModalForm(event) {
@@ -266,12 +289,17 @@
         }
 
         window.addEventListener('DOMContentLoaded', () => {
-            const modal = document.getElementById('insurance-modal');
-            modal.addEventListener('click', (event) => {
-                if (event.target === modal) {
-                    closeInsuranceModal();
-                }
+            const modalFields = document.querySelectorAll('.modal-form input[required], .modal-form select[required]');
+            const checkbox = document.getElementById('privacy');
+
+            modalFields.forEach((field) => {
+                field.addEventListener('input', updateModalFormValidation);
             });
+
+            checkbox.addEventListener('change', handleCheckboxChange);
+
+            // Initial validation on load
+            updateModalFormValidation();
         });
     </script>
 </head>
