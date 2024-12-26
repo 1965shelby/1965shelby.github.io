@@ -215,10 +215,31 @@
 
         function submitCalculator(event) {
             event.preventDefault();
+
+            const income = parseFloat(document.getElementById('income').value.replace(/[^0-9.]/g, '')) || 0;
+            const debt = parseFloat(document.getElementById('debt').value.replace(/[^0-9.]/g, '')) || 0;
+            const savings = parseFloat(document.getElementById('savings').value.replace(/[^0-9.]/g, '')) || 0;
+            const existingInsurance = parseFloat(document.getElementById('existing-insurance').value.replace(/[^0-9.]/g, '')) || 0;
+            const numChildren = parseInt(document.getElementById('num-children').value) || 0;
+            const collegeType = document.getElementById('college-type').value;
+
+            const collegeCost = numChildren > 0 && collegeType === 'state' ? 144000 : 280000;
+            const totalCollegeCost = numChildren * collegeCost;
+
+            const totalRequiredForIncome = income / 0.05;
+            const totalAmountNeeded = totalRequiredForIncome + debt + totalCollegeCost - savings;
+            const gap = totalAmountNeeded - existingInsurance;
+
             const modal = document.getElementById('insurance-modal');
             const modalContent = document.getElementById('insurance-modal-content');
             modalContent.innerHTML = `
                 <h3>Analysis Results</h3>
+                <p>Amount Needed to Replace Annual Income: $${totalRequiredForIncome.toLocaleString()}</p>
+                <p>Total Outstanding Debt: $${debt.toLocaleString()}</p>
+                <p>Current Savings: $${savings.toLocaleString()}</p>
+                <p>Existing Life Insurance: $${existingInsurance.toLocaleString()}</p>
+                <p>College Costs for ${numChildren} Children: $${totalCollegeCost.toLocaleString()}</p>
+                <p>Life Insurance Gap: $${gap.toLocaleString()}</p>
                 <form class="modal-form">
                     <label for="first-name">First Name:</label>
                     <input type="text" id="first-name" name="first-name" required>
@@ -278,11 +299,14 @@
                 <label for="income">Annual Income:</label>
                 <input type="text" id="income" name="income" required>
 
-                <label for="debt">Total Outstanding Debt:</label>
+                <label for="debt">Total Outstanding Debt (including Mortgage Balance):</label>
                 <input type="text" id="debt" name="debt" required>
 
-                <label for="savings">Current Savings:</label>
+                <label for="savings">Current Savings (Liquid Assets):</label>
                 <input type="text" id="savings" name="savings" required>
+
+                <label for="existing-insurance">Existing Life Insurance:</label>
+                <input type="text" id="existing-insurance" name="existing-insurance" required>
 
                 <label for="num-children">Number of Children:</label>
                 <select id="num-children" name="num-children" required>
@@ -307,4 +331,5 @@
     </div>
 </body>
 </html>
+
 
