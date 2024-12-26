@@ -192,21 +192,22 @@
             return parseFloat(value.replace(/[^0-9.-]+/g, '')) || 0;
         }
 
-        function toggleSubmitButton() {
+        function togglePrivacyCheckbox() {
+            const firstName = document.getElementById('first-name').value.trim();
+            const lastName = document.getElementById('last-name').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const insuranceType = document.getElementById('insurance-type').value;
+            const coverageAmount = document.getElementById('coverage-amount').value.trim();
             const privacyCheckbox = document.getElementById('privacy');
-            const emailInput = document.getElementById('email');
-            const firstNameInput = document.getElementById('first-name');
-            const lastNameInput = document.getElementById('last-name');
-            const submitButton = document.getElementById('modal-submit-button');
 
-            const emailValid = validateEmail(emailInput.value);
-            const firstNameValid = firstNameInput.value.trim() !== '';
-            const lastNameValid = lastNameInput.value.trim() !== '';
+            const emailValid = validateEmail(email);
+            const allFieldsCompleted =
+                firstName !== '' && lastName !== '' && emailValid && insuranceType !== '' && coverageAmount !== '';
 
             const emailError = document.getElementById('email-error');
             emailError.style.display = emailValid ? 'none' : 'block';
 
-            submitButton.disabled = !(privacyCheckbox.checked && emailValid && firstNameValid && lastNameValid);
+            privacyCheckbox.disabled = !allFieldsCompleted;
         }
 
         function validateEmail(email) {
@@ -223,43 +224,24 @@
         function submitCalculator(event) {
             event.preventDefault();
 
-            const income = parseCurrency(document.getElementById('income').value);
-            const debt = parseCurrency(document.getElementById('debt').value);
-            const savings = parseCurrency(document.getElementById('savings').value);
-            const existingInsurance = parseCurrency(document.getElementById('existing-insurance').value);
-            const numChildren = parseInt(document.getElementById('num-children').value);
-            const collegeType = document.getElementById('college-type').value;
-
-            const collegeCost = numChildren > 0 && collegeType === 'state' ? 144000 : 280000;
-            const totalCollegeCost = numChildren > 0 ? numChildren * collegeCost : 0;
-
-            const totalRequiredForIncome = income / 0.05; // Lifetime income at 5% withdrawal rate
-            const totalAmountNeeded = totalRequiredForIncome + debt + totalCollegeCost - savings;
-            const gap = totalAmountNeeded - existingInsurance;
-
             const modal = document.getElementById('insurance-modal');
             const modalContent = document.getElementById('insurance-modal-content');
             modalContent.innerHTML = `
                 <h3>Analysis Results</h3>
-                <p>Amount Needed to Replace Annual Income: ${formatCurrency(totalRequiredForIncome)}</p>
-                <p>Total Outstanding Debt: ${formatCurrency(debt)}</p>
-                <p>Current Savings: ${formatCurrency(savings)}</p>
-                <p>Existing Life Insurance: ${formatCurrency(existingInsurance)}</p>
-                <p>College Costs for ${numChildren} Children: ${formatCurrency(totalCollegeCost)}</p>
-                <p>Life Insurance Gap: ${gap <= 0 ? 'No Gap' : formatCurrency(gap)}</p>
                 <form class="modal-form" onsubmit="submitModalForm(event)">
                     <label for="first-name">First Name:</label>
-                    <input type="text" id="first-name" name="first-name" required>
+                    <input type="text" id="first-name" name="first-name" required oninput="togglePrivacyCheckbox()">
 
                     <label for="last-name">Last Name:</label>
-                    <input type="text" id="last-name" name="last-name" required>
+                    <input type="text" id="last-name" name="last-name" required oninput="togglePrivacyCheckbox()">
 
                     <label for="email">Email:</label>
-                    <input type="email" id="email" name="email" required>
+                    <input type="email" id="email" name="email" required oninput="togglePrivacyCheckbox()">
                     <span id="email-error" class="error-note">Please enter a valid email address.</span>
 
                     <label for="insurance-type">Type of Insurance:</label>
-                    <select id="insurance-type" name="insurance-type" required>
+                    <select id="insurance-type" name="insurance-type" required onchange="togglePrivacyCheckbox()">
+                        <option value="">Select...</option>
                         <option value="term">Term Insurance</option>
                         <option value="whole">Whole Life Insurance</option>
                         <option value="universal">Universal Life Insurance</option>
@@ -267,15 +249,15 @@
                     </select>
 
                     <label for="coverage-amount">Amount of Coverage:</label>
-                    <input type="text" id="coverage-amount" name="coverage-amount" required>
+                    <input type="text" id="coverage-amount" name="coverage-amount" required oninput="togglePrivacyCheckbox()">
 
                     <div class="privacy-check">
-                        <input type="checkbox" id="privacy" name="privacy" onclick="toggleSubmitButton()" required>
+                        <input type="checkbox" id="privacy" name="privacy" required disabled>
                         <label for="privacy">I agree to the <a href="#" target="_blank">privacy policy</a>.</label>
                     </div>
 
                     <div class="modal-buttons">
-                        <button id="modal-submit-button" type="submit" disabled>Submit</button>
+                        <button id="modal-submit-button" type="submit">Submit</button>
                         <button type="button" onclick="closeInsuranceModal()">Close</button>
                     </div>
                 </form>
@@ -286,18 +268,6 @@
         function closeInsuranceModal() {
             document.getElementById('insurance-modal').style.display = 'none';
         }
-
-        window.addEventListener('DOMContentLoaded', () => {
-            const emailInput = document.getElementById('email');
-            const firstNameInput = document.getElementById('first-name');
-            const lastNameInput = document.getElementById('last-name');
-            const privacyCheckbox = document.getElementById('privacy');
-
-            emailInput.addEventListener('input', toggleSubmitButton);
-            firstNameInput.addEventListener('input', toggleSubmitButton);
-            lastNameInput.addEventListener('input', toggleSubmitButton);
-            privacyCheckbox.addEventListener('change', toggleSubmitButton);
-        });
     </script>
 </head>
 <body>
@@ -320,12 +290,7 @@
 
                 <label for="num-children">Number of Children:</label>
                 <select id="num-children" name="num-children" required>
-                    <option value="0">0</option>
-                    <option value="1">1</option>
-                    <option value="2">2</option>
-                    <option value="3">3</option>
-                    <option value="4">4</option>
-                    <option value="5">5</option>
+                    ${Array.from({ length: 14 }, (_, i) => `<option value="${i}">${i}</option>`).join('')}
                 </select>
 
                 <label for="college-type">Select Type of School:</label>
@@ -345,4 +310,5 @@
     </div>
 </body>
 </html>
+
 
