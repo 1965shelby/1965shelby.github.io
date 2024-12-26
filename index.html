@@ -184,14 +184,6 @@
         }
     </style>
     <script>
-        function formatCurrency(value) {
-            return `$${value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-        }
-
-        function parseCurrency(value) {
-            return parseFloat(value.replace(/[^0-9.-]+/g, '')) || 0;
-        }
-
         function validateEmail(email) {
             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             return emailRegex.test(email);
@@ -217,6 +209,7 @@
             // Display email error if invalid
             if (!emailValid && emailField.value.trim()) {
                 emailError.style.display = 'block';
+                allFieldsFilled = false; // Mark as incomplete if email invalid
             } else {
                 emailError.style.display = 'none';
             }
@@ -225,13 +218,13 @@
             checkbox.disabled = !(allFieldsFilled && emailValid);
 
             // Enable submit button only if checkbox is checked
-            submitButton.disabled = !(allFieldsFilled && emailValid && checkbox.checked);
+            submitButton.disabled = !checkbox.checked;
         }
 
         function handleCheckboxChange() {
             const checkbox = document.getElementById('privacy');
             const submitButton = document.getElementById('modal-submit-button');
-            submitButton.disabled = !checkbox.checked; // Enable/Disable the submit button based on checkbox
+            submitButton.disabled = !checkbox.checked; // Enable/Disable submit button
         }
 
         function submitModalForm(event) {
@@ -240,18 +233,22 @@
             closeInsuranceModal();
         }
 
+        function closeInsuranceModal() {
+            document.getElementById('insurance-modal').style.display = 'none';
+        }
+
         function submitCalculator(event) {
             event.preventDefault();
 
-            const income = parseCurrency(document.getElementById('income').value);
-            const debt = parseCurrency(document.getElementById('debt').value);
-            const savings = parseCurrency(document.getElementById('savings').value);
-            const existingInsurance = parseCurrency(document.getElementById('existing-insurance').value);
-            const numChildren = parseInt(document.getElementById('num-children').value);
+            const income = parseFloat(document.getElementById('income').value.replace(/[^0-9.]/g, '')) || 0;
+            const debt = parseFloat(document.getElementById('debt').value.replace(/[^0-9.]/g, '')) || 0;
+            const savings = parseFloat(document.getElementById('savings').value.replace(/[^0-9.]/g, '')) || 0;
+            const existingInsurance = parseFloat(document.getElementById('existing-insurance').value.replace(/[^0-9.]/g, '')) || 0;
+            const numChildren = parseInt(document.getElementById('num-children').value) || 0;
             const collegeType = document.getElementById('college-type').value;
 
             const collegeCost = numChildren > 0 && collegeType === 'state' ? 144000 : 280000;
-            const totalCollegeCost = numChildren > 0 ? numChildren * collegeCost : 0;
+            const totalCollegeCost = numChildren * collegeCost;
 
             const totalRequiredForIncome = income / 0.05;
             const totalAmountNeeded = totalRequiredForIncome + debt + totalCollegeCost - savings;
@@ -261,12 +258,12 @@
             const modalContent = document.getElementById('insurance-modal-content');
             modalContent.innerHTML = `
                 <h3>Analysis Results</h3>
-                <p>Amount Needed to Replace Annual Income: ${formatCurrency(totalRequiredForIncome)}</p>
-                <p>Total Outstanding Debt: ${formatCurrency(debt)}</p>
-                <p>Current Savings: ${formatCurrency(savings)}</p>
-                <p>Existing Life Insurance: ${formatCurrency(existingInsurance)}</p>
-                <p>College Costs for ${numChildren} Children: ${formatCurrency(totalCollegeCost)}</p>
-                <p>Life Insurance Gap: ${gap <= 0 ? 'No Gap' : formatCurrency(gap)}</p>
+                <p>Amount Needed to Replace Annual Income: $${totalRequiredForIncome.toLocaleString()}</p>
+                <p>Total Outstanding Debt: $${debt.toLocaleString()}</p>
+                <p>Current Savings: $${savings.toLocaleString()}</p>
+                <p>Existing Life Insurance: $${existingInsurance.toLocaleString()}</p>
+                <p>College Costs for ${numChildren} Children: $${totalCollegeCost.toLocaleString()}</p>
+                <p>Life Insurance Gap: $${gap.toLocaleString()}</p>
                 <form class="modal-form" onsubmit="submitModalForm(event)">
                     <label for="first-name">First Name:</label>
                     <input type="text" id="first-name" name="first-name" required>
@@ -305,10 +302,6 @@
             updateModalFormValidation();
         }
 
-        function closeInsuranceModal() {
-            document.getElementById('insurance-modal').style.display = 'none';
-        }
-
         window.addEventListener('DOMContentLoaded', () => {
             const modalFields = document.querySelectorAll('.modal-form input[required], .modal-form select[required]');
             const checkbox = document.getElementById('privacy');
@@ -324,7 +317,6 @@
     </script>
 </head>
 <body>
-    <!-- Calculator Section -->
     <section id="calculator" class="calculator-section">
         <div class="container">
             <h2>Life Insurance Gap Analysis Calculator</h2>
