@@ -174,6 +174,14 @@
             background: #CCCCCC;
             cursor: not-allowed;
         }
+
+        .error-note {
+            color: red;
+            font-size: 0.9rem;
+            margin-top: -10px;
+            margin-bottom: 10px;
+            display: none;
+        }
     </style>
     <script>
         function formatCurrency(value) {
@@ -187,12 +195,18 @@
         function toggleSubmitButton() {
             const privacyCheckbox = document.getElementById('privacy');
             const emailInput = document.getElementById('email');
-            const nameInput = document.getElementById('name');
+            const firstNameInput = document.getElementById('first-name');
+            const lastNameInput = document.getElementById('last-name');
             const submitButton = document.getElementById('modal-submit-button');
 
             const emailValid = validateEmail(emailInput.value);
-            const nameValid = validateNameSplit(nameInput.value);
-            submitButton.disabled = !(privacyCheckbox.checked && emailValid && nameValid);
+            const firstNameValid = firstNameInput.value.trim() !== '';
+            const lastNameValid = lastNameInput.value.trim() !== '';
+
+            const emailError = document.getElementById('email-error');
+            emailError.style.display = emailValid ? 'none' : 'block';
+
+            submitButton.disabled = !(privacyCheckbox.checked && emailValid && firstNameValid && lastNameValid);
         }
 
         function validateEmail(email) {
@@ -200,27 +214,8 @@
             return emailRegex.test(email);
         }
 
-        function validateNameSplit(name) {
-            const nameParts = name.trim().split(' ');
-            return nameParts.length >= 2 && nameParts[0] !== '' && nameParts[1] !== '';
-        }
-
         function submitModalForm(event) {
             event.preventDefault();
-            
-            const nameInput = document.getElementById('name');
-            const emailInput = document.getElementById('email');
-            
-            if (!validateNameSplit(nameInput.value)) {
-                alert("Please enter both your first and last name.");
-                return;
-            }
-
-            if (!validateEmail(emailInput.value)) {
-                alert("Please enter a valid email address.");
-                return;
-            }
-
             alert("Form submitted successfully!");
             closeInsuranceModal();
         }
@@ -253,12 +248,16 @@
                 <p>College Costs for ${numChildren} Children: ${formatCurrency(totalCollegeCost)}</p>
                 <p>Life Insurance Gap: ${gap <= 0 ? 'No Gap' : formatCurrency(gap)}</p>
                 <form class="modal-form" onsubmit="submitModalForm(event)">
-                    <label for="name">Name (First and Last):</label>
-                    <input type="text" id="name" name="name" required>
-                    
+                    <label for="first-name">First Name:</label>
+                    <input type="text" id="first-name" name="first-name" required>
+
+                    <label for="last-name">Last Name:</label>
+                    <input type="text" id="last-name" name="last-name" required>
+
                     <label for="email">Email:</label>
                     <input type="email" id="email" name="email" required>
-                    
+                    <span id="email-error" class="error-note">Please enter a valid email address.</span>
+
                     <label for="insurance-type">Type of Insurance:</label>
                     <select id="insurance-type" name="insurance-type" required>
                         <option value="term">Term Insurance</option>
@@ -266,15 +265,15 @@
                         <option value="universal">Universal Life Insurance</option>
                         <option value="final-expense">Final Expense Insurance</option>
                     </select>
-                    
+
                     <label for="coverage-amount">Amount of Coverage:</label>
                     <input type="text" id="coverage-amount" name="coverage-amount" required>
-                    
+
                     <div class="privacy-check">
                         <input type="checkbox" id="privacy" name="privacy" onclick="toggleSubmitButton()" required>
                         <label for="privacy">I agree to the <a href="#" target="_blank">privacy policy</a>.</label>
                     </div>
-                    
+
                     <div class="modal-buttons">
                         <button id="modal-submit-button" type="submit" disabled>Submit</button>
                         <button type="button" onclick="closeInsuranceModal()">Close</button>
@@ -289,19 +288,14 @@
         }
 
         window.addEventListener('DOMContentLoaded', () => {
-            const modal = document.getElementById('insurance-modal');
-            modal.addEventListener('click', (event) => {
-                if (event.target === modal) {
-                    closeInsuranceModal();
-                }
-            });
-
             const emailInput = document.getElementById('email');
-            const nameInput = document.getElementById('name');
+            const firstNameInput = document.getElementById('first-name');
+            const lastNameInput = document.getElementById('last-name');
             const privacyCheckbox = document.getElementById('privacy');
 
             emailInput.addEventListener('input', toggleSubmitButton);
-            nameInput.addEventListener('input', toggleSubmitButton);
+            firstNameInput.addEventListener('input', toggleSubmitButton);
+            lastNameInput.addEventListener('input', toggleSubmitButton);
             privacyCheckbox.addEventListener('change', toggleSubmitButton);
         });
     </script>
@@ -332,14 +326,6 @@
                     <option value="3">3</option>
                     <option value="4">4</option>
                     <option value="5">5</option>
-                    <option value="6">6</option>
-                    <option value="7">7</option>
-                    <option value="8">8</option>
-                    <option value="9">9</option>
-                    <option value="10">10</option>
-                    <option value="11">11</option>
-                    <option value="12">12</option>
-                    <option value="13">13</option>
                 </select>
 
                 <label for="college-type">Select Type of School:</label>
@@ -359,3 +345,4 @@
     </div>
 </body>
 </html>
+
