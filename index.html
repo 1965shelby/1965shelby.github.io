@@ -251,57 +251,8 @@
                         <option value="universal">Universal Life Insurance</option>
                         <option value="final-expense">Final Expense Insurance</option>
                     </select>
-
-                    <label for="coverage-amount">Amount of Coverage:</label>
-                    <input type="text" id="coverage-amount" name="coverage-amount" required placeholder="This is required information">
-
-                    <div class="privacy-check">
-                        <input type="checkbox" id="privacy" disabled>
-                        <label for="privacy">I agree to the <a href="#" target="_blank">privacy policy</a>.</label>
-                    </div>
-
-                    <div class="modal-buttons">
-                        <button id="modal-submit-button" type="submit" disabled>Submit</button>
-                        <button type="button" onclick="closeInsuranceModal()">Close</button>
-                    </div>
-                </form>
-            `;
-            modal.style.display = 'flex';
-
-            const modalFields = document.querySelectorAll('.modal-form input[required], .modal-form select[required]');
-            modalFields.forEach((field) => {
-                field.addEventListener('input', updateModalFormValidation);
-            });
-
-            document.getElementById('privacy').addEventListener('change', handleCheckboxChange);
-            updateModalFormValidation();
-        }
-
-        window.addEventListener('DOMContentLoaded', () => {
-            document.querySelector('form').addEventListener('submit', submitCalculator);
-        });
-    </script>
-</head>
-<body>
-    <!-- Calculator Section -->
-    <section id="calculator" class="calculator-section">
-        <div class="container">
-            <h2>Life Insurance Gap Analysis Calculator</h2>
-            <form onsubmit="submitCalculator(event)">
-                <label for="income">Annual Income:</label>
-                <input type="text" id="income" name="income" required>
-
-                <label for="debt">Total Outstanding Debt (including Mortgage Balance):</label>
-                <input type="text" id="debt" name="debt" required>
-
-                <label for="savings">Current Savings (Liquid Assets):</label>
-                <input type="text" id="savings" name="savings" required>
-
-                <label for="existing-insurance">Existing Life Insurance:</label>
-                <input type="text" id="existing-insurance" name="existing-insurance" required>
-
-                <label for="state">State</label>
-                <select id="state" name="state" required>
+                  <label for="state">State</label>
+                  <select id="state" name="state" required>
                     <option value="">Select your state</option>
                     <option value="AL">Alabama</option>
                     <option value="AK">Alaska</option>
@@ -354,7 +305,55 @@
                     <option value="WI">Wisconsin</option>
                     <option value="WY">Wyoming</option>
                 </select>
-             
+                    <label for="coverage-amount">Amount of Coverage:</label>
+                    <input type="text" id="coverage-amount" name="coverage-amount" required placeholder="This is required information">
+
+                    <div class="privacy-check">
+                        <input type="checkbox" id="privacy" disabled>
+                        <label for="privacy">I agree to the <a href="#" target="_blank">privacy policy</a>.</label>
+                    </div>
+
+                    <div class="modal-buttons">
+                        <button id="modal-submit-button" type="submit" disabled>Submit</button>
+                        <button type="button" onclick="closeInsuranceModal()">Close</button>
+                    </div>
+                </form>
+            `;
+            modal.style.display = 'flex';
+
+            const modalFields = document.querySelectorAll('.modal-form input[required], .modal-form select[required]');
+            modalFields.forEach((field) => {
+                field.addEventListener('input', updateModalFormValidation);
+            });
+
+            document.getElementById('privacy').addEventListener('change', handleCheckboxChange);
+            updateModalFormValidation();
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            document.querySelector('form').addEventListener('submit', submitCalculator);
+        });
+    </script>
+</head>
+<body>
+    <!-- Calculator Section -->
+    <section id="calculator" class="calculator-section">
+        <div class="container">
+            <h2>Life Insurance Gap Analysis Calculator</h2>
+            <form onsubmit="submitCalculator(event)">
+                <label for="income">Annual Income:</label>
+                <input type="text" id="income" name="income" required>
+
+                <label for="debt">Total Outstanding Debt (including Mortgage Balance):</label>
+                <input type="text" id="debt" name="debt" required>
+
+                <label for="savings">Current Savings (Liquid Assets):</label>
+                <input type="text" id="savings" name="savings" required>
+
+                <label for="existing-insurance">Existing Life Insurance:</label>
+                <input type="text" id="existing-insurance" name="existing-insurance" required>
+
+                           
                 <label for="num-children">Number of Children:</label>
                 <select id="num-children" name="num-children" required>
                     <option value="0">0</option>
