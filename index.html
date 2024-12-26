@@ -80,6 +80,12 @@
             box-shadow: 0 5px 15px rgba(107, 115, 255, 0.5);
         }
 
+        .calculator-section button:disabled {
+            background: #CCCCCC;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
         /* Modal Styling */
         .modal {
             display: none;
@@ -160,8 +166,13 @@
             transition: background 0.3s ease;
         }
 
-        .modal-buttons button:hover {
+        .modal-buttons button:hover:not(:disabled) {
             background: #6B73FF;
+        }
+
+        .modal-buttons button:disabled {
+            background: #CCCCCC;
+            cursor: not-allowed;
         }
     </style>
     <script>
@@ -171,6 +182,12 @@
 
         function parseCurrency(value) {
             return parseFloat(value.replace(/[^0-9.-]+/g, '')) || 0;
+        }
+
+        function toggleSubmitButton() {
+            const privacyCheckbox = document.getElementById('privacy');
+            const submitButton = document.getElementById('modal-submit-button');
+            submitButton.disabled = !privacyCheckbox.checked;
         }
 
         function submitCalculator(event) {
@@ -219,12 +236,12 @@
                     <input type="text" id="coverage-amount" name="coverage-amount" required>
                     
                     <div class="privacy-check">
-                        <input type="checkbox" id="privacy" name="privacy" required>
+                        <input type="checkbox" id="privacy" name="privacy" onclick="toggleSubmitButton()" required>
                         <label for="privacy">I agree to the <a href="#" target="_blank">privacy policy</a>.</label>
                     </div>
                     
                     <div class="modal-buttons">
-                        <button type="submit">Submit</button>
+                        <button id="modal-submit-button" type="submit" disabled>Submit</button>
                         <button type="button" onclick="closeInsuranceModal()">Close</button>
                     </div>
                 </form>
@@ -299,3 +316,4 @@
     </div>
 </body>
 </html>
+
