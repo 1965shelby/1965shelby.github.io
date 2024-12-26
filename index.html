@@ -184,14 +184,6 @@
         }
     </style>
     <script>
-        function formatCurrency(value) {
-            return `$${value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-        }
-
-        function parseCurrency(value) {
-            return parseFloat(value.replace(/[^0-9.-]+/g, '')) || 0;
-        }
-
         function togglePrivacyCheckbox() {
             const firstName = document.getElementById('first-name').value.trim();
             const lastName = document.getElementById('last-name').value.trim();
@@ -221,50 +213,6 @@
             closeInsuranceModal();
         }
 
-        function submitCalculator(event) {
-            event.preventDefault();
-
-            const modal = document.getElementById('insurance-modal');
-            const modalContent = document.getElementById('insurance-modal-content');
-            modalContent.innerHTML = `
-                <h3>Analysis Results</h3>
-                <form class="modal-form" onsubmit="submitModalForm(event)">
-                    <label for="first-name">First Name:</label>
-                    <input type="text" id="first-name" name="first-name" required oninput="togglePrivacyCheckbox()">
-
-                    <label for="last-name">Last Name:</label>
-                    <input type="text" id="last-name" name="last-name" required oninput="togglePrivacyCheckbox()">
-
-                    <label for="email">Email:</label>
-                    <input type="email" id="email" name="email" required oninput="togglePrivacyCheckbox()">
-                    <span id="email-error" class="error-note">Please enter a valid email address.</span>
-
-                    <label for="insurance-type">Type of Insurance:</label>
-                    <select id="insurance-type" name="insurance-type" required onchange="togglePrivacyCheckbox()">
-                        <option value="">Select...</option>
-                        <option value="term">Term Insurance</option>
-                        <option value="whole">Whole Life Insurance</option>
-                        <option value="universal">Universal Life Insurance</option>
-                        <option value="final-expense">Final Expense Insurance</option>
-                    </select>
-
-                    <label for="coverage-amount">Amount of Coverage:</label>
-                    <input type="text" id="coverage-amount" name="coverage-amount" required oninput="togglePrivacyCheckbox()">
-
-                    <div class="privacy-check">
-                        <input type="checkbox" id="privacy" name="privacy" required disabled>
-                        <label for="privacy">I agree to the <a href="#" target="_blank">privacy policy</a>.</label>
-                    </div>
-
-                    <div class="modal-buttons">
-                        <button id="modal-submit-button" type="submit">Submit</button>
-                        <button type="button" onclick="closeInsuranceModal()">Close</button>
-                    </div>
-                </form>
-            `;
-            modal.style.display = 'flex';
-        }
-
         function closeInsuranceModal() {
             document.getElementById('insurance-modal').style.display = 'none';
         }
@@ -275,40 +223,26 @@
     <section id="calculator" class="calculator-section">
         <div class="container">
             <h2>Life Insurance Gap Analysis Calculator</h2>
-            <form onsubmit="submitCalculator(event)">
-                <label for="income">Annual Income:</label>
-                <input type="text" id="income" name="income" required>
-
-                <label for="debt">Total Outstanding Debt (including Mortgage Balance):</label>
-                <input type="text" id="debt" name="debt" required>
-
-                <label for="savings">Current Savings (Liquid Assets):</label>
-                <input type="text" id="savings" name="savings" required>
-
-                <label for="existing-insurance">Existing Life Insurance:</label>
-                <input type="text" id="existing-insurance" name="existing-insurance" required>
-
+            <form>
                 <label for="num-children">Number of Children:</label>
                 <select id="num-children" name="num-children" required>
-                    ${Array.from({ length: 14 }, (_, i) => `<option value="${i}">${i}</option>`).join('')}
+                    <option value="0">0</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                    <option value="7">7</option>
+                    <option value="8">8</option>
+                    <option value="9">9</option>
+                    <option value="10">10</option>
+                    <option value="11">11</option>
+                    <option value="12">12</option>
+                    <option value="13">13</option>
                 </select>
-
-                <label for="college-type">Select Type of School:</label>
-                <select id="college-type" name="college-type" required>
-                    <option value="state">State School</option>
-                    <option value="private">Private School</option>
-                </select>
-
-                <button type="submit">Calculate</button>
             </form>
         </div>
     </section>
-
-    <!-- Modal -->
-    <div id="insurance-modal" class="modal">
-        <div class="modal-content" id="insurance-modal-content"></div>
-    </div>
 </body>
 </html>
-
-
