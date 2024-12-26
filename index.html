@@ -205,7 +205,7 @@
             const collegeCost = numChildren > 0 && collegeType === 'state' ? 144000 : 280000;
             const totalCollegeCost = numChildren > 0 ? numChildren * collegeCost : 0;
 
-            const totalRequiredForIncome = income / 0.05;
+            const totalRequiredForIncome = income / 0.05; // Lifetime income at 5% withdrawal rate
             const totalAmountNeeded = totalRequiredForIncome + debt + totalCollegeCost - savings;
             const gap = totalAmountNeeded - existingInsurance;
 
