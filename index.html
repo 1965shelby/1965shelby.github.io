@@ -11,19 +11,19 @@
             font-family: 'Poppins', sans-serif;
             margin: 0;
             padding: 0;
-            line-height: 1.6;
+            line-height: 1;
             color: #3A3A3A;
             background: linear-gradient(120deg, #F3ECEA, #FFFFFF);
         }
 
         .container {
             width: 90%;
-            max-width: 1200px;
+            max-width: 1500px;
             margin: 0 auto;
         }
 
         .calculator-section {
-            padding: 60px 20px;
+            padding: 30px 10px;
             background: #FFFFFF;
         }
 
@@ -37,11 +37,11 @@
 
         .calculator-section form {
             display: grid;
-            gap: 20px;
+            gap: 5px;
             max-width: 600px;
             margin: 0 auto;
             background: #F9FAFB;
-            padding: 30px;
+            padding: 15px;
             border-radius: 15px;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
         }
@@ -164,6 +164,34 @@
             return emailRegex.test(email);
         }
 
+        function updateCoverageOptions() {
+            const insuranceType = document.getElementById('insurance-type').value;
+            const coverageAmount = document.getElementById('coverage-amount');
+
+            coverageAmount.innerHTML = ''; // Clear previous options
+
+            if (insuranceType === 'term' || insuranceType === 'whole' || insuranceType === 'universal') {
+                coverageAmount.innerHTML = `
+                    <option value="" disabled selected>Select Coverage Amount</option>
+                    <option value="100000">$100,000</option>
+                    <option value="250000">$250,000</option>
+                    <option value="500000">$500,000</option>
+		    <option value="750000">$750,000</option>
+                    <option value="1000000">$1,000,000</option>
+                    <option value="1500000">$1,500,000</option>
+                `;
+            } else if (insuranceType === 'final-expense') {
+                coverageAmount.innerHTML = `
+                    <option value="" disabled selected>Select Coverage Amount</option>
+                    <option value="5000">$5,000</option>
+                    <option value="10000">$10,000</option>
+                    <option value="25000">$25,000</option>
+                `;
+            } else {
+                coverageAmount.innerHTML = '<option value="" disabled selected>No options available</option>';
+            }
+        }
+
         function updateModalFormValidation() {
             const fields = document.querySelectorAll('.modal-form input[required], .modal-form select[required]');
             const emailField = document.getElementById('email');
@@ -253,12 +281,13 @@
                     </select>
 
                     <label for="coverage-amount">Amount of Coverage:</label>
-                    <input type="text" id="coverage-amount" name="coverage-amount" required placeholder="This is required information">
+                    <select id="coverage-amount" name="coverage-amount" required>
+                        <option value="" disabled selected>Select Coverage Amount</option>
+                    </select>
 
                     <div class="privacy-check">
                         <input type="checkbox" id="privacy" disabled>
-                        <label for="privacy">I agree to the <a href="#" target="_blank">privacy policy</a>.</label>
-                    </div>
+                        <label for="privacy">I agree to the <a href="privacypolicy.html" target="_blank">privacy policy</a>.</label> </div>
 
                     <div class="modal-buttons">
                         <button id="modal-submit-button" type="submit" disabled>Submit</button>
@@ -268,13 +297,11 @@
             `;
             modal.style.display = 'flex';
 
-            const modalFields = document.querySelectorAll('.modal-form input[required], .modal-form select[required]');
-            modalFields.forEach((field) => {
+            document.getElementById('insurance-type').addEventListener('change', updateCoverageOptions);
+            document.querySelectorAll('.modal-form input, .modal-form select').forEach((field) => {
                 field.addEventListener('input', updateModalFormValidation);
             });
-
             document.getElementById('privacy').addEventListener('change', handleCheckboxChange);
-            updateModalFormValidation();
         }
 
         window.addEventListener('DOMContentLoaded', () => {
@@ -302,9 +329,21 @@
 
                 <label for="num-children">Number of Children:</label>
                 <select id="num-children" name="num-children" required>
-                    <option value="0">0</option>
-                    <option value="1">1</option>
-                </select>
+                  	 <option value="0">0</option>
+   			 <option value="1">1</option>
+   			 <option value="2">2</option>
+   			 <option value="3">3</option>
+   			 <option value="4">4</option>
+   			 <option value="5">5</option>
+   			 <option value="6">6</option>
+  			 <option value="7">7</option>
+    		 <option value="8">8</option>
+   			 <option value="9">9</option>
+  			 <option value="10">10</option>
+   			 <option value="11">11</option>
+  			 <option value="12">12</option>
+  			 <option value="13">13</option>
+		</select>
 
                 <label for="college-type">Select Type of School:</label>
                 <select id="college-type" name="college-type" required>
