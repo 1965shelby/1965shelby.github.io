@@ -515,61 +515,63 @@
     /* =====================================
        HANDLE CONTACT FORM SUBMISSION
        ===================================== */
-    function handleContactFormSubmission(event) {
-      event.preventDefault();
 
-      if (!validateContactForm()) {
-        alert("Please fill out all required fields correctly.");
-        return;
-      }
+function handleContactFormSubmission(event) {
+  event.preventDefault();
 
-      // Collect form data
-      const formData = {
-        firstName: document.getElementById("first-name").value.trim(),
-        lastName: document.getElementById("last-name").value.trim(),
-        email: document.getElementById("email").value.trim(),
-        phone: document.getElementById("phone").value.trim(),
-        state: document.getElementById("state").value,
-        age: document.getElementById("age").value,
-        insuranceType: document.getElementById("insuranceType").value,
-        sharedAmount: document.getElementById("shared-amount").value || "",
-        finalExpenseAmount: document.getElementById("finalExpenseAmount").value || ""
-      };
+  if (!validateContactForm()) {
+    alert("Please fill out all required fields correctly.");
+    return;
+  }
 
-      // Get reCAPTCHA token
-      grecaptcha.ready(function() {
-        grecaptcha.execute('6Lf_qqcqAAAAAFF_woYz7bR80hzzUjmgFzIHOEsZ', {action: 'submit'}).then(function(token) {
-          formData.recaptchaToken = token;
+  // Collect form data
+  const formData = {
+    firstName: document.getElementById("first-name").value.trim(),
+    lastName: document.getElementById("last-name").value.trim(),
+    email: document.getElementById("email").value.trim(),
+    phone: document.getElementById("phone").value.trim(),
+    state: document.getElementById("state").value,
+    age: document.getElementById("age").value,
+    insuranceType: document.getElementById("insuranceType").value,
+    sharedAmount: document.getElementById("shared-amount").value || "",
+    finalExpenseAmount: document.getElementById("finalExpenseAmount").value || ""
+  };
 
-          // Send data to Google Apps Script
-          fetch('https://docs.google.com/spreadsheets/d/1PLJo1V7QnkQI95HXxm9fAcMqnPz7eJGL3u0XIpfKP3w/edit?gid=0#gid=0', { // ===> **UPDATE THIS LINE**
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(formData)
-          })
-          .then(response => response.json())
-          .then(data => {
-            const responseDiv = document.getElementById('response');
-            if (data.status === 'success') {
-              responseDiv.innerHTML = '<p style="color: green;">' + data.message + '</p>';
-              document.querySelector(".contact-form").reset();
-              grecaptcha.reset();
-              closeContactForm();
-            } else {
-              responseDiv.innerHTML = '<p style="color: red;">' + data.message + '</p>';
-              grecaptcha.reset();
-            }
-          })
-          .catch(error => {
-            console.error('Error!', error);
-            const responseDiv = document.getElementById('response');
-            responseDiv.innerHTML = '<p style="color: red;">An error occurred while submitting the form.</p>';
-          });
-        });
+  // Get reCAPTCHA token
+  grecaptcha.ready(function() {
+    grecaptcha.execute('6Lf_qqcqAAAAAFF_woYz7bR80hzzUjmgFzIHOEsZ', {action: 'submit'}).then(function(token) {
+      formData.recaptchaToken = token;
+
+      // Send data to Google Apps Script
+      fetch('https://docs.google.com/spreadsheets/d/1PLJo1V7QnkQI95HXxm9fAcMqnPz7eJGL3u0XIpfKP3w/edit?gid=0#gid=0', { // ===> **UPDATED WITH YOUR WEB APP URL**
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(formData)
+      })
+      .then(response => response.json())
+      .then(data => {
+        const responseDiv = document.getElementById('response');
+        if (data.status === 'success') {
+          responseDiv.innerHTML = '<p style="color: green;">' + data.message + '</p>';
+          document.querySelector(".contact-form").reset();
+          grecaptcha.reset();
+          closeContactForm();
+        } else {
+          responseDiv.innerHTML = '<p style="color: red;">' + data.message + '</p>';
+          grecaptcha.reset();
+        }
+      })
+      .catch(error => {
+        console.error('Error!', error);
+        const responseDiv = document.getElementById('response');
+        responseDiv.innerHTML = '<p style="color: red;">An error occurred while submitting the form.</p>';
       });
-    }
+    });
+  });
+}
+
 
     document.addEventListener("DOMContentLoaded", () => {
       // Initially hide contact form
