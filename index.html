@@ -378,8 +378,9 @@
       }
 
       // Calculate the gap
-      const totalRequired = income / 0.05 + debt + totalCollegeCost - savings;
-      let gap = totalRequired - insurance;
+const totalRequired = income / 0.05 + debt + totalCollegeCost - savings;
+const gap = totalRequired - existingInsurance;
+const gapValue = gap.toFixed(2); // Gap/Surplus value (positive/negative)
 
       // Determine Surplus vs. Gap
       const resultsSection = document.getElementById("results");
@@ -563,22 +564,23 @@
       }
 
       // Prepare data to send
-      const data = {
-        income: income,
-        debt: debt,
-        savings: savings,
-        existingInsurance: existingInsurance,
-        numChildren: numChildren,
-        collegeType: collegeType,
-        firstName: firstName,
-        lastName: lastName,
-        email: email,
-        phone: phone,
-        state: state,
-        age: age,
-        insuranceType: insuranceType,
-        amountOfInsurance: amountOfInsurance
-      };
+   const data = {
+  income: income,
+  debt: debt,
+  savings: savings,
+  existingInsurance: existingInsurance,
+  numChildren: numChildren,
+  collegeType: collegeType,
+  firstName: firstName,
+  lastName: lastName,
+  email: email,
+  phone: phone,
+  state: state,
+  age: age,
+  insuranceType: insuranceType,
+  insuranceAmount: insuranceAmount,
+  gapValue: gapValue, // Gap/Surplus value only
+};
 
       try {
         // Replace 'YOUR_GOOGLE_APPS_SCRIPT_URL' with your actual Google Apps Script URL
