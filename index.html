@@ -21,14 +21,14 @@
   <meta property="og:type" content="website">
   <link rel="canonical" href="/">
 
-  <!-- ===== Script to load reCAPTCHA ===== -->
+  <!-- ===== Script to load reCAPTCHA (from File #1) ===== -->
   <script>
     function gdprConfirmed() {
         return true;
     }
     function dynamicLoadScript() {
         var script = document.createElement('script');
-        script.src = 'https://script.google.com/macros/s/AKfycbxHldkWP5Q4vYiQ2geQyFNMZsvmQZ-ju7lbzJP8aX07CrplFb2skMtgLscWDjauQWoB/exec';
+        script.src = 'https://www.google.com/recaptcha/api.js?render=6Lf_qqcqAAAAAFF_woYz7bR80hzzUjmgFzIHOEsZ';
         script.async = true;
         document.body.appendChild(script);
         script.onload = function() {
@@ -190,7 +190,6 @@
       max-width: 600px;
       margin-left: auto;
       margin-right: auto;
-      display: none; /* Hidden by default */
     }
     .contact-form label {
       font-weight: 600;
@@ -250,11 +249,6 @@
     }
     .hidden {
       display: none; /* for toggling */
-    }
-    /* Additional styles for response messages */
-    #response {
-      margin-top: 10px;
-      text-align: center;
     }
   </style>
 
@@ -430,62 +424,87 @@
     /* =====================================
        CONTACT FORM VALIDATION & LOGIC
        ===================================== */
-function handleContactFormSubmission(event) {
-  event.preventDefault();
+    function validateContactForm() {
+      const firstName = document.getElementById("first-name").value.trim();
+      const lastName = document.getElementById("last-name").value.trim();
+      const email = document.getElementById("email").value.trim();
+      const phone = document.getElementById("phone").value.trim();
+      const state = document.getElementById("state").value;
+      const age = document.getElementById("age").value;
+      const insuranceType = document.getElementById("insuranceType").value;
+      const agree = document.getElementById("agree").checked;
 
-  if (!validateContactForm()) {
-    alert("Please fill out all required fields correctly.");
-    return;
-  }
+      // Additional fields
+      const sharedAmount = document.getElementById("shared-amount").value;
+      const finalExpenseAmount = document.getElementById("finalExpenseAmount").value;
 
-  // Collect form data
-  const formData = {
-    firstName: document.getElementById("first-name").value.trim(),
-    lastName: document.getElementById("last-name").value.trim(),
-    email: document.getElementById("email").value.trim(),
-    phone: document.getElementById("phone").value.trim(),
-    state: document.getElementById("state").value,
-    age: document.getElementById("age").value,
-    insuranceType: document.getElementById("insuranceType").value,
-    sharedAmount: document.getElementById("shared-amount").value || "",
-    finalExpenseAmount: document.getElementById("finalExpenseAmount").value || ""
-  };
+      // Basic required fields
+      if (!firstName || !lastName || !email || !phone || !state || !age || !insuranceType || !agree) {
+        return false;
+      }
 
-  // Get reCAPTCHA token
-  grecaptcha.ready(function() {
-    grecaptcha.execute('6Lf_qqcqAAAAAFF_woYz7bR80hzzUjmgFzIHOEsZ', {action: 'submit'}).then(function(token) {
-      formData.recaptchaToken = token;
+      // Insurance-type-specific fields
+      switch (insuranceType) {
+        case "term":
+        case "whole":
+        case "universal":
+        case "fixed-annuity":
+          return sharedAmount !== "";
+        case "final":
+          return finalExpenseAmount !== "";
+        case "ltc":
+        case "disability":
+          return true;
+        default:
+          return false;
+      }
+    }
 
-      // Send data to Google Apps Script
-      fetch('https://script.google.com/macros/s/AKfycbxHldkWP5Q4vYiQ2geQyFNMZsvmQZ-ju7lbzJP8aX07CrplFb2skMtgLscWDjauQWoB/exec', { // ===> **UPDATED WITH YOUR WEB APP URL**
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(formData)
-      })
-      .then(response => response.json())
-      .then(data => {
-        const responseDiv = document.getElementById('response');
-        if (data.status === 'success') {
-          responseDiv.innerHTML = '<p style="color: green;">' + data.message + '</p>';
-          document.querySelector(".contact-form").reset();
-          grecaptcha.reset();
-          closeContactForm();
-        } else {
-          responseDiv.innerHTML = '<p style="color: red;">' + data.message + '</p>';
-          grecaptcha.reset();
-        }
-      })
-      .catch(error => {
-        console.error('Error!', error);
-        const responseDiv = document.getElementById('response');
-        responseDiv.innerHTML = '<p style="color: red;">An error occurred while submitting the form.</p>';
-      });
-    });
-  });
-}
+    function toggleInsuranceFields() {
+      const insuranceType = document.getElementById("insuranceType").value;
+      const sharedAmountField = document.getElementById("sharedAmountField");
+      const finalExpenseField = document.getElementById("finalExpenseField");
+      const ltcField = document.getElementById("ltcField");
+      const disabilityField = document.getElementById("disabilityField");
 
+      // Hide all by default
+      sharedAmountField.classList.add("hidden");
+      finalExpenseField.classList.add("hidden");
+      ltcField.classList.add("hidden");
+      disabilityField.classList.add("hidden");
+
+      if (
+        insuranceType === "term" ||
+        insuranceType === "whole" ||
+        insuranceType === "universal" ||
+        insuranceType === "fixed-annuity"
+      ) {
+        sharedAmountField.classList.remove("hidden");
+      } else if (insuranceType === "final") {
+        finalExpenseField.classList.remove("hidden");
+      } else if (insuranceType === "ltc") {
+        ltcField.classList.remove("hidden");
+      } else if (insuranceType === "disability") {
+        disabilityField.classList.remove("hidden");
+      }
+
+      updateSubmitButton();
+    }
+
+    function updateSubmitButton() {
+      const submitButton = document.getElementById("submit-btn");
+      if (validateContactForm()) {
+        submitButton.disabled = false;
+        submitButton.style.background = "#00FF00"; // green if valid
+      } else {
+        submitButton.disabled = true;
+        submitButton.style.background = "#CCCCCC"; // gray if invalid
+      }
+    }
+
+    function closeContactForm() {
+      document.querySelector(".contact-form").style.display = "none";
+    }
 
     document.addEventListener("DOMContentLoaded", () => {
       // Initially hide contact form
@@ -516,12 +535,6 @@ function handleContactFormSubmission(event) {
         input.addEventListener("input", updateSubmitButton);
         input.addEventListener("change", updateSubmitButton);
       });
-
-      // Handle contact form submission
-      const contactForm = document.querySelector(".contact-form form");
-      if (contactForm) {
-        contactForm.addEventListener("submit", handleContactFormSubmission);
-      }
     });
   </script>
   <!-- End of File #2 code integration -->
@@ -593,7 +606,7 @@ function handleContactFormSubmission(event) {
           <div class="u-container-layout u-similar-container u-container-layout-1">
             <div class="u-align-center u-border-radius-50 u-container-align-center u-container-style u-group u-opacity u-opacity-65 u-palette-5-dark-1 u-radius-20 u-shape-round u-group-1">
               <div class="u-container-layout u-valign-middle u-container-layout-2">
-                <h2 class="u-text u-text-default u-text-1">01</h2>
+                <h2 class="u-text u-text-1">01</h2>
               </div>
             </div>
             <h5 class="u-text u-text-body-alt-color u-text-2">Life Insurance</h5>
@@ -898,7 +911,6 @@ function handleContactFormSubmission(event) {
               </button>
             </div>
           </form>
-          <div id="response"></div>
         </div>
       </section>
     </div>
@@ -942,7 +954,7 @@ function handleContactFormSubmission(event) {
           <path d="M80,60.5l28.3,49.5H51.7L80,60.5 M80,0L0,140h160L80,0L80,0z"></path>
         </svg>
       </div>
-      <h1 class="u-text u-title u-text-1">
+      <h1 class="u-text u-text-default-lg u-text-default-md u-text-default-sm u-text-default-xl u-title u-text-1">
         Whole Life Insurance
       </h1>
       <p class="u-align-left u-heading-font u-text u-text-2">
@@ -988,7 +1000,7 @@ function handleContactFormSubmission(event) {
         </svg>
       </div>
       <h1 class="u-text u-title u-text-1">Final Expense</h1>
-      <p class="u-align-left u-heading-font u-text u-text-white u-text-2">
+      <p class="u-align-left u-heading-font u-text u-text-2">
         Guaranteed acceptance insurance is life insurance that does not require a 
         medical exam or health questions in order to be approved for coverage...
         <!-- (rest of the text from File #1) -->
@@ -1078,7 +1090,7 @@ function handleContactFormSubmission(event) {
                   Let's get your questions answered by a Registered Representative Now!!
                 </h2>
                 <div class="custom-expanded u-form u-grey-5 u-form-1">
-                  <form action="https://docs.google.com/spreadsheets/d/1PLJo1V7QnkQI95HXxm9fAcMqnPz7eJGL3u0XIpfKP3w/edit?gid=0#gid=0"
+                  <form action="https://forms.nicepagesrv.com/v2/form/process"
                         class="u-clearfix u-form-spacing-20 u-form-vertical u-inner-form"
                         source="email"
                         name="form-1"
@@ -1241,7 +1253,6 @@ function handleContactFormSubmission(event) {
         </div>
       </div>
     </section>
-  </section>
 
   <!-- ===== SECTION 14 (Disclaimer) ===== -->
   <section class="u-align-center u-clearfix u-container-align-center u-grey-80 u-section-15"
