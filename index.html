@@ -21,7 +21,7 @@
   <meta property="og:type" content="website">
   <link rel="canonical" href="/">
 
-  <!-- ===== Script to load reCAPTCHA (from File #1) ===== -->
+  <!-- ===== Script to load reCAPTCHA ===== -->
   <script>
     function gdprConfirmed() {
         return true;
@@ -190,6 +190,7 @@
       max-width: 600px;
       margin-left: auto;
       margin-right: auto;
+      display: none; /* Hidden by default */
     }
     .contact-form label {
       font-weight: 600;
@@ -249,6 +250,11 @@
     }
     .hidden {
       display: none; /* for toggling */
+    }
+    /* Additional styles for response messages */
+    #response {
+      margin-top: 10px;
+      text-align: center;
     }
   </style>
 
@@ -506,6 +512,65 @@
       document.querySelector(".contact-form").style.display = "none";
     }
 
+    /* =====================================
+       HANDLE CONTACT FORM SUBMISSION
+       ===================================== */
+    function handleContactFormSubmission(event) {
+      event.preventDefault();
+
+      if (!validateContactForm()) {
+        alert("Please fill out all required fields correctly.");
+        return;
+      }
+
+      // Collect form data
+      const formData = {
+        firstName: document.getElementById("first-name").value.trim(),
+        lastName: document.getElementById("last-name").value.trim(),
+        email: document.getElementById("email").value.trim(),
+        phone: document.getElementById("phone").value.trim(),
+        state: document.getElementById("state").value,
+        age: document.getElementById("age").value,
+        insuranceType: document.getElementById("insuranceType").value,
+        sharedAmount: document.getElementById("shared-amount").value || "",
+        finalExpenseAmount: document.getElementById("finalExpenseAmount").value || ""
+      };
+
+      // Get reCAPTCHA token
+      grecaptcha.ready(function() {
+        grecaptcha.execute('6Lf_qqcqAAAAAFF_woYz7bR80hzzUjmgFzIHOEsZ', {action: 'submit'}).then(function(token) {
+          formData.recaptchaToken = token;
+
+          // Send data to Google Apps Script
+          fetch('YOUR_WEB_APP_URL', { // ===> **UPDATE THIS LINE**
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(formData)
+          })
+          .then(response => response.json())
+          .then(data => {
+            const responseDiv = document.getElementById('response');
+            if (data.status === 'success') {
+              responseDiv.innerHTML = '<p style="color: green;">' + data.message + '</p>';
+              document.querySelector(".contact-form").reset();
+              grecaptcha.reset();
+              closeContactForm();
+            } else {
+              responseDiv.innerHTML = '<p style="color: red;">' + data.message + '</p>';
+              grecaptcha.reset();
+            }
+          })
+          .catch(error => {
+            console.error('Error!', error);
+            const responseDiv = document.getElementById('response');
+            responseDiv.innerHTML = '<p style="color: red;">An error occurred while submitting the form.</p>';
+          });
+        });
+      });
+    }
+
     document.addEventListener("DOMContentLoaded", () => {
       // Initially hide contact form
       document.querySelector(".contact-form").style.display = "none";
@@ -535,6 +600,12 @@
         input.addEventListener("input", updateSubmitButton);
         input.addEventListener("change", updateSubmitButton);
       });
+
+      // Handle contact form submission
+      const contactForm = document.querySelector(".contact-form form");
+      if (contactForm) {
+        contactForm.addEventListener("submit", handleContactFormSubmission);
+      }
     });
   </script>
   <!-- End of File #2 code integration -->
@@ -606,7 +677,7 @@
           <div class="u-container-layout u-similar-container u-container-layout-1">
             <div class="u-align-center u-border-radius-50 u-container-align-center u-container-style u-group u-opacity u-opacity-65 u-palette-5-dark-1 u-radius-20 u-shape-round u-group-1">
               <div class="u-container-layout u-valign-middle u-container-layout-2">
-                <h2 class="u-text u-text-1">01</h2>
+                <h2 class="u-text u-text-default u-text-1">01</h2>
               </div>
             </div>
             <h5 class="u-text u-text-body-alt-color u-text-2">Life Insurance</h5>
@@ -911,6 +982,7 @@
               </button>
             </div>
           </form>
+          <div id="response"></div>
         </div>
       </section>
     </div>
@@ -954,7 +1026,7 @@
           <path d="M80,60.5l28.3,49.5H51.7L80,60.5 M80,0L0,140h160L80,0L80,0z"></path>
         </svg>
       </div>
-      <h1 class="u-text u-text-default-lg u-text-default-md u-text-default-sm u-text-default-xl u-title u-text-1">
+      <h1 class="u-text u-title u-text-1">
         Whole Life Insurance
       </h1>
       <p class="u-align-left u-heading-font u-text u-text-2">
@@ -1000,7 +1072,7 @@
         </svg>
       </div>
       <h1 class="u-text u-title u-text-1">Final Expense</h1>
-      <p class="u-align-left u-heading-font u-text u-text-2">
+      <p class="u-align-left u-heading-font u-text u-text-white u-text-2">
         Guaranteed acceptance insurance is life insurance that does not require a 
         medical exam or health questions in order to be approved for coverage...
         <!-- (rest of the text from File #1) -->
@@ -1253,6 +1325,7 @@
         </div>
       </div>
     </section>
+  </section>
 
   <!-- ===== SECTION 14 (Disclaimer) ===== -->
   <section class="u-align-center u-clearfix u-container-align-center u-grey-80 u-section-15"
