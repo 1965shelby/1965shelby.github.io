@@ -491,16 +491,84 @@
       updateSubmitButton();
     }
 
-    function updateSubmitButton() {
-      const submitButton = document.getElementById("submit-btn");
-      if (validateContactForm()) {
-        submitButton.disabled = false;
-        submitButton.style.background = "#00FF00"; // green if valid
-      } else {
-        submitButton.disabled = true;
-        submitButton.style.background = "#CCCCCC"; // gray if invalid
-      }
+   function submitCalculator(event) {
+  event.preventDefault(); // Prevent the default form submission
+
+  // Gather form data
+  const income = document.getElementById('income').value;
+  const debt = document.getElementById('debt').value;
+  const savings = document.getElementById('savings').value;
+  const existingInsurance = document.getElementById('existing-insurance').value;
+  const numChildren = document.getElementById('num-children').value;
+  const collegeType = document.getElementById('college-type').value;
+
+  // Contact Form Data
+  const firstName = document.getElementById('first-name').value;
+  const lastName = document.getElementById('last-name').value;
+  const email = document.getElementById('email').value;
+  const phone = document.getElementById('phone').value;
+  const state = document.getElementById('state').value;
+  const age = document.getElementById('age').value;
+  const insuranceType = document.getElementById('insuranceType').value;
+
+  // Determine the amount of insurance based on the selected type
+  let amountOfInsurance = '';
+  if (insuranceType === 'term' || insuranceType === 'whole' || insuranceType === 'universal' || insuranceType === 'fixed-annuity') {
+    amountOfInsurance = document.getElementById('shared-amount').value;
+  } else if (insuranceType === 'final') {
+    amountOfInsurance = document.getElementById('finalExpenseAmount').value;
+  } else {
+    amountOfInsurance = 'N/A'; // For LTC and Disability Insurance
+  }
+
+  // Prepare the data object
+  const data = {
+    income: income,
+    debt: debt,
+    savings: savings,
+    existingInsurance: existingInsurance,
+    numChildren: numChildren,
+    collegeType: collegeType,
+    firstName: firstName,
+    lastName: lastName,
+    email: email,
+    phone: phone,
+    state: state,
+    age: age,
+    insuranceType: insuranceType,
+    amountOfInsurance: amountOfInsurance
+  };
+
+  // Replace 'YOUR_WEB_APP_URL' with the URL you copied earlier
+  const scriptURL = 'https://script.google.com/macros/s/AKfycbz50UAjv-IKhW6FSVdgtVuklkzIVDCEDzHsburiO2uTfFgFWpsTAWZdoZTCbqeg2i0-/exec';
+
+  // Send the data to Google Sheets
+  fetch(scriptURL, {
+    method: 'POST',
+    mode: 'cors',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(data)
+  })
+  .then(response => response.json())
+  .then(response => {
+    if (response.result === 'success') {
+      // Optionally, show a success message or perform other actions
+      alert('Your data has been successfully submitted!');
+      // Reset the form
+      event.target.reset();
+      // Enable the Calculate button if needed
+      // document.querySelector('button[type="submit"]').disabled = false;
+    } else {
+      alert('There was an error submitting your data. Please try again.');
     }
+  })
+  .catch(error => {
+    console.error('Error!', error.message);
+    alert('There was an error submitting your data. Please try again.');
+  });
+}
 
     function closeContactForm() {
       document.querySelector(".contact-form").style.display = "none";
