@@ -311,6 +311,7 @@
       );
       if (submitButton) {
         submitButton.disabled = !isValid;
+        console.log(`Calculate button disabled: ${submitButton.disabled}`);
       }
     }
 
@@ -418,6 +419,8 @@
         </div>
       `;
 
+      console.log("Calculation completed. Gap:", gap);
+
       // Show the contact form
       document.querySelector(".contact-form").style.display = "block";
     }
@@ -439,8 +442,21 @@
       const sharedAmount = document.getElementById("shared-amount").value;
       const finalExpenseAmount = document.getElementById("finalExpenseAmount").value;
 
+      console.log("Validating Contact Form:");
+      console.log("First Name:", firstName);
+      console.log("Last Name:", lastName);
+      console.log("Email:", email);
+      console.log("Phone:", phone);
+      console.log("State:", state);
+      console.log("Age:", age);
+      console.log("Insurance Type:", insuranceType);
+      console.log("Agree to Privacy Policy:", agree);
+      console.log("Shared Amount:", sharedAmount);
+      console.log("Final Expense Amount:", finalExpenseAmount);
+
       // Basic required fields
       if (!firstName || !lastName || !email || !phone || !state || !age || !insuranceType || !agree) {
+        console.log("Validation Failed: Missing required fields.");
         return false;
       }
 
@@ -450,15 +466,28 @@
         case "whole":
         case "universal":
         case "fixed-annuity":
-          return sharedAmount !== "";
+          if (sharedAmount === "") {
+            console.log(`Validation Failed: Shared Amount is required for ${insuranceType} insurance.`);
+            return false;
+          }
+          break;
         case "final":
-          return finalExpenseAmount !== "";
+          if (finalExpenseAmount === "") {
+            console.log("Validation Failed: Final Expense Amount is required for Final Expense insurance.");
+            return false;
+          }
+          break;
         case "ltc":
         case "disability":
-          return true;
+          // No additional fields required
+          break;
         default:
+          console.log("Validation Failed: Unknown insurance type.");
           return false;
       }
+
+      console.log("Validation Passed.");
+      return true;
     }
 
     function updateSubmitButton() {
@@ -466,6 +495,7 @@
       const submitBtn = document.getElementById('submit-btn');
       if (submitBtn) {
         submitBtn.disabled = !isValid;
+        console.log(`Submit button disabled: ${submitBtn.disabled}`);
       }
     }
 
@@ -475,6 +505,8 @@
       const finalExpenseField = document.getElementById("finalExpenseField");
       const ltcField = document.getElementById("ltcField");
       const disabilityField = document.getElementById("disabilityField");
+
+      console.log("Toggling Insurance Fields. Selected Type:", insuranceType);
 
       // Hide all by default
       sharedAmountField.classList.add("hidden");
@@ -489,12 +521,16 @@
         insuranceType === "fixed-annuity"
       ) {
         sharedAmountField.classList.remove("hidden");
+        console.log("Shared Amount Field Shown.");
       } else if (insuranceType === "final") {
         finalExpenseField.classList.remove("hidden");
+        console.log("Final Expense Field Shown.");
       } else if (insuranceType === "ltc") {
         ltcField.classList.remove("hidden");
+        console.log("Long-Term Care Field Shown.");
       } else if (insuranceType === "disability") {
         disabilityField.classList.remove("hidden");
+        console.log("Disability Field Shown.");
       }
 
       updateSubmitButton();
@@ -543,6 +579,8 @@
         amountOfInsurance: amountOfInsurance
       };
 
+      console.log("Submitting Contact Form Data:", data);
+
       // Replace 'YOUR_WEB_APP_URL' with your actual Google Apps Script Web App URL
       const scriptURL = 'https://script.google.com/macros/s/AKfycbz50UAjv-IKhW6FSVdgtVuklkzIVDCEDzHsburiO2uTfFgFWpsTAWZdoZTCbqeg2i0-/exec';
 
@@ -557,6 +595,7 @@
       })
       .then(response => response.json())
       .then(response => {
+        console.log("Response from Google Sheets:", response);
         if (response.result === 'success') {
           // Optionally, show a success message or perform other actions
           alert('Your data has been successfully submitted!');
@@ -564,25 +603,29 @@
           event.target.reset();
           // Disable the Submit button again
           document.getElementById('submit-btn').disabled = true;
+          console.log("Contact form reset and submit button disabled.");
           // Optionally, hide the contact form after submission
           document.querySelector(".contact-form").style.display = "none";
         } else {
+          console.error('Submission failed:', response);
           alert('There was an error submitting your data. Please try again.');
         }
       })
       .catch(error => {
-        console.error('Error!', error.message);
+        console.error('Error during submission:', error);
         alert('There was an error submitting your data. Please try again.');
       });
     }
 
     function closeContactForm() {
       document.querySelector(".contact-form").style.display = "none";
+      console.log("Contact form closed.");
     }
 
     document.addEventListener("DOMContentLoaded", () => {
       // Initially hide contact form
       document.querySelector(".contact-form").style.display = "none";
+      console.log("Contact form initially hidden.");
 
       // Add error div under the calculator
       const calcWrapper = document.querySelector(".calculator-section form");
@@ -590,6 +633,7 @@
       errorDiv.id = "calcError";
       errorDiv.style.color = "red";
       calcWrapper.appendChild(errorDiv);
+      console.log("Error div for calculator appended.");
 
       // Calculator form validation triggers
       const calculatorInputs = document.querySelectorAll(
@@ -600,6 +644,7 @@
         input.addEventListener("change", validateCalculatorForm);
       });
       validateCalculatorForm(); // initial check
+      console.log("Calculator form validation initialized.");
 
       // Contact form validation triggers
       const contactInputs = document.querySelectorAll(
@@ -609,6 +654,7 @@
         input.addEventListener("input", updateSubmitButton);
         input.addEventListener("change", updateSubmitButton);
       });
+      console.log("Contact form validation initialized.");
     });
   </script>
   <!-- End of File #2 code integration -->
