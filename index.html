@@ -190,6 +190,7 @@
       max-width: 600px;
       margin-left: auto;
       margin-right: auto;
+      display: none; /* Initially hidden */
     }
     .contact-form label {
       font-weight: 600;
@@ -394,7 +395,7 @@
           </p>`;
         gapLabel = "Life Insurance Gap";
         gapClass = "highlight-red";
-        gapDisplay = gap === 0 ? 0 : -Math.abs(gap);
+        gapDisplay = gap === 0 ? 0 : gap;
       }
 
       // Render results
@@ -460,6 +461,14 @@
       }
     }
 
+    function updateSubmitButton() {
+      const isValid = validateContactForm();
+      const submitBtn = document.getElementById('submit-btn');
+      if (submitBtn) {
+        submitBtn.disabled = !isValid;
+      }
+    }
+
     function toggleInsuranceFields() {
       const insuranceType = document.getElementById("insuranceType").value;
       const sharedAmountField = document.getElementById("sharedAmountField");
@@ -491,84 +500,81 @@
       updateSubmitButton();
     }
 
-   function submitCalculator(event) {
-  event.preventDefault(); // Prevent the default form submission
+    /* ==========================
+       CONTACT FORM SUBMISSION TO GOOGLE SHEETS
+       ========================== */
+    function submitContactForm(event) {
+      event.preventDefault(); // Prevent the default form submission
 
-  // Gather form data
-  const income = document.getElementById('income').value;
-  const debt = document.getElementById('debt').value;
-  const savings = document.getElementById('savings').value;
-  const existingInsurance = document.getElementById('existing-insurance').value;
-  const numChildren = document.getElementById('num-children').value;
-  const collegeType = document.getElementById('college-type').value;
+      // Gather contact form data
+      const firstName = document.getElementById('first-name').value;
+      const lastName = document.getElementById('last-name').value;
+      const email = document.getElementById('email').value;
+      const phone = document.getElementById('phone').value;
+      const state = document.getElementById('state').value;
+      const age = document.getElementById('age').value;
+      const insuranceType = document.getElementById('insuranceType').value;
 
-  // Contact Form Data
-  const firstName = document.getElementById('first-name').value;
-  const lastName = document.getElementById('last-name').value;
-  const email = document.getElementById('email').value;
-  const phone = document.getElementById('phone').value;
-  const state = document.getElementById('state').value;
-  const age = document.getElementById('age').value;
-  const insuranceType = document.getElementById('insuranceType').value;
+      // Determine the amount of insurance based on the selected type
+      let amountOfInsurance = '';
+      if (insuranceType === 'term' || insuranceType === 'whole' || insuranceType === 'universal' || insuranceType === 'fixed-annuity') {
+        amountOfInsurance = document.getElementById('shared-amount').value;
+      } else if (insuranceType === 'final') {
+        amountOfInsurance = document.getElementById('finalExpenseAmount').value;
+      } else {
+        amountOfInsurance = 'N/A'; // For LTC and Disability Insurance
+      }
 
-  // Determine the amount of insurance based on the selected type
-  let amountOfInsurance = '';
-  if (insuranceType === 'term' || insuranceType === 'whole' || insuranceType === 'universal' || insuranceType === 'fixed-annuity') {
-    amountOfInsurance = document.getElementById('shared-amount').value;
-  } else if (insuranceType === 'final') {
-    amountOfInsurance = document.getElementById('finalExpenseAmount').value;
-  } else {
-    amountOfInsurance = 'N/A'; // For LTC and Disability Insurance
-  }
+      // Prepare the data object
+      const data = {
+        income: document.getElementById('income').value,
+        debt: document.getElementById('debt').value,
+        savings: document.getElementById('savings').value,
+        existingInsurance: document.getElementById('existing-insurance').value,
+        numChildren: document.getElementById('num-children').value,
+        collegeType: document.getElementById('college-type').value,
+        firstName: firstName,
+        lastName: lastName,
+        email: email,
+        phone: phone,
+        state: state,
+        age: age,
+        insuranceType: insuranceType,
+        amountOfInsurance: amountOfInsurance
+      };
 
-  // Prepare the data object
-  const data = {
-    income: income,
-    debt: debt,
-    savings: savings,
-    existingInsurance: existingInsurance,
-    numChildren: numChildren,
-    collegeType: collegeType,
-    firstName: firstName,
-    lastName: lastName,
-    email: email,
-    phone: phone,
-    state: state,
-    age: age,
-    insuranceType: insuranceType,
-    amountOfInsurance: amountOfInsurance
-  };
+      // Replace 'YOUR_WEB_APP_URL' with your actual Google Apps Script Web App URL
+      const scriptURL = 'https://script.google.com/macros/s/AKfycbz50UAjv-IKhW6FSVdgtVuklkzIVDCEDzHsburiO2uTfFgFWpsTAWZdoZTCbqeg2i0-/exec';
 
-  // Replace 'YOUR_WEB_APP_URL' with the URL you copied earlier
-  const scriptURL = 'https://script.google.com/macros/s/AKfycbz50UAjv-IKhW6FSVdgtVuklkzIVDCEDzHsburiO2uTfFgFWpsTAWZdoZTCbqeg2i0-/exec';
-
-  // Send the data to Google Sheets
-  fetch(scriptURL, {
-    method: 'POST',
-    mode: 'cors',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(data)
-  })
-  .then(response => response.json())
-  .then(response => {
-    if (response.result === 'success') {
-      // Optionally, show a success message or perform other actions
-      alert('Your data has been successfully submitted!');
-      // Reset the form
-      event.target.reset();
-      // Enable the Calculate button if needed
-      // document.querySelector('button[type="submit"]').disabled = false;
-    } else {
-      alert('There was an error submitting your data. Please try again.');
+      // Send the data to Google Sheets
+      fetch(scriptURL, {
+        method: 'POST',
+        mode: 'cors',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+      })
+      .then(response => response.json())
+      .then(response => {
+        if (response.result === 'success') {
+          // Optionally, show a success message or perform other actions
+          alert('Your data has been successfully submitted!');
+          // Reset the contact form
+          event.target.reset();
+          // Disable the Submit button again
+          document.getElementById('submit-btn').disabled = true;
+          // Optionally, hide the contact form after submission
+          document.querySelector(".contact-form").style.display = "none";
+        } else {
+          alert('There was an error submitting your data. Please try again.');
+        }
+      })
+      .catch(error => {
+        console.error('Error!', error.message);
+        alert('There was an error submitting your data. Please try again.');
+      });
     }
-  })
-  .catch(error => {
-    console.error('Error!', error.message);
-    alert('There was an error submitting your data. Please try again.');
-  });
-}
 
     function closeContactForm() {
       document.querySelector(".contact-form").style.display = "none";
@@ -815,6 +821,7 @@
           <!-- CONTACT FORM (hidden by default until calculation is done) -->
           <form
             class="contact-form"
+            onsubmit="submitContactForm(event)"
             action="#"
             method="POST"
             style="padding: 20px; border-radius: 10px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);"
