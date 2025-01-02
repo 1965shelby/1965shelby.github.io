@@ -1,31 +1,44 @@
 <!DOCTYPE html>
 <html style="font-size: 16px;" lang="en">
 <head>
+  <!-- ===== META TAGS ===== -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta charset="utf-8">
   <meta name="keywords" content="Lead Generation, Connecting Consumers to Registered Agents, Life Insurance, Fixed Annuities, Long-Term Care, Disability Insurance">
   <meta name="description" content="We help bridge the gap for business owners, families, and individuals with guidance from licensed professionals in your state.  Whether it's for your business or personal needs, we’re here to simplify the process and empower your journey.">
   <title>RiskLogic Lab</title>
-  <!-- Nicepage default CSS and JS -->
+  
+  <!-- ===== STYLESHEETS ===== -->
+  <!-- Nicepage default CSS -->
   <link rel="stylesheet" href="nicepage.css" media="screen">
   <link rel="stylesheet" href="index.css" media="screen">
+  
+  <!-- ===== SCRIPTS ===== -->
+  <!-- jQuery and Nicepage JS -->
   <script class="u-script" type="text/javascript" src="jquery-1.9.1.min.js" defer=""></script>
   <script class="u-script" type="text/javascript" src="nicepage.js" defer=""></script>
-  <meta name="generator" content="Nicepage 7.2.3, nicepage.com">
-  <meta name="referrer" content="origin">
+  
+  <!-- ===== GOOGLE FONTS ===== -->
   <link id="u-theme-google-font" rel="stylesheet" href="https://fonts.googleapis.com/css?family=Oswald:200,300,400,500,600,700|Open+Sans:300,300i,400,400i,500,500i,600,600i,700,700i,800,800i">
   <link id="u-page-google-font" rel="stylesheet" href="https://fonts.googleapis.com/css?family=Oswald:200,300,400,500,600,700">
+  
+  <!-- ===== META PROPERTIES ===== -->
+  <meta name="generator" content="Nicepage 7.2.3, nicepage.com">
+  <meta name="referrer" content="origin">
   <meta name="theme-color" content="#1659d7">
   <meta property="og:title" content="Home">
   <meta property="og:description" content="">
   <meta property="og:type" content="website">
   <link rel="canonical" href="/">
-
-  <!-- ===== Script to load reCAPTCHA (from File #1) ===== -->
+  
+  <!-- ===== RECAPTCHA SCRIPT ===== -->
   <script>
+    // Function to confirm GDPR compliance
     function gdprConfirmed() {
         return true;
     }
+
+    // Function to dynamically load the reCAPTCHA script
     function dynamicLoadScript() {
         var script = document.createElement('script');
         script.src = 'https://www.google.com/recaptcha/api.js?render=6Lf_qqcqAAAAAFF_woYz7bR80hzzUjmgFzIHOEsZ';
@@ -36,18 +49,24 @@
             document.dispatchEvent(event);
         };
     }
+
+    // Event listener for DOMContentLoaded to handle GDPR and load reCAPTCHA
     document.addEventListener('DOMContentLoaded', function () {
         var confirmButton = document.querySelector('.u-cookies-consent .u-button-confirm');
         if (confirmButton) {
             confirmButton.onclick = dynamicLoadScript;
         }
     });
+
+    // Load reCAPTCHA if GDPR is confirmed
     document.addEventListener("DOMContentLoaded", function(){
         if (!gdprConfirmed()) {
             return;
         }
         dynamicLoadScript();
     });
+
+    // Event listener for when reCAPTCHA is loaded
     document.addEventListener("recaptchaLoaded", function() {
         if (!gdprConfirmed()) {
             return;
@@ -90,8 +109,8 @@
         );
     });
   </script>
-
-  <!-- ====== Styles & Script from File #2 (Calculator) ====== -->
+  
+  <!-- ===== CUSTOM STYLES ===== -->
   <style>
     /* =========================
        Calculator & Contact Form 
@@ -252,6 +271,7 @@
     }
   </style>
 
+  <!-- ===== CUSTOM SCRIPTS ===== -->
   <script>
     /* ===========================================
        HELPER: Parse Float & Check for Negatives
@@ -506,6 +526,87 @@
       document.querySelector(".contact-form").style.display = "none";
     }
 
+    /* ==============================
+       CONTACT FORM SUBMISSION TO GOOGLE SHEETS
+       ============================== */
+    async function handleContactForm(event) {
+      event.preventDefault();
+
+      if (!validateContactForm()) {
+        alert("Please fill out all required fields correctly.");
+        return;
+      }
+
+      // Collect Calculator Data
+      const income = document.getElementById("income").value.trim();
+      const debt = document.getElementById("debt").value.trim();
+      const savings = document.getElementById("savings").value.trim();
+      const existingInsurance = document.getElementById("existing-insurance").value.trim();
+      const numChildren = document.getElementById("num-children").value;
+      const collegeType = document.getElementById("college-type").value;
+
+      // Collect Contact Form Data
+      const firstName = document.getElementById("first-name").value.trim();
+      const lastName = document.getElementById("last-name").value.trim();
+      const email = document.getElementById("email").value.trim();
+      const phone = document.getElementById("phone").value.trim();
+      const state = document.getElementById("state").value;
+      const age = document.getElementById("age").value;
+      const insuranceType = document.getElementById("insuranceType").value;
+      let amountOfInsurance = "";
+
+      // Determine the amount of insurance based on insurance type
+      if (insuranceType === "term" || insuranceType === "whole" || insuranceType === "universal" || insuranceType === "fixed-annuity") {
+        amountOfInsurance = document.getElementById("shared-amount").value;
+      } else if (insuranceType === "final") {
+        amountOfInsurance = document.getElementById("finalExpenseAmount").value;
+      }
+
+      // Prepare data to send
+      const data = {
+        income: income,
+        debt: debt,
+        savings: savings,
+        existingInsurance: existingInsurance,
+        numChildren: numChildren,
+        collegeType: collegeType,
+        firstName: firstName,
+        lastName: lastName,
+        email: email,
+        phone: phone,
+        state: state,
+        age: age,
+        insuranceType: insuranceType,
+        amountOfInsurance: amountOfInsurance
+      };
+
+      try {
+        // Replace 'YOUR_GOOGLE_APPS_SCRIPT_URL' with your actual Google Apps Script URL
+        const response = await fetch('YOUR_GOOGLE_APPS_SCRIPT_URL', {
+          method: 'POST',
+          mode: 'no-cors', // 'no-cors' to prevent CORS issues
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+          },
+          body: new URLSearchParams(data)
+        });
+
+        // Since mode is 'no-cors', we cannot access the response
+        alert("Your information has been submitted successfully!");
+
+        // Optionally, reset the forms
+        document.querySelector(".contact-form").reset();
+        document.querySelector(".contact-form").style.display = "none";
+        document.getElementById("results").innerHTML = "";
+      } catch (error) {
+        console.error("Error submitting form:", error);
+        alert("There was an error submitting your information. Please try again later.");
+      }
+    }
+
+    /* =====================================
+       INITIALIZATION ON DOM CONTENT LOADED
+       ===================================== */
     document.addEventListener("DOMContentLoaded", () => {
       // Initially hide contact form
       document.querySelector(".contact-form").style.display = "none";
@@ -535,10 +636,15 @@
         input.addEventListener("input", updateSubmitButton);
         input.addEventListener("change", updateSubmitButton);
       });
+
+      // Attach the contact form submission handler
+      const contactForm = document.querySelector(".contact-form");
+      contactForm.addEventListener("submit", handleContactForm);
     });
   </script>
   <!-- End of File #2 code integration -->
 
+  <!-- ===== INTERNATIONAL TELEPHONE INPUT ===== -->
   <meta data-intl-tel-input-cdn-path="intlTelInput/">
 </head>
 
@@ -916,7 +1022,11 @@
     </div>
   </section>
 
-  <!-- ===== SECTION 6 (Term Insurance) ===== -->
+  <!-- ===== SECTION 6 to 13 (Insurance Details) ===== -->
+  <!--
+    These sections provide detailed information about various insurance types.
+    No changes have been made to these sections.
+  -->
   <section class="u-align-center u-clearfix u-container-align-center u-image u-shading u-section-7"
            id="carousel_a4d7"
            data-image-width="1280"
@@ -942,7 +1052,6 @@
     </div>
   </section>
 
-  <!-- ===== SECTION 7 (Whole Life) ===== -->
   <section class="u-align-center u-clearfix u-container-align-center u-container-align-center-lg u-container-align-center-xl u-image u-shading u-section-8"
            id="carousel_e6ab"
            data-image-width="1280"
@@ -965,7 +1074,6 @@
     </div>
   </section>
 
-  <!-- ===== SECTION 8 (Universal Life) ===== -->
   <section class="u-align-center u-clearfix u-container-align-center u-image u-shading u-section-9"
            id="carousel_d19c"
            data-image-width="1280"
@@ -987,7 +1095,6 @@
     </div>
   </section>
 
-  <!-- ===== SECTION 9 (Final Expense) ===== -->
   <section class="u-align-center u-clearfix u-container-align-center u-image u-shading u-section-10"
            id="carousel_4626"
            data-image-width="1280"
@@ -1008,7 +1115,6 @@
     </div>
   </section>
 
-  <!-- ===== SECTION 10 (Fixed Annuity) ===== -->
   <section class="u-align-center u-clearfix u-container-align-center u-image u-shading u-section-11"
            id="carousel_c714"
            data-image-width="1280"
@@ -1029,7 +1135,6 @@
     </div>
   </section>
 
-  <!-- ===== SECTION 11 (Long-Term Care) ===== -->
   <section class="u-align-center u-clearfix u-container-align-center u-image u-shading u-section-12"
            id="carousel_cec8"
            data-image-width="1280"
@@ -1050,7 +1155,6 @@
     </div>
   </section>
 
-  <!-- ===== SECTION 12 (Disability Insurance) ===== -->
   <section class="u-align-center u-clearfix u-container-align-center u-image u-shading u-section-13"
            id="carousel_f7b3"
            data-image-width="1280"
@@ -1071,7 +1175,7 @@
     </div>
   </section>
 
-  <!-- ===== SECTION 13 (Form / Connect) ===== -->
+  <!-- ===== SECTION 14 (Form / Connect) ===== -->
   <section class="u-clearfix u-container-align-center u-section-14" id="carousel_2f53">
     <div class="u-clearfix u-sheet u-valign-middle u-sheet-1">
       <div class="data-layout-selected u-clearfix u-expanded-width u-layout-wrap u-layout-wrap-1">
@@ -1253,6 +1357,7 @@
         </div>
       </div>
     </section>
+  </section>
 
   <!-- ===== SECTION 14 (Disclaimer) ===== -->
   <section class="u-align-center u-clearfix u-container-align-center u-grey-80 u-section-15"
