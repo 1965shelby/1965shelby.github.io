@@ -430,92 +430,6 @@
     /* =====================================
        CONTACT FORM VALIDATION & LOGIC
        ===================================== */
-    function validateContactForm() {
-      const firstName = document.getElementById("first-name").value.trim();
-      const lastName = document.getElementById("last-name").value.trim();
-      const email = document.getElementById("email").value.trim();
-      const phone = document.getElementById("phone").value.trim();
-      const state = document.getElementById("state").value;
-      const age = document.getElementById("age").value;
-      const insuranceType = document.getElementById("insuranceType").value;
-      const agree = document.getElementById("agree").checked;
-
-      // Additional fields
-      const sharedAmount = document.getElementById("shared-amount").value;
-      const finalExpenseAmount = document.getElementById("finalExpenseAmount").value;
-
-      // Basic required fields
-      if (!firstName || !lastName || !email || !phone || !state || !age || !insuranceType || !agree) {
-        return false;
-      }
-
-      // Insurance-type-specific fields
-      switch (insuranceType) {
-        case "term":
-        case "whole":
-        case "universal":
-        case "fixed-annuity":
-          return sharedAmount !== "";
-        case "final":
-          return finalExpenseAmount !== "";
-        case "ltc":
-        case "disability":
-          return true;
-        default:
-          return false;
-      }
-    }
-
-    function toggleInsuranceFields() {
-      const insuranceType = document.getElementById("insuranceType").value;
-      const sharedAmountField = document.getElementById("sharedAmountField");
-      const finalExpenseField = document.getElementById("finalExpenseField");
-      const ltcField = document.getElementById("ltcField");
-      const disabilityField = document.getElementById("disabilityField");
-
-      // Hide all by default
-      sharedAmountField.classList.add("hidden");
-      finalExpenseField.classList.add("hidden");
-      ltcField.classList.add("hidden");
-      disabilityField.classList.add("hidden");
-
-      if (
-        insuranceType === "term" ||
-        insuranceType === "whole" ||
-        insuranceType === "universal" ||
-        insuranceType === "fixed-annuity"
-      ) {
-        sharedAmountField.classList.remove("hidden");
-      } else if (insuranceType === "final") {
-        finalExpenseField.classList.remove("hidden");
-      } else if (insuranceType === "ltc") {
-        ltcField.classList.remove("hidden");
-      } else if (insuranceType === "disability") {
-        disabilityField.classList.remove("hidden");
-      }
-
-      updateSubmitButton();
-    }
-
-    function updateSubmitButton() {
-      const submitButton = document.getElementById("submit-btn");
-      if (validateContactForm()) {
-        submitButton.disabled = false;
-        submitButton.style.background = "#00FF00"; // green if valid
-      } else {
-        submitButton.disabled = true;
-        submitButton.style.background = "#CCCCCC"; // gray if invalid
-      }
-    }
-
-    function closeContactForm() {
-      document.querySelector(".contact-form").style.display = "none";
-    }
-
-    /* =====================================
-       HANDLE CONTACT FORM SUBMISSION
-       ===================================== */
-
 function handleContactFormSubmission(event) {
   event.preventDefault();
 
@@ -543,7 +457,7 @@ function handleContactFormSubmission(event) {
       formData.recaptchaToken = token;
 
       // Send data to Google Apps Script
-      fetch('https://docs.google.com/spreadsheets/d/1PLJo1V7QnkQI95HXxm9fAcMqnPz7eJGL3u0XIpfKP3w/edit?gid=0#gid=0', { // ===> **UPDATED WITH YOUR WEB APP URL**
+      fetch('https://script.google.com/macros/s/AKfycbxHldkWP5Q4vYiQ2geQyFNMZsvmQZ-ju7lbzJP8aX07CrplFb2skMtgLscWDjauQWoB/exec', { // ===> **UPDATED WITH YOUR WEB APP URL**
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
