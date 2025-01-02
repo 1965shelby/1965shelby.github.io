@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta charset="utf-8">
   <meta name="keywords" content="Lead Generation, Connecting Consumers to Registered Agents, Life Insurance, Fixed Annuities, Long-Term Care, Disability Insurance">
-  <meta name="description" content="We help bridge the gap for business owners, families, and individuals with guidance from licensed professionals in your state.  Whether it's for your business or personal needs, we’re here to simplify the process and empower your journey.">
+  <meta name="description" content="We help bridge the gap for business owners, families, and individuals with guidance from licensed professionals in your state. Whether it's for your business or personal needs, we’re here to simplify the process and empower your journey.">
   <title>RiskLogic Lab</title>
   
   <!-- ===== STYLESHEETS ===== -->
@@ -41,7 +41,7 @@
     // Function to dynamically load the reCAPTCHA script
     function dynamicLoadScript() {
         var script = document.createElement('script');
-        script.src = 'https://www.google.com/recaptcha/api.js?render=6Lf_qqcqAAAAAFF_woYz7bR80hzzUjmgFzIHOEsZ';
+        script.src = 'https://www.google.com/recaptcha/api.js?render=YOUR_RECAPTCHA_SITE_KEY';
         script.async = true;
         document.body.appendChild(script);
         script.onload = function() {
@@ -104,7 +104,7 @@
             window.recaptchaObject = recaptcha;
         })(
             grecaptcha,
-            '6Lf_qqcqAAAAAFF_woYz7bR80hzzUjmgFzIHOEsZ',
+            'YOUR_RECAPTCHA_SITE_KEY',
             {'contact': 'contact'}
         );
     });
@@ -337,7 +337,7 @@
     /* ==========================
        CALCULATOR SUBMISSION
        ========================== */
-    let globalGapValue = 0; // Global variable to store gapValue
+    let globalGapValue = 0; // Added global variable
 
     function submitCalculator(event) {
       event.preventDefault();
@@ -592,20 +592,22 @@
         // Replace 'YOUR_GOOGLE_APPS_SCRIPT_URL' with your actual Google Apps Script URL
         const response = await fetch('YOUR_GOOGLE_APPS_SCRIPT_URL', {
           method: 'POST',
-          mode: 'no-cors', // 'no-cors' to prevent CORS issues
+          mode: 'cors', // Changed from 'no-cors' to 'cors'
           headers: {
             'Content-Type': 'application/x-www-form-urlencoded'
           },
           body: new URLSearchParams(data)
         });
 
-        // Since mode is 'no-cors', we cannot access the response
-        alert("Your information has been submitted successfully!");
-
-        // Optionally, reset the forms
-        document.querySelector(".contact-form").reset();
-        document.querySelector(".contact-form").style.display = "none";
-        document.getElementById("results").innerHTML = "";
+        if (response.ok) {
+          alert("Your information has been submitted successfully!");
+          // Optionally, reset the forms
+          document.querySelector(".contact-form").reset();
+          document.querySelector(".contact-form").style.display = "none";
+          document.getElementById("results").innerHTML = "";
+        } else {
+          throw new Error("Network response was not ok.");
+        }
       } catch (error) {
         console.error("Error submitting form:", error);
         alert("There was an error submitting your information. Please try again later.");
