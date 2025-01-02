@@ -539,124 +539,90 @@
     /* ==========================
        CONTACT FORM SUBMISSION TO GOOGLE SHEETS
        ========================== */
-    function submitContactForm(event) {
-      event.preventDefault(); // Prevent the default form submission
+   
+<script>
+  /* ... existing JavaScript code ... */
 
-      // Gather contact form data
-      const firstName = document.getElementById('first-name').value;
-      const lastName = document.getElementById('last-name').value;
-      const email = document.getElementById('email').value;
-      const phone = document.getElementById('phone').value;
-      const state = document.getElementById('state').value;
-      const age = document.getElementById('age').value;
-      const insuranceType = document.getElementById('insuranceType').value;
+  /* ==========================
+     CONTACT FORM SUBMISSION TO GOOGLE SHEETS
+     ========================== */
+  function submitContactForm(event) {
+    event.preventDefault(); // Prevent the default form submission
 
-      // Determine the amount of insurance based on the selected type
-      let amountOfInsurance = '';
-      if (insuranceType === 'term' || insuranceType === 'whole' || insuranceType === 'universal' || insuranceType === 'fixed-annuity') {
-        amountOfInsurance = document.getElementById('shared-amount').value;
-      } else if (insuranceType === 'final') {
-        amountOfInsurance = document.getElementById('finalExpenseAmount').value;
+    // Gather contact form data
+    const firstName = document.getElementById('first-name').value;
+    const lastName = document.getElementById('last-name').value;
+    const email = document.getElementById('email').value;
+    const phone = document.getElementById('phone').value;
+    const state = document.getElementById('state').value;
+    const age = document.getElementById('age').value;
+    const insuranceType = document.getElementById('insuranceType').value;
+
+    // Determine the amount of insurance based on the selected type
+    let amountOfInsurance = '';
+    if (insuranceType === 'term' || insuranceType === 'whole' || insuranceType === 'universal' || insuranceType === 'fixed-annuity') {
+      amountOfInsurance = document.getElementById('shared-amount').value;
+    } else if (insuranceType === 'final') {
+      amountOfInsurance = document.getElementById('finalExpenseAmount').value;
+    } else {
+      amountOfInsurance = 'N/A'; // For LTC and Disability Insurance
+    }
+
+    // Prepare the FormData
+    const formData = new FormData();
+    formData.append('income', document.getElementById('income').value);
+    formData.append('debt', document.getElementById('debt').value);
+    formData.append('savings', document.getElementById('savings').value);
+    formData.append('existingInsurance', document.getElementById('existing-insurance').value);
+    formData.append('numChildren', document.getElementById('num-children').value);
+    formData.append('collegeType', document.getElementById('college-type').value);
+    formData.append('firstName', firstName);
+    formData.append('lastName', lastName);
+    formData.append('email', email);
+    formData.append('phone', phone);
+    formData.append('state', state);
+    formData.append('age', age);
+    formData.append('insuranceType', insuranceType);
+    formData.append('amountOfInsurance', amountOfInsurance);
+
+    console.log("Submitting Contact Form Data:", Object.fromEntries(formData));
+
+    // Replace 'YOUR_WEB_APP_URL' with your actual Google Apps Script Web App URL
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbz50UAjv-IKhW6FSVdgtVuklkzIVDCEDzHsburiO2uTfFgFWpsTAWZdoZTCbqeg2i0-/exec';
+
+    // Send the data to Google Sheets
+    fetch(scriptURL, {
+      method: 'POST',
+      body: formData
+    })
+    .then(response => response.text())
+    .then(response => {
+      console.log("Response from Google Sheets:", response);
+      if (response.trim() === 'success') {
+        // Show a success message
+        alert('Your data has been successfully submitted!');
+        // Reset the contact form
+        event.target.reset();
+        // Disable the Submit button again
+        document.getElementById('submit-btn').disabled = true;
+        console.log("Contact form reset and submit button disabled.");
+        // Hide the contact form after submission
+        document.querySelector(".contact-form").style.display = "none";
       } else {
-        amountOfInsurance = 'N/A'; // For LTC and Disability Insurance
-      }
-
-      // Prepare the data object
-      const data = {
-        income: document.getElementById('income').value,
-        debt: document.getElementById('debt').value,
-        savings: document.getElementById('savings').value,
-        existingInsurance: document.getElementById('existing-insurance').value,
-        numChildren: document.getElementById('num-children').value,
-        collegeType: document.getElementById('college-type').value,
-        firstName: firstName,
-        lastName: lastName,
-        email: email,
-        phone: phone,
-        state: state,
-        age: age,
-        insuranceType: insuranceType,
-        amountOfInsurance: amountOfInsurance
-      };
-
-      console.log("Submitting Contact Form Data:", data);
-
-      // Replace 'YOUR_WEB_APP_URL' with your actual Google Apps Script Web App URL
-      const scriptURL = 'https://script.google.com/macros/s/AKfycbz50UAjv-IKhW6FSVdgtVuklkzIVDCEDzHsburiO2uTfFgFWpsTAWZdoZTCbqeg2i0-/exec';
-
-      // Send the data to Google Sheets
-      fetch(scriptURL, {
-        method: 'POST',
-        mode: 'cors',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(data)
-      })
-      .then(response => response.json())
-      .then(response => {
-        console.log("Response from Google Sheets:", response);
-        if (response.result === 'success') {
-          // Optionally, show a success message or perform other actions
-          alert('Your data has been successfully submitted!');
-          // Reset the contact form
-          event.target.reset();
-          // Disable the Submit button again
-          document.getElementById('submit-btn').disabled = true;
-          console.log("Contact form reset and submit button disabled.");
-          // Optionally, hide the contact form after submission
-          document.querySelector(".contact-form").style.display = "none";
-        } else {
-          console.error('Submission failed:', response);
-          alert('There was an error submitting your data. Please try again.');
-        }
-      })
-      .catch(error => {
-        console.error('Error during submission:', error);
+        console.error('Submission failed:', response);
         alert('There was an error submitting your data. Please try again.');
-      });
-    }
-
-    function closeContactForm() {
-      document.querySelector(".contact-form").style.display = "none";
-      console.log("Contact form closed.");
-    }
-
-    document.addEventListener("DOMContentLoaded", () => {
-      // Initially hide contact form
-      document.querySelector(".contact-form").style.display = "none";
-      console.log("Contact form initially hidden.");
-
-      // Add error div under the calculator
-      const calcWrapper = document.querySelector(".calculator-section form");
-      const errorDiv = document.createElement("div");
-      errorDiv.id = "calcError";
-      errorDiv.style.color = "red";
-      calcWrapper.appendChild(errorDiv);
-      console.log("Error div for calculator appended.");
-
-      // Calculator form validation triggers
-      const calculatorInputs = document.querySelectorAll(
-        "#income, #debt, #savings, #existing-insurance, #num-children, #college-type"
-      );
-      calculatorInputs.forEach((input) => {
-        input.addEventListener("input", validateCalculatorForm);
-        input.addEventListener("change", validateCalculatorForm);
-      });
-      validateCalculatorForm(); // initial check
-      console.log("Calculator form validation initialized.");
-
-      // Contact form validation triggers
-      const contactInputs = document.querySelectorAll(
-        "#first-name, #last-name, #email, #phone, #state, #age, #insuranceType, #shared-amount, #finalExpenseAmount, #agree"
-      );
-      contactInputs.forEach((input) => {
-        input.addEventListener("input", updateSubmitButton);
-        input.addEventListener("change", updateSubmitButton);
-      });
-      console.log("Contact form validation initialized.");
+      }
+    })
+    .catch(error => {
+      console.error('Error during submission:', error);
+      alert('There was an error submitting your data. Please try again.');
     });
-  </script>
+  }
+
+  /* ... existing JavaScript code ... */
+</script>
+
+    
   <!-- End of File #2 code integration -->
 
   <meta data-intl-tel-input-cdn-path="intlTelInput/">
