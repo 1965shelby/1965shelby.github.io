@@ -209,6 +209,7 @@
       max-width: 600px;
       margin-left: auto;
       margin-right: auto;
+      display: none; /* Ensure it's hidden by default */
     }
     .contact-form label {
       font-weight: 600;
@@ -336,8 +337,12 @@
     /* ==========================
        CALCULATOR SUBMISSION
        ========================== */
+    let globalGapValue = 0; // Added global variable
+
     function submitCalculator(event) {
       event.preventDefault();
+      console.log("Submit Calculator Triggered");
+
       const fields = ["income", "debt", "savings", "existing-insurance"];
       for (let id of fields) {
         const val = parseAndCheckNegative(id);
@@ -378,9 +383,10 @@
       }
 
       // Calculate the gap
-const totalRequired = income / 0.05 + debt + totalCollegeCost - savings;
-const gap = totalRequired - existingInsurance;
-const gapValue = gap.toFixed(2); // Gap/Surplus value (positive/negative)
+      const totalRequired = income / 0.05 + debt + totalCollegeCost - savings;
+      const gap = totalRequired - insurance;
+      globalGapValue = gap.toFixed(2); // Store gapValue globally
+      const gapValue = globalGapValue; // For local use
 
       // Determine Surplus vs. Gap
       const resultsSection = document.getElementById("results");
@@ -564,23 +570,23 @@ const gapValue = gap.toFixed(2); // Gap/Surplus value (positive/negative)
       }
 
       // Prepare data to send
-   const data = {
-  income: income,
-  debt: debt,
-  savings: savings,
-  existingInsurance: existingInsurance,
-  numChildren: numChildren,
-  collegeType: collegeType,
-  firstName: firstName,
-  lastName: lastName,
-  email: email,
-  phone: phone,
-  state: state,
-  age: age,
-  insuranceType: insuranceType,
-  insuranceAmount: insuranceAmount,
-  gapValue: gapValue, // Gap/Surplus value only
-};
+      const data = {
+        income: income,
+        debt: debt,
+        savings: savings,
+        existingInsurance: existingInsurance,
+        numChildren: numChildren,
+        collegeType: collegeType,
+        firstName: firstName,
+        lastName: lastName,
+        email: email,
+        phone: phone,
+        state: state,
+        age: age,
+        insuranceType: insuranceType,
+        insuranceAmount: amountOfInsurance, // Corrected variable name
+        gapValue: globalGapValue, // Use the global variable
+      };
 
       try {
         // Replace 'YOUR_GOOGLE_APPS_SCRIPT_URL' with your actual Google Apps Script URL
@@ -1395,3 +1401,4 @@ const gapValue = gap.toFixed(2); // Gap/Surplus value (positive/negative)
   </footer>
 </body>
 </html>
+
