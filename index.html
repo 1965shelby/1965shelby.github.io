@@ -385,9 +385,7 @@ function submitCalculator(event) {
     totalCollegeCost = parseInt(children) * collegeCostPerChild;
   }
 
-  // Calculate the gap
-// Calculate the gap
-// Calculate the gap
+ // Calculate the gap
 const totalRequired = income / 0.05 + debt + totalCollegeCost - savings;
 const gap = totalRequired - insurance;
 globalGapValue = gap.toFixed(2); // Store gapValue globally
@@ -398,7 +396,7 @@ const resultsSection = document.getElementById("results");
 let message = "";
 let gapLabel = "";
 let gapClass = "";
-let gapDisplay = gap.toLocaleString(); // Always display the gap value with sign
+let gapDisplay = gap.toLocaleString(); // Removed Math.abs() to preserve negative sign
 
 if (gap < 0) {
     // Surplus scenario
@@ -413,7 +411,6 @@ if (gap < 0) {
       </p>`;
     gapLabel = "Surplus";
     gapClass = "highlight-green";
-    gapDisplay = `-${Math.abs(gap).toLocaleString()}`; // Corrected to show negative
 } else {
     // Gap scenario
     message = `
@@ -426,7 +423,6 @@ if (gap < 0) {
       </p>`;
     gapLabel = "Life Insurance Gap";
     gapClass = "highlight-red";
-    gapDisplay = gap < 0 ? `-${Math.abs(gap).toLocaleString()}` : gap.toLocaleString();
 }
 
 // Render results
@@ -437,7 +433,9 @@ resultsSection.innerHTML = `
       <p>Debt: $${debt.toLocaleString()}</p>
       <p>Savings: $${savings.toLocaleString()}</p>
       <p>Existing Insurance: $${insurance.toLocaleString()}</p>
-      <p>College Costs for ${children === "Not-Applicable" ? "0" : children} child(ren): $${totalCollegeCost.toLocaleString()}</p>
+      <p>College Costs for ${
+        children === "Not-Applicable" ? "0" : children
+      } child(ren): $${totalCollegeCost.toLocaleString()}</p>
       ${message}
       <p>
         <strong class="${gapClass}">
