@@ -336,10 +336,7 @@
       }
     }
 
-    /* ==========================
-       CALCULATOR SUBMISSION
-       ========================== */
-/* ==========================
+  /* ==========================
    CALCULATOR SUBMISSION
    ========================== */
 let globalGapValue = 0; // Added global variable
@@ -351,7 +348,7 @@ function submitCalculator(event) {
   const fields = ["income", "debt", "savings", "existing-insurance"];
   let negativeFound = false;
 
-  // Check for negatives
+  // Check for negatives in input fields
   for (let id of fields) {
     const val = parseAndCheckNegative(id);
     if (val < 0) {
@@ -402,6 +399,11 @@ function submitCalculator(event) {
   globalGapValue = gap.toFixed(2); // Store gapValue globally
   const gapDisplay = gap.toLocaleString(); // Retain negative sign if any
 
+  console.log("Total Required:", totalRequired);
+  console.log("Insurance:", insurance);
+  console.log("Gap:", gap);
+  console.log("Gap Display:", gapDisplay);
+
   // Determine Surplus vs. Gap
   const resultsSection = document.getElementById("results");
   let message = "";
@@ -437,6 +439,14 @@ function submitCalculator(event) {
     // gapDisplay is positive or zero
   }
 
+  // Format gapDisplay to place the negative sign before the dollar sign
+  let formattedGapDisplay = "";
+  if (gap < 0) {
+    formattedGapDisplay = `-$${Math.abs(gap).toLocaleString()}`;
+  } else {
+    formattedGapDisplay = `$${gapDisplay}`;
+  }
+
   // Render results
   resultsSection.innerHTML = `
     <div class="results-section">
@@ -451,7 +461,7 @@ function submitCalculator(event) {
       ${message}
       <p>
         <strong class="${gapClass}">
-          ${gapLabel}: $${gapDisplay}
+          ${gapLabel}: ${formattedGapDisplay}
         </strong>
       </p>
     </div>
@@ -460,6 +470,7 @@ function submitCalculator(event) {
   // Show the contact form
   document.querySelector(".contact-form").style.display = "block";
 }
+
 
     /* =====================================
        CONTACT FORM VALIDATION & LOGIC
