@@ -426,7 +426,7 @@ if (gap < 0) {
       </p>`;
     gapLabel = "Life Insurance Gap";
     gapClass = "highlight-red";
-    gapDisplay = gap.toLocaleString(); // Keep positive as is
+    gapDisplay = gap < 0 ? `-${Math.abs(gap).toLocaleString()}` : gap.toLocaleString();
 }
 
 // Render results
