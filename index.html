@@ -384,7 +384,7 @@ function submitCalculator(event) {
     totalCollegeCost = parseInt(children) * collegeCostPerChild;
   }
 
- // Calculate the gap
+// Calculate the gap
 const totalRequired = income / 0.05 + debt + totalCollegeCost - savings;
 const gap = totalRequired - insurance;
 globalGapValue = gap.toFixed(2); // Store gapValue globally
@@ -395,7 +395,9 @@ const resultsSection = document.getElementById("results");
 let message = "";
 let gapLabel = "";
 let gapClass = "";
-let gapDisplay = gap < 0 ? `-${Math.abs(gap).toLocaleString()}` : gap.toLocaleString(); // Fixed negative display issue
+
+// FIXED: Ensuring gapDisplay correctly reflects negative values
+let gapDisplay = gap < 0 ? `-${Math.abs(gap).toLocaleString()}` : gap.toLocaleString();
 
 if (gap < 0) {
     // Surplus scenario
@@ -446,7 +448,6 @@ resultsSection.innerHTML = `
 
 // Show the contact form
 document.querySelector(".contact-form").style.display = "block";
-
 
     /* =====================================
        CONTACT FORM VALIDATION & LOGIC
