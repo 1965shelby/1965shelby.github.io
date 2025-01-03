@@ -387,6 +387,7 @@ function submitCalculator(event) {
 
   // Calculate the gap
 // Calculate the gap
+// Calculate the gap
 const totalRequired = income / 0.05 + debt + totalCollegeCost - savings;
 const gap = totalRequired - insurance;
 globalGapValue = gap.toFixed(2); // Store gapValue globally
@@ -397,53 +398,53 @@ const resultsSection = document.getElementById("results");
 let message = "";
 let gapLabel = "";
 let gapClass = "";
-let gapDisplay = gap.toLocaleString(); // Display the gap value with sign
+let gapDisplay = gap.toLocaleString(); // Always display the gap value with sign
 
 if (gap < 0) {
-  // Surplus scenario
-  message = `
-    <p class="highlight-green">
-      Based on this preliminary analysis, it appears you have sufficient 
-      life insurance coverage. However, as this is a simplified assessment, 
-      we recommend connecting with a registered representative from your state. 
-      They can review your risk tolerance and conduct a comprehensive needs analysis 
-      to ensure your coverage fully aligns with your needs. Please complete the form below 
-      to get started.
-    </p>`;
-  gapLabel = "Surplus";
-  gapClass = "highlight-green";
+    // Surplus scenario
+    message = `
+      <p class="highlight-green">
+        Based on this preliminary analysis, it appears you have sufficient 
+        life insurance coverage. However, as this is a simplified assessment, 
+        we recommend connecting with a registered representative from your state. 
+        They can review your risk tolerance and conduct a comprehensive needs analysis 
+        to ensure your coverage fully aligns with your needs. Please complete the form below 
+        to get started.
+      </p>`;
+    gapLabel = "Surplus";
+    gapClass = "highlight-green";
+    gapDisplay = `-${Math.abs(gap).toLocaleString()}`; // Corrected to show negative
 } else {
-  // Gap scenario
-  message = `
-    <p class="highlight-red">
-      Based on this analysis, it appears you may have a life insurance coverage gap 
-      and may benefit from exploring additional coverage options. We can connect you 
-      with a registered representative in your state to perform a comprehensive needs 
-      analysis and evaluate your risk tolerance, ensuring you receive coverage tailored 
-      to your individual circumstances.
-    </p>`;
-  gapLabel = "Life Insurance Gap";
-  gapClass = "highlight-red";
+    // Gap scenario
+    message = `
+      <p class="highlight-red">
+        Based on this analysis, it appears you may have a life insurance coverage gap 
+        and may benefit from exploring additional coverage options. We can connect you 
+        with a registered representative in your state to perform a comprehensive needs 
+        analysis and evaluate your risk tolerance, ensuring you receive coverage tailored 
+        to your individual circumstances.
+      </p>`;
+    gapLabel = "Life Insurance Gap";
+    gapClass = "highlight-red";
+    gapDisplay = gap.toLocaleString(); // Keep positive as is
 }
 
 // Render results
 resultsSection.innerHTML = `
-  <div class="results-section">
-    <h3>Analysis Results</h3>
-    <p>Income Replacement Need: $${(income / 0.05).toLocaleString()}</p>
-    <p>Debt: $${debt.toLocaleString()}</p>
-    <p>Savings: $${savings.toLocaleString()}</p>
-    <p>Existing Insurance: $${insurance.toLocaleString()}</p>
-    <p>College Costs for ${
-      children === "Not-Applicable" ? "0" : children
-    } child(ren): $${totalCollegeCost.toLocaleString()}</p>
-    ${message}
-    <p>
-      <strong class="${gapClass}">
-        ${gapLabel}: $${gapDisplay}
-      </strong>
-    </p>
-  </div>
+    <div class="results-section">
+      <h3>Analysis Results</h3>
+      <p>Income Replacement Need: $${(income / 0.05).toLocaleString()}</p>
+      <p>Debt: $${debt.toLocaleString()}</p>
+      <p>Savings: $${savings.toLocaleString()}</p>
+      <p>Existing Insurance: $${insurance.toLocaleString()}</p>
+      <p>College Costs for ${children === "Not-Applicable" ? "0" : children} child(ren): $${totalCollegeCost.toLocaleString()}</p>
+      ${message}
+      <p>
+        <strong class="${gapClass}">
+          ${gapLabel}: $${gapDisplay}
+        </strong>
+      </p>
+    </div>
 `;
 
   // Show the contact form
