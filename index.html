@@ -384,20 +384,20 @@ function submitCalculator(event) {
     totalCollegeCost = parseInt(children) * collegeCostPerChild;
   }
 
-  // Calculate the gap
-  const totalRequired = income / 0.05 + debt + totalCollegeCost - savings;
-  const gap = totalRequired - insurance;
-  globalGapValue = gap.toFixed(2); // Store gapValue globally
-  const gapValue = globalGapValue; // For local use
+ // Calculate the gap
+const totalRequired = income / 0.05 + debt + totalCollegeCost - savings;
+const gap = totalRequired - insurance;
+globalGapValue = gap.toFixed(2); // Store gapValue globally
+const gapValue = globalGapValue; // For local use
 
-  // Determine Surplus vs. Gap
-  const resultsSection = document.getElementById("results");
-  let message = "";
-  let gapLabel = "";
-  let gapClass = "";
-  let gapDisplay = gap.toLocaleString(); // Corrected to preserve negative values
+// Determine Surplus vs. Gap
+const resultsSection = document.getElementById("results");
+let message = "";
+let gapLabel = "";
+let gapClass = "";
+let gapDisplay = gap < 0 ? `-${Math.abs(gap).toLocaleString()}` : gap.toLocaleString(); // Fixed negative display issue
 
-  if (gap < 0) {
+if (gap < 0) {
     // Surplus scenario
     message = `
       <p class="highlight-green">
@@ -410,7 +410,7 @@ function submitCalculator(event) {
       </p>`;
     gapLabel = "Surplus";
     gapClass = "highlight-green";
-  } else {
+} else {
     // Gap scenario
     message = `
       <p class="highlight-red">
@@ -422,10 +422,10 @@ function submitCalculator(event) {
       </p>`;
     gapLabel = "Life Insurance Gap";
     gapClass = "highlight-red";
-  }
+}
 
-  // Render results
-  resultsSection.innerHTML = `
+// Render results
+resultsSection.innerHTML = `
     <div class="results-section">
       <h3>Analysis Results</h3>
       <p>Income Replacement Need: $${(income / 0.05).toLocaleString()}</p>
@@ -444,11 +444,8 @@ function submitCalculator(event) {
     </div>
 `;
 
-  // Show the contact form
-  document.querySelector(".contact-form").style.display = "block";
-}
-
-
+// Show the contact form
+document.querySelector(".contact-form").style.display = "block";
 
 
     /* =====================================
