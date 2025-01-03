@@ -397,34 +397,35 @@
       let gapClass = "";
       let gapDisplay = 0;
 
-      if (gap < 0) {
-        // Surplus scenario
-        message = `
-          <p class="highlight-green">
-            Based on this preliminary analysis, it appears you have sufficient 
-            life insurance coverage. However, as this is a simplified assessment, 
-            we recommend connecting with a registered representative from your state. 
-            They can review your risk tolerance and conduct a comprehensive needs analysis 
-            to ensure your coverage fully aligns with your needs. Please complete the form below 
-            to get started.
-          </p>`;
-        gapLabel = "Surplus";
-        gapClass = "highlight-green";
-        gapDisplay = Math.abs(gap).toLocaleString(); // Show as positive with commas
-      } else {
-        // Gap scenario
-        message = `
-          <p class="highlight-red">
-            Based on this analysis, it appears you may have a life insurance coverage gap 
-            and may benefit from exploring additional coverage options. We can connect you 
-            with a registered representative in your state to perform a comprehensive needs 
-            analysis and evaluate your risk tolerance, ensuring you receive coverage tailored 
-            to your individual circumstances.
-          </p>`;
-        gapLabel = "Life Insurance Gap";
-        gapClass = "highlight-red";
-        gapDisplay = gap === 0 ? "0" : gap.toLocaleString(); // Show as is
-      }
+   if (gap < 0) {
+  // Surplus scenario
+  message = `
+    <p class="highlight-green">
+      Based on this preliminary analysis, it appears you have sufficient 
+      life insurance coverage. However, as this is a simplified assessment, 
+      we recommend connecting with a registered representative from your state. 
+      They can review your risk tolerance and conduct a comprehensive needs analysis 
+      to ensure your coverage fully aligns with your needs. Please complete the form below 
+      to get started.
+    </p>`;
+  gapLabel = "Surplus";
+  gapClass = "highlight-green";
+  gapDisplay = gap.toLocaleString(); // Display negative number as is
+} else {
+  // Gap scenario
+  message = `
+    <p class="highlight-red">
+      Based on this analysis, it appears you may have a life insurance coverage gap 
+      and may benefit from exploring additional coverage options. We can connect you 
+      with a registered representative in your state to perform a comprehensive needs 
+      analysis and evaluate your risk tolerance, ensuring you receive coverage tailored 
+      to your individual circumstances.
+    </p>`;
+  gapLabel = "Life Insurance Gap";
+  gapClass = "highlight-red";
+  gapDisplay = gap === 0 ? "0" : gap.toLocaleString(); // Displays gap as positive
+}
+
 
       // Render results
       resultsSection.innerHTML = `
