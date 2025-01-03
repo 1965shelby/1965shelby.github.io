@@ -427,24 +427,87 @@
       }
 
       // Render results
-      resultsSection.innerHTML = `
+   /* ===========================================
+   HELPER: Parse Float & Allow Negatives
+   =========================================== */
+function parseAndCheckNegative(fieldId) {
+    const raw = document.getElementById(fieldId).value.replace(/[^\d.-]/g, "");
+    const parsed = parseFloat(raw);
+    return isNaN(parsed) ? 0 : parsed; // Allow negative values
+}
+
+/* ==========================
+   CALCULATOR VALIDATION
+   ========================== */
+function validateCalculatorForm() {
+    const fields = ["income", "debt", "savings", "existing-insurance"];
+    let isValid = true;
+
+    for (let id of fields) {
+        const val = parseAndCheckNegative(id);
+        if (isNaN(val)) {
+            isValid = false;
+        }
+    }
+
+    const incomeVal = document.getElementById("income").value.trim();
+    const debtVal = document.getElementById("debt").value.trim();
+    const savingsVal = document.getElementById("savings").value.trim();
+    const existingVal = document.getElementById("existing-insurance").value.trim();
+    const numChildren = document.getElementById("num-children").value;
+    const collegeType = document.getElementById("college-type").value;
+
+    isValid = isValid && incomeVal && debtVal && savingsVal && existingVal && numChildren && collegeType;
+
+    const submitButton = document.querySelector(".calculator-section button[type='submit']");
+    submitButton.disabled = !isValid;
+}
+
+/* ==========================
+   CALCULATOR SUBMISSION
+   ========================== */
+function submitCalculator(event) {
+    event.preventDefault();
+
+    const income = parseAndCheckNegative("income");
+    const debt = parseAndCheckNegative("debt");
+    const savings = parseAndCheckNegative("savings");
+    const insurance = parseAndCheckNegative("existing-insurance");
+
+    const children = document.getElementById("num-children").value;
+    const collegeType = document.getElementById("college-type").value;
+
+    let collegeCostPerChild = collegeType === "state" ? 144000 : 280000;
+    let totalCollegeCost = (children !== "Not-Applicable" && children !== "") ? parseInt(children) * collegeCostPerChild : 0;
+
+    const totalRequired = income / 0.05 + debt + totalCollegeCost - savings;
+    const gap = totalRequired - insurance;
+
+    const resultsSection = document.getElementById("results");
+    let message = gap >= 0 ? `<p class="highlight-red">You have a coverage gap of $${gap.toFixed(2)}.</p>` : `<p class="highlight-green">You have a surplus of $${gap.toFixed(2)}.</p>`;
+
+    resultsSection.innerHTML = `
         <div class="results-section">
-          <h3>Analysis Results</h3>
-          <p>Income Replacement Need: $${(income / 0.05).toLocaleString()}</p>
-          <p>Debt: $${debt.toLocaleString()}</p>
-          <p>Savings: $${savings.toLocaleString()}</p>
-          <p>Existing Insurance: $${insurance.toLocaleString()}</p>
-          <p>College Costs for ${
-            children === "Not-Applicable" ? "0" : children
-          } child(ren): $${totalCollegeCost.toLocaleString()}</p>
-          ${message}
-          <p>
-            <strong class="${gapClass}">
-              ${gapLabel}: $${gapDisplay}
-            </strong>
-          </p>
-        </div>
-      `;
+            <h3>Analysis Results</h3>
+            <p>Total Required Coverage: $${totalRequired.toFixed(2)}</p>
+            <p>Income: $${income.toFixed(2)}</p>
+            <p>Debt: $${debt.toFixed(2)}</p>
+            <p>Savings: $${savings.toFixed(2)}</p>
+            <p>Existing Insurance: $${insurance.toFixed(2)}</p>
+            ${message}
+        </div>`;
+
+    document.querySelector(".contact-form").style.display = "block";
+}
+
+/* Attach validation */
+document.addEventListener("DOMContentLoaded", function () {
+    document.querySelectorAll("#income, #debt, #savings, #existing-insurance, #num-children, #college-type").forEach(input => {
+        input.addEventListener("input", validateCalculatorForm);
+    });
+    validateCalculatorForm();
+});
+
 
       // Show the contact form
       document.querySelector(".contact-form").style.display = "block";
