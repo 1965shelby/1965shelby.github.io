@@ -15,8 +15,8 @@
   
   <!-- ===== SCRIPTS ===== -->
   <!-- jQuery and Nicepage JS -->
-  <script class="u-script" type="text/javascript" src="jquery-1.9.1.min.js" defer=""></script>
-  <script class="u-script" type="text/javascript" src="nicepage.js" defer=""></script>
+  <script class="u-script" type="text/javascript" src="jquery-1.9.1.min.js" defer></script>
+  <script class="u-script" type="text/javascript" src="nicepage.js" defer></script>
   
   <!-- ===== GOOGLE FONTS ===== -->
   <link id="u-theme-google-font" rel="stylesheet" href="https://fonts.googleapis.com/css?family=Oswald:200,300,400,500,600,700|Open+Sans:300,300i,400,400i,500,500i,600,600i,700,700i,800,800i">
@@ -35,13 +35,14 @@
   <script>
     // Function to confirm GDPR compliance
     function gdprConfirmed() {
-        return true;
+        return true; // Modify this function based on your GDPR compliance logic
     }
 
     // Function to dynamically load the reCAPTCHA script
     function dynamicLoadScript() {
         var script = document.createElement('script');
-        script.src = 'https://www.google.com/recaptcha/api.js?render='6Lf_qqcqAAAAAFF_woYz7bR80hzzUjmgFzIHOEsZ'; // Replace with your site key
+        // Corrected the syntax by removing the extra single quotes around the site key
+        script.src = 'https://www.google.com/recaptcha/api.js?render=6Lf_qqcqAAAAAFF_woYz7bR80hzzUjmgFzIHOEsZ'; // Replace with your actual site key
         script.async = true;
         document.body.appendChild(script);
         script.onload = function() {
@@ -50,20 +51,18 @@
         };
     }
 
-    // Event listener for DOMContentLoaded to handle GDPR and load reCAPTCHA
+    // Consolidated DOMContentLoaded event listener for better management
     document.addEventListener('DOMContentLoaded', function () {
+        // Handle GDPR compliance and load reCAPTCHA if confirmed
+        if (gdprConfirmed()) {
+            dynamicLoadScript();
+        }
+
+        // Handle cookie consent button to load reCAPTCHA upon confirmation
         var confirmButton = document.querySelector('.u-cookies-consent .u-button-confirm');
         if (confirmButton) {
             confirmButton.onclick = dynamicLoadScript;
         }
-    });
-
-    // Load reCAPTCHA if GDPR is confirmed
-    document.addEventListener("DOMContentLoaded", function(){
-        if (!gdprConfirmed()) {
-            return;
-        }
-        dynamicLoadScript();
     });
 
     // Event listener for when reCAPTCHA is loaded
@@ -99,13 +98,16 @@
                 },
                 executeContact: function (submitFormCb) {
                     recaptcha.execute(actions['contact'], submitFormCb);
+                },
+                executeFooter: function (submitFormCb) { // Added method for footer form
+                    recaptcha.execute(actions['footer'], submitFormCb);
                 }
             };
             window.recaptchaObject = recaptcha;
         })(
             grecaptcha,
-            '6Lf_qqcqAAAAAFF_woYz7bR80hzzUjmgFzIHOEsZ', // Replace with your site key
-            {'contact': 'contact'}
+            '6Lf_qqcqAAAAAFF_woYz7bR80hzzUjmgFzIHOEsZ', // Replace with your actual site key
+            {'contact': 'contact', 'footer': 'footer'} // Added 'footer' action
         );
     });
   </script>
@@ -544,70 +546,80 @@
         return;
       }
 
-      // Collect Calculator Data
-      const income = document.getElementById("income").value.trim();
-      const debt = document.getElementById("debt").value.trim();
-      const savings = document.getElementById("savings").value.trim();
-      const existingInsurance = document.getElementById("existing-insurance").value.trim();
-      const numChildren = document.getElementById("num-children").value;
-      const collegeType = document.getElementById("college-type").value;
+      // Execute reCAPTCHA before submitting the form
+      if (window.recaptchaObject && window.recaptchaObject.executeContact) {
+        window.recaptchaObject.executeContact(async function() {
+          // Collect reCAPTCHA token
+          const recaptchaToken = document.querySelector('.contact-form [name="recaptchaResponse"]').value;
 
-      // Collect Contact Form Data
-      const firstName = document.getElementById("first-name").value.trim();
-      const lastName = document.getElementById("last-name").value.trim();
-      const email = document.getElementById("email").value.trim();
-      const phone = document.getElementById("phone").value.trim();
-      const state = document.getElementById("state").value;
-      const age = document.getElementById("age").value;
-      const insuranceType = document.getElementById("insuranceType").value;
-      let amountOfInsurance = "";
+          // Collect Calculator Data
+          const income = document.getElementById("income").value.trim();
+          const debt = document.getElementById("debt").value.trim();
+          const savings = document.getElementById("savings").value.trim();
+          const existingInsurance = document.getElementById("existing-insurance").value.trim();
+          const numChildren = document.getElementById("num-children").value;
+          const collegeType = document.getElementById("college-type").value;
 
-      // Determine the amount of insurance based on insurance type
-      if (insuranceType === "term" || insuranceType === "whole" || insuranceType === "universal" || insuranceType === "fixed-annuity") {
-        amountOfInsurance = document.getElementById("shared-amount").value;
-      } else if (insuranceType === "final") {
-        amountOfInsurance = document.getElementById("finalExpenseAmount").value;
-      }
+          // Collect Contact Form Data
+          const firstName = document.getElementById("first-name").value.trim();
+          const lastName = document.getElementById("last-name").value.trim();
+          const email = document.getElementById("email").value.trim();
+          const phone = document.getElementById("phone").value.trim();
+          const state = document.getElementById("state").value;
+          const age = document.getElementById("age").value;
+          const insuranceType = document.getElementById("insuranceType").value;
+          let amountOfInsurance = "";
 
-      // Prepare data to send
-      const data = {
-        income: income,
-        debt: debt,
-        savings: savings,
-        existingInsurance: existingInsurance,
-        numChildren: numChildren,
-        collegeType: collegeType,
-        firstName: firstName,
-        lastName: lastName,
-        email: email,
-        phone: phone,
-        state: state,
-        age: age,
-        insuranceType: insuranceType,
-        insuranceAmount: amountOfInsurance, // Corrected variable name
-        gapValue: globalGapValue, // Use the global variable
-      };
+          // Determine the amount of insurance based on insurance type
+          if (insuranceType === "term" || insuranceType === "whole" || insuranceType === "universal" || insuranceType === "fixed-annuity") {
+            amountOfInsurance = document.getElementById("shared-amount").value;
+          } else if (insuranceType === "final") {
+            amountOfInsurance = document.getElementById("finalExpenseAmount").value;
+          }
 
-      try {
-        // Replace 'YOUR_GOOGLE_APPS_SCRIPT_URL' with your actual Google Apps Script Web App URL
-        const response = await fetch('https://script.google.com/macros/s/AKfycbzr0XEdPaezm4PhVOne2aYExbYovhT83S7XBv9eYH9LMRAn5ogTTSTVNmlROPWdsI6V/exec', { // e.g., 'https://script.google.com/macros/s/XXXXXXXXXXXXXXX/exec'
-          method: 'POST',
-          mode: 'no-cors', // 'no-cors' allows the request to be sent but doesn't allow you to read the response
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
-          },
-          body: new URLSearchParams(data)
+          // Prepare data to send
+          const data = {
+            income: income,
+            debt: debt,
+            savings: savings,
+            existingInsurance: existingInsurance,
+            numChildren: numChildren,
+            collegeType: collegeType,
+            firstName: firstName,
+            lastName: lastName,
+            email: email,
+            phone: phone,
+            state: state,
+            age: age,
+            insuranceType: insuranceType,
+            insuranceAmount: amountOfInsurance, // Corrected variable name
+            gapValue: globalGapValue, // Use the global variable
+            recaptchaToken: recaptchaToken // Include the reCAPTCHA token
+          };
+
+          try {
+            // Replace 'YOUR_GOOGLE_APPS_SCRIPT_URL' with your actual Google Apps Script Web App URL
+            const response = await fetch('https://script.google.com/macros/s/AKfycbzr0XEdPaezm4PhVOne2aYExbYovhT83S7XBv9eYH9LMRAn5ogTTSTVNmlROPWdsI6V/exec', { // e.g., 'https://script.google.com/macros/s/XXXXXXXXXXXXXXX/exec'
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+              },
+              body: new URLSearchParams(data)
+            });
+
+            // Assuming server-side handles the response appropriately
+            alert("Your information has been submitted successfully!");
+            // Optionally, reset the forms
+            document.querySelector(".contact-form").reset();
+            document.querySelector(".contact-form").style.display = "none";
+            document.getElementById("results").innerHTML = "";
+          } catch (error) {
+            console.error("Error submitting form:", error);
+            alert("There was an error submitting your information. Please try again later.");
+          }
         });
-
-        // Since 'no-cors' doesn't allow reading the response, assume success if no network error occurs
-        alert("Your information has been submitted successfully!");
-        // Optionally, reset the forms
-        document.querySelector(".contact-form").reset();
-        document.querySelector(".contact-form").style.display = "none";
-        document.getElementById("results").innerHTML = "";
-      } catch (error) {
-        console.error("Error submitting form:", error);
-        alert("There was an error submitting your information. Please try again later.");
+      } else {
+        alert("reCAPTCHA is not ready. Please try again later.");
       }
     }
 
@@ -647,6 +659,66 @@
       // Attach the contact form submission handler
       const contactForm = document.querySelector(".contact-form");
       contactForm.addEventListener("submit", handleContactForm);
+
+      // Handle Footer Form Submission
+      const footerForm = document.getElementById("footer-form");
+      if (footerForm) {
+        footerForm.addEventListener("submit", function(event) {
+          event.preventDefault();
+
+          // Validate footer form if needed
+
+          if (window.recaptchaObject && window.recaptchaObject.executeFooter) {
+            window.recaptchaObject.executeFooter(async function() {
+              // Collect reCAPTCHA token
+              const recaptchaToken = document.querySelector('#footer-form [name="recaptchaResponse"]').value;
+
+              // Collect Footer Form Data
+              const name = document.getElementById("name-2005").value.trim();
+              const lastName = document.getElementById("text-cc81").value.trim();
+              const email = document.getElementById("email-2005").value.trim();
+              const select = document.getElementById("select-3533").value;
+              const state = document.getElementById("select-76e6").value;
+              const textarea = document.getElementById("textarea-7463").value.trim();
+
+              // Prepare data to send
+              const data = {
+                name: name,
+                lastName: lastName,
+                email: email,
+                select: select,
+                state: state,
+                textarea: textarea,
+                recaptchaToken: recaptchaToken // Include the reCAPTCHA token
+              };
+
+              try {
+                // Submit the footer form via fetch
+                const response = await fetch(footerForm.action, {
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                  },
+                  body: new URLSearchParams(data)
+                });
+
+                // Since 'no-cors' is removed, handle response appropriately
+                if (response.ok) {
+                  alert("Footer form submitted successfully!");
+                  footerForm.reset();
+                } else {
+                  throw new Error('Network response was not ok.');
+                }
+              } catch (error) {
+                console.error("Error submitting footer form:", error);
+                alert("There was an error submitting the form. Please try again later.");
+              }
+            });
+          } else {
+            alert("reCAPTCHA is not ready. Please try again later.");
+          }
+        });
+      }
     });
   </script>
   <!-- End of File #2 code integration -->
@@ -1201,7 +1273,7 @@
                   Let's get your questions answered by a Registered Representative Now!!
                 </h2>
                 <div class="custom-expanded u-form u-grey-5 u-form-1">
-                  <form action="https://forms.nicepagesrv.com/v2/form/process"
+                  <form id="footer-form" action="https://forms.nicepagesrv.com/v2/form/process"
                         class="u-clearfix u-form-spacing-20 u-form-vertical u-inner-form"
                         source="email"
                         name="form-1"
