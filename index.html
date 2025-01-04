@@ -1450,38 +1450,31 @@ resultsSection.innerHTML = `
    // sunsection 14
 function doPost(e) {
   try {
-    Logger.log("Incoming data: " + JSON.stringify(e.parameter));  // Log for debugging
+    Logger.log("Incoming data: " + JSON.stringify(e.parameter));
 
-    // Open the Google Sheet and confirm access
     var sheet = SpreadsheetApp.openById("1uw3ZKOQALxYErRkob4ClBV9QS-ALKgKyH1QqHkn6S8A").getSheetByName("FormII");
-    if (!sheet) throw new Error("Sheet 'FormII' not found. Verify sheet name.");
+    if (!sheet) throw new Error("Sheet 'FormII' not found.");
 
-    // Extract data and validate required fields
     var data = e.parameter;
     var requiredFields = ["name", "lastname", "email", "insurance-type", "state", "details"];
     
-    for (var i = 0; i < requiredFields.length; i++) {
-      if (!data[requiredFields[i]]) {
-        throw new Error("Missing field: " + requiredFields[i]);
-      }
-    }
+    requiredFields.forEach(function(field) {
+      if (!data[field]) throw new Error("Missing field: " + field);
+    });
 
-    // Append data to Google Sheet with a timestamp
+    // Append the data correctly
     sheet.appendRow([
       new Date(),
-      data.name,
-      data.lastname,
-      data.email,
-      data["insurance-type"],
-      data.state,
-      data.details
+      data.name || "",
+      data.lastname || "",
+      data.email || "",
+      data["insurance-type"] || "",
+      data.state || "",
+      data.details || ""
     ]);
 
     Logger.log("Data successfully added to sheet.");
-
-    // Send response to confirm successful submission
     return ContentService.createTextOutput("Form submitted successfully!").setMimeType(ContentService.MimeType.TEXT);
-
   } catch (error) {
     Logger.log("Error: " + error.message);
     return ContentService.createTextOutput("Error: " + error.message).setMimeType(ContentService.MimeType.TEXT);
