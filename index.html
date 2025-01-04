@@ -1451,7 +1451,7 @@ resultsSection.innerHTML = `
 function doPost(e) {
   try {
     // Open the Google Sheet by ID and get the sheet named "FormII"
-    var sheet = SpreadsheetApp.openById("1v3e_-J6aL0MRAWQqPQjpP4cofvk1332idkHZvwzaGgrZPJTf1_rBOzRx").getSheetByName("FormII");
+    var sheet = SpreadsheetApp.openById("1uw3ZKOQALxYErRkob4ClBV9QS-ALKgKyH1QqHkn6S8A").getSheetByName("FormII");
 
     // Check if the sheet exists
     if (!sheet) {
@@ -1478,7 +1478,7 @@ function doPost(e) {
     ]);
 
     // Send data to the specified Google Apps Script URL
-    var response = UrlFetchApp.fetch("https://script.google.com/macros/s/AKfycbxLGOoOqSTfc6fIHCYaoEhQfKS-fyJC3hLdUbkqQWXWThWouk4b_suUkPfbsSqaOFIY/exec", {
+    var response = UrlFetchApp.fetch("https://script.google.com/macros/s/AKfycbzMa_RKSdiTJmV0tkDxA4r86v9UASOJlbw4zrlb-cjlLXWo8PeSs4LqET3ie_l3Lqtv/exec", {
       method: 'post',
       payload: data
     });
