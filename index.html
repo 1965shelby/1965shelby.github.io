@@ -1451,23 +1451,22 @@ resultsSection.innerHTML = `
 <script>
 function doPost(e) {
   try {
-    // Open the Google Sheet by ID and get the sheet named "FormII"
+    Logger.log("Incoming data: " + JSON.stringify(e.parameter));  // Log for debugging
+
+    // Open the Google Sheet and confirm access
     var sheet = SpreadsheetApp.openById("1uw3ZKOQALxYErRkob4ClBV9QS-ALKgKyH1QqHkn6S8A").getSheetByName("FormII");
+    if (!sheet) throw new Error("Sheet 'FormII' not found. Verify sheet name.");
 
-    // Check if the sheet exists
-    if (!sheet) {
-      throw new Error("Sheet 'FormII' not found. Please check the sheet name.");
-    }
-
-    // Get data from the POST request
+    // Extract data and validate
     var data = e.parameter;
-
-    // Validate if all necessary fields are provided
-    if (!data.name || !data.lastname || !data.email || !data["insurance-type"] || !data.state || !data.details) {
-      throw new Error("Missing required form fields.");
+    var requiredFields = ["name", "lastname", "email", "insurance-type", "state", "details"];
+    for (var i = 0; i < requiredFields.length; i++) {
+      if (!data[requiredFields[i]]) {
+        throw new Error("Missing field: " + requiredFields[i]);
+      }
     }
 
-    // Append the data to the Google Sheet with the current timestamp
+    // Append the data to Google Sheet with a timestamp
     sheet.appendRow([
       new Date(),
       data.name,
@@ -1478,18 +1477,16 @@ function doPost(e) {
       data.details
     ]);
 
-    // Return a success message
+    Logger.log("Data successfully added to sheet.");
+
+    // Send response to confirm submission
     return ContentService.createTextOutput("Form submitted successfully!").setMimeType(ContentService.MimeType.TEXT);
 
   } catch (error) {
-    // Log the error for debugging in Google Apps Script execution log
     Logger.log("Error: " + error.message);
-
-    // Return error message to the user
     return ContentService.createTextOutput("Error: " + error.message).setMimeType(ContentService.MimeType.TEXT);
   }
 }
-</script>
 
 
   <!-- ===== SECTION 14 (Disclaimer) ===== -->
