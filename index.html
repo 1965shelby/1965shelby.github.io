@@ -336,128 +336,119 @@
       }
     }
 
+    /* ==========================
+       CALCULATOR SUBMISSION
+       ========================== */
+    let globalGapValue = 0; // Added global variable
 
-/* ==========================
-   CALCULATOR SUBMISSION
-   ========================== */
-let globalGapValue = 0; // Added global variable
+    function submitCalculator(event) {
+      event.preventDefault();
+      console.log("Submit Calculator Triggered");
 
-function submitCalculator(event) {
-  event.preventDefault();
-  console.log("Submit Calculator Triggered");
+      const fields = ["income", "debt", "savings", "existing-insurance"];
+      for (let id of fields) {
+        const val = parseAndCheckNegative(id);
+        if (val < 0) {
+          document.getElementById("calcError").textContent =
+            "No negative values allowed.";
+          return; // Stop if negative
+        }
+      }
 
-  const fields = ["income", "debt", "savings", "existing-insurance"];
-  for (let id of fields) {
-    const val = parseAndCheckNegative(id);
-    if (val < 0) {
-      document.getElementById("calcError").textContent =
-        "No negative values allowed.";
-      return; // Stop if negative
+      // Parse inputs
+      const income = parseFloat(
+        document.getElementById("income").value.replace(/[^\d.-]/g, "")
+      ) || 0;
+      const debt = parseFloat(
+        document.getElementById("debt").value.replace(/[^\d.-]/g, "")
+      ) || 0;
+      const savings = parseFloat(
+        document.getElementById("savings").value.replace(/[^\d.-]/g, "")
+      ) || 0;
+      const insurance = parseFloat(
+        document.getElementById("existing-insurance").value.replace(/[^\d.-]/g, "")
+      ) || 0;
+
+      const children = document.getElementById("num-children").value;
+      const collegeType = document.getElementById("college-type").value;
+
+      // Determine college cost
+      let collegeCostPerChild = 0;
+      if (collegeType === "state") {
+        collegeCostPerChild = 144000;
+      } else if (collegeType === "private") {
+        collegeCostPerChild = 280000;
+      }
+      let totalCollegeCost = 0;
+      if (children !== "Not-Applicable" && children !== "") {
+        totalCollegeCost = parseInt(children) * collegeCostPerChild;
+      }
+
+      // Calculate the gap
+      const totalRequired = income / 0.05 + debt + totalCollegeCost - savings;
+      const gap = totalRequired - insurance;
+      globalGapValue = gap.toFixed(2); // Store gapValue globally
+      const gapValue = globalGapValue; // For local use
+
+      // Determine Surplus vs. Gap
+      const resultsSection = document.getElementById("results");
+      let message = "";
+      let gapLabel = "";
+      let gapClass = "";
+      let gapDisplay = 0;
+
+      if (gap < 0) {
+        // Surplus scenario
+        message = `
+          <p class="highlight-green">
+            Based on this preliminary analysis, it appears you have sufficient 
+            life insurance coverage. However, as this is a simplified assessment, 
+            we recommend connecting with a registered representative from your state. 
+            They can review your risk tolerance and conduct a comprehensive needs analysis 
+            to ensure your coverage fully aligns with your needs. Please complete the form below 
+            to get started.
+          </p>`;
+        gapLabel = "Surplus";
+        gapClass = "highlight-green";
+        gapDisplay = Math.abs(gap).toLocaleString(); // Show as positive with commas
+      } else {
+        // Gap scenario
+        message = `
+          <p class="highlight-red">
+            Based on this analysis, it appears you may have a life insurance coverage gap 
+            and may benefit from exploring additional coverage options. We can connect you 
+            with a registered representative in your state to perform a comprehensive needs 
+            analysis and evaluate your risk tolerance, ensuring you receive coverage tailored 
+            to your individual circumstances.
+          </p>`;
+        gapLabel = "Life Insurance Gap";
+        gapClass = "highlight-red";
+        gapDisplay = gap === 0 ? "0" : gap.toLocaleString(); // Show as is
+      }
+
+      // Render results
+      resultsSection.innerHTML = `
+        <div class="results-section">
+          <h3>Analysis Results</h3>
+          <p>Income Replacement Need: $${(income / 0.05).toLocaleString()}</p>
+          <p>Debt: $${debt.toLocaleString()}</p>
+          <p>Savings: $${savings.toLocaleString()}</p>
+          <p>Existing Insurance: $${insurance.toLocaleString()}</p>
+          <p>College Costs for ${
+            children === "Not-Applicable" ? "0" : children
+          } child(ren): $${totalCollegeCost.toLocaleString()}</p>
+          ${message}
+          <p>
+            <strong class="${gapClass}">
+              ${gapLabel}: $${gapDisplay}
+            </strong>
+          </p>
+        </div>
+      `;
+
+      // Show the contact form
+      document.querySelector(".contact-form").style.display = "block";
     }
-  }
-
-  // Parse inputs
-  const income = parseFloat(
-    document.getElementById("income").value.replace(/[^\d.-]/g, "")
-  ) || 0;
-  const debt = parseFloat(
-    document.getElementById("debt").value.replace(/[^\d.-]/g, "")
-  ) || 0;
-  const savings = parseFloat(
-    document.getElementById("savings").value.replace(/[^\d.-]/g, "")
-  ) || 0;
-  const insurance = parseFloat(
-    document.getElementById("existing-insurance").value.replace(/[^\d.-]/g, "")
-  ) || 0;
-
-  const children = document.getElementById("num-children").value;
-  const collegeType = document.getElementById("college-type").value;
-
-  // Determine college cost
-  let collegeCostPerChild = 0;
-  if (collegeType === "state") {
-    collegeCostPerChild = 144000;
-  } else if (collegeType === "private") {
-    collegeCostPerChild = 280000;
-  }
-  let totalCollegeCost = 0;
-  if (children !== "Not-Applicable" && children !== "") {
-    totalCollegeCost = parseInt(children) * collegeCostPerChild;
-  }
-
-  // Calculate the gap
-  const totalRequired = income / 0.05 + debt + totalCollegeCost - savings;
-  const gap = totalRequired - insurance;
-  globalGapValue = gap.toFixed(2); // Store gapValue globally
-
-// Determine Surplus vs. Gap
-const resultsSection = document.getElementById("results");
-let message = "";
-let gapLabel = "";
-let gapClass = "";
-let gapDisplay = gap.toLocaleString(); // Display as-is
-
-if (gap < 0) {
-    // Surplus scenario
-    message = `
-      <p class="highlight-green">
-        Based on this preliminary analysis, it appears you have sufficient 
-        life insurance coverage. However, as this is a simplified assessment, 
-        we recommend connecting with a registered representative from your state. 
-      </p>`;
-    gapLabel = "Surplus";
-    gapClass = "highlight-green";
-    gapDisplay = Math.abs(gap).toLocaleString(); // Convert negative to positive for surplus
-} else {
-    // Gap scenario
-    message = `
-      <p class="highlight-red">
-        Based on this analysis, it appears you may have a life insurance coverage gap.
-      </p>`;
-    gapLabel = "Life Insurance Gap";
-    gapClass = "highlight-red";
-    gapDisplay = (-gap).toLocaleString(); // Convert positive to negative for gap
-}
-
-resultsSection.innerHTML = `
-  <h3>${gapLabel}</h3>
-  <p>${gapDisplay}</p>
-  ${message}
-`;
-
-
-resultsSection.innerHTML = `
-  <h3>${gapLabel}</h3>
-  <p>${gapDisplay}</p>
-  ${message}
-`;
-
-
-
-
-  
-  // Render results
-  resultsSection.innerHTML = `
-    <div class="results-section">
-      <h3>Analysis Results</h3>
-      <p>Income Replacement Need: $${(income / 0.05).toLocaleString()}</p>
-      <p>Debt: $${debt.toLocaleString()}</p>
-      <p>Savings: $${savings.toLocaleString()}</p>
-      <p>Existing Insurance: $${insurance.toLocaleString()}</p>
-      <p>College Costs for ${children === "Not-Applicable" ? "0" : children} child(ren): $${totalCollegeCost.toLocaleString()}</p>
-      ${message}
-      <p>
-        <strong class="${gapClass}">
-          ${gapLabel}: $${gapDisplay}
-        </strong>
-      </p>
-    </div>
-  `;
-
-  // Show the contact form
-  document.querySelector(".contact-form").style.display = "block";
-}
-
 
     /* =====================================
        CONTACT FORM VALIDATION & LOGIC
@@ -1446,40 +1437,6 @@ resultsSection.innerHTML = `
       </div>
     </section>
   </section>
-
-   // sunsection 14
-function doPost(e) {
-  try {
-    Logger.log("Incoming data: " + JSON.stringify(e.parameter));
-
-    var sheet = SpreadsheetApp.openById("1uw3ZKOQALxYErRkob4ClBV9QS-ALKgKyH1QqHkn6S8A").getSheetByName("FormII");
-    if (!sheet) throw new Error("Sheet 'FormII' not found.");
-
-    var data = e.parameter;
-    var requiredFields = ["name", "lastname", "email", "insurance-type", "state", "details"];
-    
-    requiredFields.forEach(function(field) {
-      if (!data[field]) throw new Error("Missing field: " + field);
-    });
-
-    // Append the data correctly
-    sheet.appendRow([
-      new Date(),
-      data.name || "",
-      data.lastname || "",
-      data.email || "",
-      data["insurance-type"] || "",
-      data.state || "",
-      data.details || ""
-    ]);
-
-    Logger.log("Data successfully added to sheet.");
-    return ContentService.createTextOutput("Form submitted successfully!").setMimeType(ContentService.MimeType.TEXT);
-  } catch (error) {
-    Logger.log("Error: " + error.message);
-    return ContentService.createTextOutput("Error: " + error.message).setMimeType(ContentService.MimeType.TEXT);
-  }
-}
 
   <!-- ===== SECTION 14 (Disclaimer) ===== -->
   <section class="u-align-center u-clearfix u-container-align-center u-grey-80 u-section-15"
