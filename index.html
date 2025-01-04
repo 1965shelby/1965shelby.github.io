@@ -407,7 +407,7 @@ if (gap < 0) {
       </p>`;
     gapLabel = "Surplus";
     gapClass = "highlight-green";
-    gapDisplay = gap.toLocaleString(); // Ensure negative value is shown
+    gapDisplay = Math.abs(gap).toLocaleString(); // Convert negative to positive for surplus
 } else {
     // Gap scenario
     message = `
@@ -416,8 +416,15 @@ if (gap < 0) {
       </p>`;
     gapLabel = "Life Insurance Gap";
     gapClass = "highlight-red";
-    // No need to adjust gapDisplay for positive gap
+    gapDisplay = (-gap).toLocaleString(); // Convert positive to negative for gap
 }
+
+resultsSection.innerHTML = `
+  <h3>${gapLabel}</h3>
+  <p>${gapDisplay}</p>
+  ${message}
+`;
+
 
 resultsSection.innerHTML = `
   <h3>${gapLabel}</h3>
