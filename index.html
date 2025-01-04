@@ -336,9 +336,7 @@
       }
     }
 
-    /* ==========================
-       CALCULATOR SUBMISSION
-       ========================== */
+
 /* ==========================
    CALCULATOR SUBMISSION
    ========================== */
@@ -397,10 +395,10 @@ function submitCalculator(event) {
   let message = "";
   let gapLabel = "";
   let gapClass = "";
-  let gapDisplay = 0;
+  let gapDisplay = gap.toLocaleString();
 
-if (gap < 0) {
-    // Surplus scenario
+  if (gap < 0) {
+    // Surplus scenario (show negative gap as negative)
     message = `
       <p class="highlight-green">
         Based on this preliminary analysis, it appears you have sufficient 
@@ -409,8 +407,7 @@ if (gap < 0) {
       </p>`;
     gapLabel = "Surplus";
     gapClass = "highlight-green";
-    gapDisplay = Math.abs(gap).toLocaleString(); // Show as positive with commas
-} else {
+  } else {
     // Gap scenario
     message = `
       <p class="highlight-red">
@@ -418,8 +415,7 @@ if (gap < 0) {
       </p>`;
     gapLabel = "Life Insurance Gap";
     gapClass = "highlight-red";
-    gapDisplay = gap.toLocaleString(); // Showing as positive incorrectly
-}
+  }
 
   // Render results
   resultsSection.innerHTML = `
@@ -442,6 +438,7 @@ if (gap < 0) {
   // Show the contact form
   document.querySelector(".contact-form").style.display = "block";
 }
+
 
     /* =====================================
        CONTACT FORM VALIDATION & LOGIC
