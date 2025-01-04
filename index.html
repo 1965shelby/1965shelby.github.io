@@ -1447,7 +1447,7 @@ resultsSection.innerHTML = `
     </section>
   </section>
 
-<----sub section 13 form submission to database--->
+<----sub section 14 form submission to database--->
 function doPost(e) {
   try {
     // Open the Google Sheet by ID and get the sheet named "FormII"
@@ -1482,6 +1482,11 @@ function doPost(e) {
       method: 'post',
       payload: data
     });
+
+    // Check the response status
+    if (response.getResponseCode() !== 200) {
+      throw new Error("Error sending data to the external URL.");
+    }
 
     // Return a success message
     return ContentService.createTextOutput("Form submitted successfully!").setMimeType(ContentService.MimeType.TEXT);
