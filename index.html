@@ -390,15 +390,15 @@ function submitCalculator(event) {
   const gap = totalRequired - insurance;
   globalGapValue = gap.toFixed(2); // Store gapValue globally
 
-  // Determine Surplus vs. Gap
-  const resultsSection = document.getElementById("results");
-  let message = "";
-  let gapLabel = "";
-  let gapClass = "";
-  let gapDisplay = gap.toLocaleString();
+// Determine Surplus vs. Gap
+const resultsSection = document.getElementById("results");
+let message = "";
+let gapLabel = "";
+let gapClass = "";
+let gapDisplay = gap.toLocaleString(); // Default for positive gap
 
-  if (gap < 0) {
-    // Surplus scenario (show negative gap as negative)
+if (gap < 0) {
+    // Surplus scenario
     message = `
       <p class="highlight-green">
         Based on this preliminary analysis, it appears you have sufficient 
@@ -407,7 +407,8 @@ function submitCalculator(event) {
       </p>`;
     gapLabel = "Surplus";
     gapClass = "highlight-green";
-  } else {
+    gapDisplay = Math.abs(gap).toLocaleString(); // Convert negative to positive for display
+} else {
     // Gap scenario
     message = `
       <p class="highlight-red">
@@ -415,7 +416,9 @@ function submitCalculator(event) {
       </p>`;
     gapLabel = "Life Insurance Gap";
     gapClass = "highlight-red";
-  }
+    // No need to adjust gapDisplay for positive gap
+}
+
 
   // Render results
   resultsSection.innerHTML = `
