@@ -407,7 +407,7 @@ if (gap < 0) {
       </p>`;
     gapLabel = "Surplus";
     gapClass = "highlight-green";
-    // No need to adjust gapDisplay, keep it negative
+    // Display the negative gap value as-is
 } else {
     // Gap scenario
     message = `
@@ -418,6 +418,7 @@ if (gap < 0) {
     gapClass = "highlight-red";
     // No need to adjust gapDisplay for positive gap
 }
+
 
 
   
