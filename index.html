@@ -399,7 +399,7 @@ function submitCalculator(event) {
   let gapClass = "";
   let gapDisplay = 0;
 
-  if (gap < 0) {
+if (gap < 0) {
     // Surplus scenario
     message = `
       <p class="highlight-green">
@@ -410,7 +410,7 @@ function submitCalculator(event) {
     gapLabel = "Surplus";
     gapClass = "highlight-green";
     gapDisplay = Math.abs(gap).toLocaleString(); // Show as positive with commas
-  } else {
+} else {
     // Gap scenario
     message = `
       <p class="highlight-red">
@@ -419,7 +419,7 @@ function submitCalculator(event) {
     gapLabel = "Life Insurance Gap";
     gapClass = "highlight-red";
     gapDisplay = gap.toLocaleString(); // Showing as positive incorrectly
-  }
+}
 
   // Render results
   resultsSection.innerHTML = `
