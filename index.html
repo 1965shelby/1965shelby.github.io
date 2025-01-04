@@ -1447,7 +1447,8 @@ resultsSection.innerHTML = `
     </section>
   </section>
 
-<----sub section 14 form submission to database--->
+<!-- Subsection 14 form submission to database -->
+<script>
 function doPost(e) {
   try {
     // Open the Google Sheet by ID and get the sheet named "FormII"
@@ -1461,25 +1462,23 @@ function doPost(e) {
     // Get data from the POST request
     var data = e.parameter;
 
-    // Validate if all necessary fields are provided (field names corrected)
-    if (!data.name || !data.text || !data.email || !data.select || !data["select-1"] || !data.textarea) {
-      throw new Error("Missing required form fields. Ensure all fields are filled.");
+    // Validate if all necessary fields are provided
+    if (!data.name || !data.lastname || !data.email || !data["insurance-type"] || !data.state || !data.details) {
+      throw new Error("Missing required form fields.");
     }
 
     // Append the data to the Google Sheet with the current timestamp
     sheet.appendRow([
-      new Date(),               // Timestamp for record keeping
-      data.name,                // First Name
-      data.text,                // Last Name (Renamed from incorrect 'lastname' to match form)
-      data.email,               // Email Address
-      data.select,              // Selected Insurance Type
-      data["select-1"],         // State Selection
-      data.textarea             // Description Text
+      new Date(),
+      data.name,
+      data.lastname,
+      data.email,
+      data["insurance-type"],
+      data.state,
+      data.details
     ]);
 
-    // Removed the redundant UrlFetchApp.fetch call here since form data is already submitted directly.
-
-    // Return a success message after successful form submission
+    // Return a success message
     return ContentService.createTextOutput("Form submitted successfully!").setMimeType(ContentService.MimeType.TEXT);
 
   } catch (error) {
@@ -1490,7 +1489,7 @@ function doPost(e) {
     return ContentService.createTextOutput("Error: " + error.message).setMimeType(ContentService.MimeType.TEXT);
   }
 }
-
+</script>
 
 
   <!-- ===== SECTION 14 (Disclaimer) ===== -->
