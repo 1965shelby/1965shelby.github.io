@@ -395,7 +395,7 @@ const resultsSection = document.getElementById("results");
 let message = "";
 let gapLabel = "";
 let gapClass = "";
-let gapDisplay = gap.toLocaleString(); // Default for positive gap
+let gapDisplay = gap.toLocaleString(); // Display as-is
 
 if (gap < 0) {
     // Surplus scenario
@@ -407,7 +407,7 @@ if (gap < 0) {
       </p>`;
     gapLabel = "Surplus";
     gapClass = "highlight-green";
-    gapDisplay = Math.abs(gap).toLocaleString(); // Convert negative to positive for display
+    // No need to adjust gapDisplay, keep it negative
 } else {
     // Gap scenario
     message = `
@@ -420,6 +420,7 @@ if (gap < 0) {
 }
 
 
+  
   // Render results
   resultsSection.innerHTML = `
     <div class="results-section">
