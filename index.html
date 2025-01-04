@@ -1447,6 +1447,52 @@ resultsSection.innerHTML = `
     </section>
   </section>
 
+<----sub section 13 form submission to database--->
+function doPost(e) {
+  try {
+    // Open the Google Sheet by ID and get the sheet named "FormII"
+    var sheet = SpreadsheetApp.openById("1v3e_-J6aL0MRAWQqPQjpP4cofvk1332idkHZvwzaGgrZPJTf1_rBOzRx").getSheetByName("FormII");
+
+    // Check if the sheet exists
+    if (!sheet) {
+      throw new Error("Sheet 'FormII' not found. Please check the sheet name.");
+    }
+
+    // Get data from the POST request
+    var data = e.parameter;
+
+    // Validate if all necessary fields are provided
+    if (!data.name || !data.lastname || !data.email || !data["insurance-type"] || !data.state || !data.details) {
+      throw new Error("Missing required form fields.");
+    }
+
+    // Append the data to the Google Sheet with the current timestamp
+    sheet.appendRow([
+      new Date(),
+      data.name,
+      data.lastname,
+      data.email,
+      data["insurance-type"],
+      data.state,
+      data.details
+    ]);
+
+    // Send data to the specified Google Apps Script URL
+    var response = UrlFetchApp.fetch("https://script.google.com/macros/s/AKfycbxLGOoOqSTfc6fIHCYaoEhQfKS-fyJC3hLdUbkqQWXWThWouk4b_suUkPfbsSqaOFIY/exec", {
+      method: 'post',
+      payload: data
+    });
+
+    // Return a success message
+    return ContentService.createTextOutput("Form submitted successfully!").setMimeType(ContentService.MimeType.TEXT);
+
+  } catch (error) {
+    // Log the error and return a failure message
+    Logger.log("Error: " + error.message);
+    return ContentService.createTextOutput("Error: " + error.message).setMimeType(ContentService.MimeType.TEXT);
+  }
+}
+
   <!-- ===== SECTION 14 (Disclaimer) ===== -->
   <section class="u-align-center u-clearfix u-container-align-center u-grey-80 u-section-15"
            id="sec-ad33">
