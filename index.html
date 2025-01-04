@@ -1447,6 +1447,67 @@ resultsSection.innerHTML = `
     </section>
   </section>
 
+  <!-- Second Form Sub-Section -->
+<section id="formII" class="calculator-section">
+    <div class="container">
+        <h2>RiskLogic Lab II - Form II</h2>
+        <form onsubmit="submitFormII(event)">
+            <label for="risk-name">Your Name:</label>
+            <input type="text" id="risk-name" name="risk-name" placeholder="John Doe" required />
+
+            <label for="risk-lastname">Last Name:</label>
+            <input type="text" id="risk-lastname" name="risk-lastname" placeholder="Doe" required />
+
+            <label for="risk-email">Email Address:</label>
+            <input type="email" id="risk-email" name="risk-email" placeholder="john.doe@example.com" required />
+
+            <label for="risk-insurance-type">Insurance Type:</label>
+            <select id="risk-insurance-type" name="risk-insurance-type" required>
+                <option value="Term Insurance">Term Insurance</option>
+                <option value="Whole Life">Whole Life</option>
+            </select>
+
+            <label for="risk-state">State:</label>
+            <select id="risk-state" name="risk-state" required>
+                <option value="AL">Alabama</option>
+                <option value="CA">California</option>
+            </select>
+
+            <label for="risk-details">Risk Details:</label>
+            <textarea id="risk-details" name="risk-details" placeholder="Describe the risk..." required></textarea>
+
+            <button type="submit">Submit Form II</button>
+        </form>
+
+        <div id="resultsII" class="results-section"></div>
+    </div>
+</section>
+
+<script>
+    async function submitFormII(event) {
+        event.preventDefault();
+
+        const formData = new FormData(event.target);
+        const data = Object.fromEntries(formData.entries());
+
+        try {
+            const response = await fetch("https://script.google.com/macros/s/AKfycbxLGOoOqSTfc6fIHCYaoEhQfKS-fyJC3hLdUbkqQWXWThWouk4b_suUkPfbsSqaOFIY/exec", {
+                method: "POST",
+                body: new URLSearchParams(data)
+            });
+
+            if (response.ok) {
+                document.getElementById('resultsII').innerHTML = '<p style="color:green;">Form II submitted successfully!</p>';
+            } else {
+                throw new Error('Network error');
+            }
+        } catch (error) {
+            document.getElementById('resultsII').innerHTML = '<p style="color:red;">Error submitting the form. Please try again.</p>';
+        }
+    }
+</script>
+
+
   <!-- ===== SECTION 14 (Disclaimer) ===== -->
   <section class="u-align-center u-clearfix u-container-align-center u-grey-80 u-section-15"
            id="sec-ad33">
