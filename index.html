@@ -1447,8 +1447,7 @@ resultsSection.innerHTML = `
     </section>
   </section>
 
-<!-- Subsection 14 form submission to database -->
-<script>
+   // sunsection 14
 function doPost(e) {
   try {
     Logger.log("Incoming data: " + JSON.stringify(e.parameter));  // Log for debugging
@@ -1457,16 +1456,17 @@ function doPost(e) {
     var sheet = SpreadsheetApp.openById("1uw3ZKOQALxYErRkob4ClBV9QS-ALKgKyH1QqHkn6S8A").getSheetByName("FormII");
     if (!sheet) throw new Error("Sheet 'FormII' not found. Verify sheet name.");
 
-    // Extract data and validate
+    // Extract data and validate required fields
     var data = e.parameter;
     var requiredFields = ["name", "lastname", "email", "insurance-type", "state", "details"];
+    
     for (var i = 0; i < requiredFields.length; i++) {
       if (!data[requiredFields[i]]) {
         throw new Error("Missing field: " + requiredFields[i]);
       }
     }
 
-    // Append the data to Google Sheet with a timestamp
+    // Append data to Google Sheet with a timestamp
     sheet.appendRow([
       new Date(),
       data.name,
@@ -1479,7 +1479,7 @@ function doPost(e) {
 
     Logger.log("Data successfully added to sheet.");
 
-    // Send response to confirm submission
+    // Send response to confirm successful submission
     return ContentService.createTextOutput("Form submitted successfully!").setMimeType(ContentService.MimeType.TEXT);
 
   } catch (error) {
@@ -1487,7 +1487,6 @@ function doPost(e) {
     return ContentService.createTextOutput("Error: " + error.message).setMimeType(ContentService.MimeType.TEXT);
   }
 }
-
 
   <!-- ===== SECTION 14 (Disclaimer) ===== -->
   <section class="u-align-center u-clearfix u-container-align-center u-grey-80 u-section-15"
