@@ -1110,6 +1110,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 <!-- ===== SECTION 13 (Form / Connect) ===== -->
 <!-- ===== SECTION 13 (Form / Connect) with reCAPTCHA ===== -->
+<!-- ===== SECTION 13 (Form / Connect) with reCAPTCHA v3 ===== -->
 <section class="u-clearfix u-container-align-center u-section-14" id="carousel_2f53">
     <form action="https://script.google.com/macros/s/AKfycbyo0fCD5m-57btcO3GzgHnDJjT0v9dX3oOZf-ZErvYvorIdgQuSEctyA0yrpVNszCB2wg/exec" 
           method="post"
@@ -1148,9 +1149,6 @@ document.addEventListener('DOMContentLoaded', () => {
                                             <option value="Term Insurance">Term Insurance</option>
                                             <option value="Whole Life">Whole Life</option>
                                             <option value="Universal Life">Universal Life</option>
-                                            <option value="Fixed Annuity">Fixed Annuity</option>
-                                            <option value="Long-Term Care">Long-Term Care</option>
-                                            <option value="Disability">Disability</option>
                                         </select>
                                     </div>
                                     <div class="u-form-group u-form-select u-label-none u-form-group-5">
@@ -1159,8 +1157,6 @@ document.addEventListener('DOMContentLoaded', () => {
                                             <option value="AL">AL</option>
                                             <option value="AK">AK</option>
                                             <option value="AZ">AZ</option>
-                                            <option value="AR">AR</option>
-                                            <option value="CA">CA</option>
                                         </select>
                                     </div>
                                     <div class="u-form-group u-form-textarea u-label-none u-form-group-6">
@@ -1168,14 +1164,8 @@ document.addEventListener('DOMContentLoaded', () => {
                                         <textarea rows="4" cols="50" id="textarea-7463" name="textarea" placeholder="Description"></textarea>
                                     </div>
 
-                                    <!-- reCAPTCHA Widget -->
-                                    <div class="g-recaptcha" data-sitekey="6Lf_qqcqAAAAAFF_woYz7bR80hzzUjmgFzIHOEsZ"></div>
-
-                                    <!-- Hidden Inputs -->
-                                    <input type="hidden" value="" name="recaptchaResponse">
-                                    <input type="hidden" name="formServices" value="b20a4aaf-45fd-a1eb-d51c-cb79429725db">
-                                    <input type="hidden" name="siteKey" value="6Lf_qqcqAAAAAFF_woYz7bR80hzzUjmgFzIHOEsZ">
-                                  
+                                    <!-- Hidden Input for reCAPTCHA v3 Response -->
+                                    <input type="hidden" name="recaptchaResponse" id="recaptchaResponse">
 
                                     <div class="u-align-left u-form-group u-form-submit u-label-none">
                                         <button type="submit" class="u-border-none u-btn u-btn-submit u-button-style u-palette-1-dark-1 u-btn-1">Submit</button>
@@ -1197,14 +1187,14 @@ document.addEventListener('DOMContentLoaded', () => {
     </form>
 </section>
 
-<!-- JavaScript for reCAPTCHA v3 -->
+<!-- JavaScript for reCAPTCHA v3 Integration -->
 <script src="https://www.google.com/recaptcha/api.js?render=6Lf_qqcqAAAAAFF_woYz7bR80hzzUjmgFzIHOEsZ"></script>
 <script>
     document.getElementById('googleForm').onsubmit = function(event){
         event.preventDefault();  // Prevent the default form submission
 
         grecaptcha.ready(function() {
-            grecaptcha.execute('YOUR_NEW_SITE_KEY', {action: 'submit'}).then(function(token) {
+            grecaptcha.execute('6Lf_qqcqAAAAAFF_woYz7bR80hzzUjmgFzIHOEsZ', {action: 'submit'}).then(function(token) {
                 document.getElementById('recaptchaResponse').value = token;
 
                 var form = event.target;
