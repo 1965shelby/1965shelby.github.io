@@ -913,7 +913,6 @@
           </form>
         </div>
 <script>
-// Form submission function
 function submitFormData(event) {
     event.preventDefault();
     const formData = new FormData(event.target);
@@ -935,33 +934,38 @@ function submitFormData(event) {
         gapValue: formData.get('gapValue')
     };
 
-    // Log data for debugging
     console.log("Submitting data:", data);
 
     const scriptURL = 'https://script.google.com/macros/s/AKfycbwU8QQjsCbISzxOHCRjG1YTnX5NgQs7PaThnNzyU3MGGrCqMjjIonTKoRgSnQlt40mAUQ/exec';
 
-    fetch(scriptURL, {
-        redirect: 'follow',
-        method: 'POST',
-        headers: {
-            'Content-Type': 'text/plain;charset=utf-8',
-        },
-        mode: 'no-cors',
-        body: JSON.stringify(data)
-    })
-    .then(() => {
-        // Since we're using no-cors, we won't get a meaningful response
-        // So we just assume success if no error is thrown
-        alert('Form submitted successfully!');
-        event.target.reset();
-    })
-    .catch(error => {
-        console.error('Error:', error);
+    const xhr = new XMLHttpRequest();
+    xhr.open('POST', scriptURL, true);
+    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+
+    const encodedData = Object.keys(data)
+        .map(key => encodeURIComponent(key) + '=' + encodeURIComponent(data[key]))
+        .join('&');
+
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState === 4) {
+            if (xhr.status === 200) {
+                alert('Form submitted successfully!');
+                event.target.reset();
+            } else {
+                console.error('Error:', xhr.statusText);
+                alert('Error submitting form. Please try again.');
+            }
+        }
+    };
+
+    xhr.onerror = function() {
+        console.error('Error:', xhr.statusText);
         alert('Error submitting form. Please try again.');
-    });
+    };
+
+    xhr.send(encodedData);
 }
 
-// Add event listener when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
     const contactForm = document.querySelector('.contact-form');
     if (contactForm) {
@@ -970,10 +974,7 @@ document.addEventListener('DOMContentLoaded', () => {
         console.error('Contact form not found');
     }
 });
-<script>
-      
-      </section>
-    </div>
+  <script>
   </section>
 
   <!-- ===== SECTION 6 (Term Insurance) ===== -->
