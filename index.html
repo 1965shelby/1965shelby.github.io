@@ -914,16 +914,7 @@
         </div>
 <script>
     // Fetch function for submitting form data to Google Apps Script
-    function submitFormData(event) {
-        event.preventDefault(); // Prevent default form submission
-        const formData = new FormData(event.target);
-        const data = {};
-
-        formData.forEach((value, key) => {
-            data[key] = value;
-        });
-
-     const scriptURL = 'https://script.google.com/macros/s/AKfycbwbGAnOYddRa_TZ0OTYnSPR5uCx7zwqtI_gANIBn4brtfeSVT_xo7Xgt3eHoEq5SvPrQw/exec';
+  const scriptURL = 'https://script.google.com/macros/s/AKfycbwbGAnOYddRa_TZ0OTYnSPR5uCx7zwqtI_gANIBn4brtfeSVT_xo7Xgt3eHoEq5SvPrQw/exec';
 
 function submitFormData(event) {
     event.preventDefault(); 
@@ -937,11 +928,16 @@ function submitFormData(event) {
     fetch(scriptURL, {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/json'  // Ensure correct content type
+            'Content-Type': 'application/json' 
         },
         body: JSON.stringify(data)
     })
-    .then(response => response.json())
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+    })
     .then(result => {
         alert('Data submitted successfully!');
     })
@@ -958,9 +954,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-
-</script>
-
+<script>
       
       </section>
     </div>
