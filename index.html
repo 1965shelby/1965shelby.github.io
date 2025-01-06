@@ -917,33 +917,37 @@
 function submitFormData(event) {
     event.preventDefault();
     const formData = new FormData(event.target);
-    const data = {};
-    formData.forEach((value, key) => {
-        data[key] = value;
-    });
+    
+    // Capture calculation results dynamically from the results section
+    const incomeReplacementNeed = document.querySelector("#results p:nth-child(2)").textContent.split("$")[1].replace(/,/g, '');
+    const collegeCosts = document.querySelector("#results p:nth-child(5)").textContent.split("$")[1].replace(/,/g, '');
+    const gapValue = document.querySelector(".highlight-red") 
+                        ? document.querySelector(".highlight-red").textContent.split("$")[1].replace(/,/g, '')
+                        : "0"; // Default if no gap is shown
+
+    // Adding calculation results to form data
+    formData.append("incomeReplacementNeed", incomeReplacementNeed);
+    formData.append("collegeCosts", collegeCosts);
+    formData.append("gapValue", gapValue);
 
     fetch('https://script.google.com/macros/s/AKfycbzqCFoK7nzSYrNwXBKI8d0ijUcmSMmjye1TKE48KlgVsEYC5TXTMlpatWRV9hrP2h3cGg/exec', {
         method: 'POST',
-        body: new URLSearchParams(data)
+        body: new URLSearchParams(formData)
     })
-    .then(response => {
-        if (response.ok) {
-            alert('Form submitted successfully!');
-            event.target.reset();
-        } else {
-            alert('Error submitting the form. Please try again.');
-        }
+    .then(response => response.text())
+    .then(data => {
+        alert("Form submitted successfully!");
+        event.target.reset();
     })
     .catch(error => {
         console.error('Error:', error);
-        alert('Error submitting the form. Please try again.');
+        alert('Error submitting the form.');
     });
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-    const contactForm = document.querySelector('.contact-form');
-    contactForm.addEventListener('submit', submitFormData);
-});
+// Event listener for form submission
+document.querySelector('.contact-form').addEventListener('submit', submitFormData);
+
 
 </script>
   </section>
