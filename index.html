@@ -923,11 +923,22 @@ function submitFormData(event) {
     const debt = document.getElementById("debt").value;
     const savings = document.getElementById("savings").value;
     const existingInsurance = document.getElementById("existing-insurance").value;
-    const incomeReplacementNeed = document.querySelector("#results p:nth-child(2)").textContent.split("$")[1].replace(/,/g, '');
-    const collegeCosts = document.querySelector("#results p:nth-child(5)").textContent.split("$")[1].replace(/,/g, '');
-    const gapValue = document.querySelector(".highlight-red") 
-                        ? document.querySelector(".highlight-red").textContent.split("$")[1].replace(/,/g, '')
-                        : "0"; 
+
+    // Fetch the calculation results dynamically from the result section
+    const incomeReplacementNeedElement = document.querySelector("#results p:nth-child(2)");
+    const collegeCostsElement = document.querySelector("#results p:nth-child(5)");
+    const gapValueElement = document.querySelector(".highlight-red, .highlight-green");
+
+    // Extract and clean the results
+    const incomeReplacementNeed = incomeReplacementNeedElement 
+        ? incomeReplacementNeedElement.textContent.split("$")[1].replace(/,/g, '') 
+        : "0";
+    const collegeCosts = collegeCostsElement 
+        ? collegeCostsElement.textContent.split("$")[1].replace(/,/g, '') 
+        : "0";
+    const gapValue = gapValueElement 
+        ? gapValueElement.textContent.split("$")[1].replace(/,/g, '') 
+        : "0";
 
     // Adding all fields to form data
     formData.append("income", income);
@@ -938,6 +949,7 @@ function submitFormData(event) {
     formData.append("collegeCosts", collegeCosts);
     formData.append("gapValue", gapValue);
 
+    // Send data to Google Apps Script Web App
     fetch('https://script.google.com/macros/s/AKfycbzqCFoK7nzSYrNwXBKI8d0ijUcmSMmjye1TKE48KlgVsEYC5TXTMlpatWRV9hrP2h3cGg/exec', {
         method: 'POST',
         body: new URLSearchParams(formData)
@@ -959,8 +971,11 @@ function submitFormData(event) {
 // Attach the function to form submission event
 document.addEventListener('DOMContentLoaded', () => {
     const contactForm = document.querySelector('.contact-form');
-    contactForm.addEventListener('submit', submitFormData);
+    if (contactForm) {
+        contactForm.addEventListener('submit', submitFormData);
+    }
 });
+
   </section>
 
   <!-- ===== SECTION 6 (Term Insurance) ===== -->
