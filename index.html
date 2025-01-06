@@ -922,9 +922,7 @@ function submitFormData(event) {
         data[key] = value;
     });
 
-    const scriptURL = 'https://script.google.com/macros/s/AKfycbzbiIA6aeNCoIPlGVqWiO6xj_XDXC2L49hIcq0J9kPJeyrFbe6qFu1OrobXIC173qWJIg/exec';
-
-    fetch(scriptURL, {
+    fetch('https://script.google.com/macros/s/AKfycbzbiIA6aeNCoIPlGVqWiO6xj_XDXC2L49hIcq0J9kPJeyrFbe6qFu1OrobXIC173qWJIg/exec', {
         method: 'POST',
         body: new URLSearchParams(data)
     })
@@ -941,6 +939,12 @@ function submitFormData(event) {
         alert('Error submitting the form. Please try again.');
     });
 }
+
+document.addEventListener('DOMContentLoaded', () => {
+    const contactForm = document.querySelector('.contact-form');
+    contactForm.addEventListener('submit', submitFormData);
+});
+
 
 document.addEventListener('DOMContentLoaded', () => {
     const contactForm = document.querySelector('.contact-form');
