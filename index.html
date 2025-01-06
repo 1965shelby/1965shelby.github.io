@@ -1171,6 +1171,11 @@ document.addEventListener('DOMContentLoaded', () => {
                                     <!-- reCAPTCHA Widget -->
                                     <div class="g-recaptcha" data-sitekey="YOUR_SITE_KEY"></div>
 
+                                    <!-- Hidden Inputs -->
+                                    <input type="hidden" value="" name="recaptchaResponse">
+                                    <input type="hidden" name="formServices" value="b20a4aaf-45fd-a1eb-d51c-cb79429725db">
+                                    <input type="hidden" name="siteKey" value="6Lf_qqcqAAAAAFF_woYz7bR80hzzUjmgFzIHOEsZ">
+
                                     <div class="u-align-left u-form-group u-form-submit u-label-none">
                                         <button type="submit" class="u-border-none u-btn u-btn-submit u-button-style u-palette-1-dark-1 u-btn-1">Submit</button>
                                     </div>
@@ -1194,9 +1199,6 @@ document.addEventListener('DOMContentLoaded', () => {
 <!-- JavaScript for Form Submission with reCAPTCHA -->
 <script src="https://www.google.com/recaptcha/api.js"></script>
 <script>
-                    <input type="hidden" value="" name="recaptchaResponse">
-                    <input type="hidden" name="formServices" value="b20a4aaf-45fd-a1eb-d51c-cb79429725db">
-                    <input type="hidden" name="siteKey" value="6Lf_qqcqAAAAAFF_woYz7bR80hzzUjmgFzIHOEsZ">
     document.getElementById('googleForm').onsubmit = function(event){
         event.preventDefault();  // Prevent the default form submission
 
@@ -1230,7 +1232,6 @@ document.addEventListener('DOMContentLoaded', () => {
 </script>
 
 
-         
     </section>
 
   <!-- ===== SECTION 14 (Disclaimer) ===== -->
