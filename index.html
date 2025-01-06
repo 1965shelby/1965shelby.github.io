@@ -917,34 +917,16 @@
 function submitFormData(event) {
     event.preventDefault();
     const formData = new FormData(event.target);
+    const data = {};
+    formData.forEach((value, key) => {
+        data[key] = value;
+    });
 
-    // Capture values from both inputs and calculated results dynamically
-    const income = document.getElementById("income").value;
-    const debt = document.getElementById("debt").value;
-    const savings = document.getElementById("savings").value;
-    const existingInsurance = document.getElementById("existing-insurance").value;
-    const incomeReplacementNeed = document.querySelector("#results p:nth-child(2)").textContent.split("$")[1].replace(/,/g, '');
-    const collegeCosts = document.querySelector("#results p:nth-child(5)").textContent.split("$")[1].replace(/,/g, '');
-    const gapValue = document.querySelector(".highlight-red") 
-                        ? document.querySelector(".highlight-red").textContent.split("$")[1].replace(/,/g, '')
-                        : "0"; 
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbxYKQfN1tVWYRVb5AkfPgV81KpKs5dKRFcKQQHcycJcn1IzhGe9Tr9pSTAHHNWG4QIv5w/exec';
 
-    // Adding these values to FormData
-    formData.set("income", income);
-    formData.set("debt", debt);
-    formData.set("savings", savings);
-    formData.set("existing-insurance", existingInsurance);
-    formData.set("incomeReplacementNeed", incomeReplacementNeed);
-    formData.set("collegeCosts", collegeCosts);
-    formData.set("gapValue", gapValue);
-
-    // Send data to Google Apps Script using fetch
-    fetch('https://script.google.com/macros/s/AKfycbzqCFoK7nzSYrNwXBKI8d0ijUcmSMmjye1TKE48KlgVsEYC5TXTMlpatWRV9hrP2h3cGg/exec', {
+    fetch(scriptURL, {
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
-        },
-        body: new URLSearchParams(formData).toString()
+        body: new URLSearchParams(data)
     })
     .then(response => {
         if (response.ok) {
@@ -956,16 +938,18 @@ function submitFormData(event) {
     })
     .catch(error => {
         console.error('Error:', error);
-        alert('Error submitting the form.');
+        alert('Error submitting the form. Please try again.');
     });
 }
 
-// Attach the event listener for form submission
 document.addEventListener('DOMContentLoaded', () => {
     const contactForm = document.querySelector('.contact-form');
-    contactForm.addEventListener('submit', submitFormData);
+    if (contactForm) {
+        contactForm.addEventListener('submit', submitFormData);
+    }
 });
 
+</script>
   </section>
 
   <!-- ===== SECTION 6 (Term Insurance) ===== -->
