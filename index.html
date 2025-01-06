@@ -912,6 +912,7 @@
             </div>
           </form>
         </div>
+
 <script>
 function submitFormData(event) {
     event.preventDefault();
@@ -933,19 +934,14 @@ function submitFormData(event) {
         insuranceAmount: formData.get('insuranceAmount'),
         gapValue: formData.get('gapValue')
     };
-
     console.log("Submitting data:", data);
-
     const scriptURL = 'https://script.google.com/macros/s/AKfycbwU8QQjsCbISzxOHCRjG1YTnX5NgQs7PaThnNzyU3MGGrCqMjjIonTKoRgSnQlt40mAUQ/exec';
-
     const xhr = new XMLHttpRequest();
     xhr.open('POST', scriptURL, true);
     xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-
     const encodedData = Object.keys(data)
         .map(key => encodeURIComponent(key) + '=' + encodeURIComponent(data[key]))
         .join('&');
-
     xhr.onreadystatechange = function() {
         if (xhr.readyState === 4) {
             if (xhr.status === 200) {
@@ -957,15 +953,12 @@ function submitFormData(event) {
             }
         }
     };
-
     xhr.onerror = function() {
         console.error('Error:', xhr.statusText);
         alert('Error submitting form. Please try again.');
     };
-
     xhr.send(encodedData);
 }
-
 document.addEventListener('DOMContentLoaded', () => {
     const contactForm = document.querySelector('.contact-form');
     if (contactForm) {
@@ -974,7 +967,7 @@ document.addEventListener('DOMContentLoaded', () => {
         console.error('Contact form not found');
     }
 });
-  <script>
+</script>
   </section>
 
   <!-- ===== SECTION 6 (Term Insurance) ===== -->
