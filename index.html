@@ -917,12 +917,25 @@
 function submitFormData(event) {
     event.preventDefault();
     const formData = new FormData(event.target);
-    const data = {};
-    formData.forEach((value, key) => {
-        data[key] = value;
-    });
+    const data = {
+        income: formData.get('income'),
+        debt: formData.get('debt'),
+        savings: formData.get('savings'),
+        existingInsurance: formData.get('existing-insurance'), // Fixed name
+        numChildren: formData.get('num-children'), // Fixed name
+        collegeType: formData.get('college-type'), // Fixed name
+        firstName: formData.get('first-name'),  // Fixed name
+        lastName: formData.get('last-name'),    // Fixed name
+        email: formData.get('email'),
+        phone: formData.get('phone'),
+        state: formData.get('state'),
+        age: formData.get('age'),
+        insuranceType: formData.get('insuranceType'),
+        insuranceAmount: formData.get('shared-amount') || formData.get('finalExpenseAmount') || "",
+        gapValue: formData.get('gapValue') || ""
+    };
 
-    const scriptURL = 'https://script.google.com/macros/s/AKfycbxYKQfN1tVWYRVb5AkfPgV81KpKs5dKRFcKQQHcycJcn1IzhGe9Tr9pSTAHHNWG4QIv5w/exec';
+    const scriptURL = 'https://script.google.com/macros/s/AKfycby1M7cGNtMQZXu_s-eF9lMCoBSMqQ_cBjSzF1iIOZ6u9qRLPR-J7r9z19qmPjVOPaS77g/exec';
 
     fetch(scriptURL, {
         method: 'POST',
@@ -949,7 +962,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-</script>
   </section>
 
   <!-- ===== SECTION 6 (Term Insurance) ===== -->
