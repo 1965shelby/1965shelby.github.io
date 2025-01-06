@@ -913,56 +913,62 @@
           </form>
         </div>
 <script>
-// Log form data for debugging
-function logFormData(data) {
-  console.log("Submitting form data:", data);
-}
-
-// Main form submission function
+// Form submission function
 function submitFormData(event) {
-  event.preventDefault();
-  const formData = new FormData(event.target);
-  const data = {};
-  
-  // Convert FormData to regular object
-  formData.forEach((value, key) => {
-    data[key] = value;
-  });
-  
-  // Log the data before sending
-  logFormData(data);
+    event.preventDefault();
+    const formData = new FormData(event.target);
+    const data = {
+        income: formData.get('income'),
+        debt: formData.get('debt'),
+        savings: formData.get('savings'),
+        existingInsurance: formData.get('existingInsurance'),
+        numChildren: formData.get('numChildren'),
+        collegeType: formData.get('collegeType'),
+        firstName: formData.get('firstName'),
+        lastName: formData.get('lastName'),
+        email: formData.get('email'),
+        phone: formData.get('phone'),
+        state: formData.get('state'),
+        age: formData.get('age'),
+        insuranceType: formData.get('insuranceType'),
+        insuranceAmount: formData.get('insuranceAmount'),
+        gapValue: formData.get('gapValue')
+    };
 
-  // Google Apps Script web app URL
-  const scriptURL = 'https://script.google.com/macros/s/AKfycbwbGAnOYddRa_TZ0OTYnSPR5uCx7zwqtI_gANIBn4brtfeSVT_xo7Xgt3eHoEq5SvPrQw/exec';
+    // Log data for debugging
+    console.log("Submitting data:", data);
 
-  // Send the data
-  fetch(scriptURL, {
-    method: 'POST',
-    mode: 'no-cors',
-    headers: {
-      'Content-Type': 'text/plain;charset=utf-8',
-    },
-    body: JSON.stringify(data)
-  })
-  .then(response => {
-    alert('Form submitted successfully!');
-    // Optionally reset the form
-    event.target.reset();
-  })
-  .catch(error => {
-    console.error('Error:', error);
-    alert('Error submitting data. Please try again.');
-  });
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbwbGAnOYddRa_TZ0OTYnSPR5uCx7zwqtI_gANIBn4brtfeSVT_xo7Xgt3eHoEq5SvPrQw/exec';
+
+    fetch(scriptURL, {
+        redirect: 'follow',
+        method: 'POST',
+        headers: {
+            'Content-Type': 'text/plain;charset=utf-8',
+        },
+        mode: 'no-cors',
+        body: JSON.stringify(data)
+    })
+    .then(() => {
+        // Since we're using no-cors, we won't get a meaningful response
+        // So we just assume success if no error is thrown
+        alert('Form submitted successfully!');
+        event.target.reset();
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Error submitting form. Please try again.');
+    });
 }
 
 // Add event listener when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
-  const contactForm = document.querySelector('.contact-form');
-  if (contactForm) {
-    contactForm.addEventListener('submit', submitFormData);
-  } else {
-    console.error('Contact form not found');
-  }
+    const contactForm = document.querySelector('.contact-form');
+    if (contactForm) {
+        contactForm.addEventListener('submit', submitFormData);
+    } else {
+        console.error('Contact form not found');
+    }
 });
 <script>
       
