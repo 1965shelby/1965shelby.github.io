@@ -917,15 +917,23 @@
 function submitFormData(event) {
     event.preventDefault();
     const formData = new FormData(event.target);
-    
-    // Capture calculation results dynamically from the results section
+
+    // Capture values from the input fields and calculated results dynamically
+    const income = document.getElementById("income").value;
+    const debt = document.getElementById("debt").value;
+    const savings = document.getElementById("savings").value;
+    const existingInsurance = document.getElementById("existing-insurance").value;
     const incomeReplacementNeed = document.querySelector("#results p:nth-child(2)").textContent.split("$")[1].replace(/,/g, '');
     const collegeCosts = document.querySelector("#results p:nth-child(5)").textContent.split("$")[1].replace(/,/g, '');
     const gapValue = document.querySelector(".highlight-red") 
                         ? document.querySelector(".highlight-red").textContent.split("$")[1].replace(/,/g, '')
-                        : "0"; // Default if no gap is shown
+                        : "0"; 
 
-    // Adding calculation results to form data
+    // Adding all fields to form data
+    formData.append("income", income);
+    formData.append("debt", debt);
+    formData.append("savings", savings);
+    formData.append("existing-insurance", existingInsurance);
     formData.append("incomeReplacementNeed", incomeReplacementNeed);
     formData.append("collegeCosts", collegeCosts);
     formData.append("gapValue", gapValue);
@@ -934,10 +942,13 @@ function submitFormData(event) {
         method: 'POST',
         body: new URLSearchParams(formData)
     })
-    .then(response => response.text())
-    .then(data => {
-        alert("Form submitted successfully!");
-        event.target.reset();
+    .then(response => {
+        if (response.ok) {
+            alert('Form submitted successfully!');
+            event.target.reset();
+        } else {
+            alert('Error submitting the form. Please try again.');
+        }
     })
     .catch(error => {
         console.error('Error:', error);
@@ -945,11 +956,12 @@ function submitFormData(event) {
     });
 }
 
-// Event listener for form submission
-document.querySelector('.contact-form').addEventListener('submit', submitFormData);
+// Attach the function to form submission event
+document.addEventListener('DOMContentLoaded', () => {
+    const contactForm = document.querySelector('.contact-form');
+    contactForm.addEventListener('submit', submitFormData);
+});
 
-
-</script>
   </section>
 
   <!-- ===== SECTION 6 (Term Insurance) ===== -->
