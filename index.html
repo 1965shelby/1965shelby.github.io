@@ -1109,10 +1109,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 <!-- ===== SECTION 13 (Form / Connect) ===== -->
+<!-- ===== SECTION 13 (Form / Connect) with reCAPTCHA ===== -->
 <section class="u-clearfix u-container-align-center u-section-14" id="carousel_2f53">
     <form action="https://script.google.com/macros/s/AKfycbyo0fCD5m-57btcO3GzgHnDJjT0v9dX3oOZf-ZErvYvorIdgQuSEctyA0yrpVNszCB2wg/exec" 
           method="post"
           id="googleForm">
+          
         <div class="u-clearfix u-sheet u-valign-middle u-sheet-1">
             <div class="data-layout-selected u-clearfix u-expanded-width u-layout-wrap u-layout-wrap-1">
                 <div class="u-layout">
@@ -1159,14 +1161,16 @@ document.addEventListener('DOMContentLoaded', () => {
                                             <option value="AZ">AZ</option>
                                             <option value="AR">AR</option>
                                             <option value="CA">CA</option>
-                                            <option value="CO">CO</option>
-                                            <option value="CT">CT</option>
                                         </select>
                                     </div>
                                     <div class="u-form-group u-form-textarea u-label-none u-form-group-6">
                                         <label for="textarea-7463" class="u-label">Textarea</label>
                                         <textarea rows="4" cols="50" id="textarea-7463" name="textarea" placeholder="Description"></textarea>
                                     </div>
+
+                                    <!-- reCAPTCHA Widget -->
+                                    <div class="g-recaptcha" data-sitekey="YOUR_SITE_KEY"></div>
+
                                     <div class="u-align-left u-form-group u-form-submit u-label-none">
                                         <button type="submit" class="u-border-none u-btn u-btn-submit u-button-style u-palette-1-dark-1 u-btn-1">Submit</button>
                                     </div>
@@ -1187,12 +1191,22 @@ document.addEventListener('DOMContentLoaded', () => {
     </form>
 </section>
 
+<!-- JavaScript for Form Submission with reCAPTCHA -->
+<script src="https://www.google.com/recaptcha/api.js"></script>
 <script>
     document.getElementById('googleForm').onsubmit = function(event){
         event.preventDefault();  // Prevent the default form submission
 
+        // Validate reCAPTCHA
+        var recaptchaResponse = grecaptcha.getResponse();
+        if(!recaptchaResponse) {
+            alert("Please verify the reCAPTCHA.");
+            return;
+        }
+
         var form = event.target;
         var formData = new FormData(form);
+        formData.append('recaptchaResponse', recaptchaResponse);
 
         fetch(form.action, {
             method: 'POST',
@@ -1201,7 +1215,8 @@ document.addEventListener('DOMContentLoaded', () => {
             if(response.ok) {
                 document.getElementById('successMessage').style.display = 'block';
                 document.getElementById('errorMessage').style.display = 'none';
-                form.reset(); // Reset the form after successful submission
+                grecaptcha.reset();  // Reset reCAPTCHA
+                form.reset();       // Reset form fields
             } else {
                 document.getElementById('errorMessage').style.display = 'block';
             }
@@ -1210,6 +1225,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 </script>
+
 
          
     </section>
