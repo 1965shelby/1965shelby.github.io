@@ -918,41 +918,33 @@ function submitFormData(event) {
     event.preventDefault();
     const formData = new FormData(event.target);
 
-    // Capture values from the input fields and calculated results dynamically
+    // Capture values from both inputs and calculated results dynamically
     const income = document.getElementById("income").value;
     const debt = document.getElementById("debt").value;
     const savings = document.getElementById("savings").value;
     const existingInsurance = document.getElementById("existing-insurance").value;
+    const incomeReplacementNeed = document.querySelector("#results p:nth-child(2)").textContent.split("$")[1].replace(/,/g, '');
+    const collegeCosts = document.querySelector("#results p:nth-child(5)").textContent.split("$")[1].replace(/,/g, '');
+    const gapValue = document.querySelector(".highlight-red") 
+                        ? document.querySelector(".highlight-red").textContent.split("$")[1].replace(/,/g, '')
+                        : "0"; 
 
-    // Fetch the calculation results dynamically from the result section
-    const incomeReplacementNeedElement = document.querySelector("#results p:nth-child(2)");
-    const collegeCostsElement = document.querySelector("#results p:nth-child(5)");
-    const gapValueElement = document.querySelector(".highlight-red, .highlight-green");
+    // Adding these values to FormData
+    formData.set("income", income);
+    formData.set("debt", debt);
+    formData.set("savings", savings);
+    formData.set("existing-insurance", existingInsurance);
+    formData.set("incomeReplacementNeed", incomeReplacementNeed);
+    formData.set("collegeCosts", collegeCosts);
+    formData.set("gapValue", gapValue);
 
-    // Extract and clean the results
-    const incomeReplacementNeed = incomeReplacementNeedElement 
-        ? incomeReplacementNeedElement.textContent.split("$")[1].replace(/,/g, '') 
-        : "0";
-    const collegeCosts = collegeCostsElement 
-        ? collegeCostsElement.textContent.split("$")[1].replace(/,/g, '') 
-        : "0";
-    const gapValue = gapValueElement 
-        ? gapValueElement.textContent.split("$")[1].replace(/,/g, '') 
-        : "0";
-
-    // Adding all fields to form data
-    formData.append("income", income);
-    formData.append("debt", debt);
-    formData.append("savings", savings);
-    formData.append("existing-insurance", existingInsurance);
-    formData.append("incomeReplacementNeed", incomeReplacementNeed);
-    formData.append("collegeCosts", collegeCosts);
-    formData.append("gapValue", gapValue);
-
-    // Send data to Google Apps Script Web App
+    // Send data to Google Apps Script using fetch
     fetch('https://script.google.com/macros/s/AKfycbzqCFoK7nzSYrNwXBKI8d0ijUcmSMmjye1TKE48KlgVsEYC5TXTMlpatWRV9hrP2h3cGg/exec', {
         method: 'POST',
-        body: new URLSearchParams(formData)
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: new URLSearchParams(formData).toString()
     })
     .then(response => {
         if (response.ok) {
@@ -968,12 +960,10 @@ function submitFormData(event) {
     });
 }
 
-// Attach the function to form submission event
+// Attach the event listener for form submission
 document.addEventListener('DOMContentLoaded', () => {
     const contactForm = document.querySelector('.contact-form');
-    if (contactForm) {
-        contactForm.addEventListener('submit', submitFormData);
-    }
+    contactForm.addEventListener('submit', submitFormData);
 });
 
   </section>
