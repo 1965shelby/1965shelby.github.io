@@ -923,13 +923,13 @@
             data[key] = value;
         });
 
-      const scriptURL = 'https://script.google.com/macros/s/AKfycbwbGAnOYddRa_TZ0OTYnSPR5uCx7zwqtI_gANIBn4brtfeSVT_xo7Xgt3eHoEq5SvPrQw/exec';
+     const scriptURL = 'https://script.google.com/macros/s/AKfycbwbGAnOYddRa_TZ0OTYnSPR5uCx7zwqtI_gANIBn4brtfeSVT_xo7Xgt3eHoEq5SvPrQw/exec';
 
 function submitFormData(event) {
     event.preventDefault(); 
     const formData = new FormData(event.target);
     const data = {};
-
+    
     formData.forEach((value, key) => {
         data[key] = value;
     });
@@ -937,28 +937,27 @@ function submitFormData(event) {
     fetch(scriptURL, {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json'  // Ensure correct content type
         },
         body: JSON.stringify(data)
     })
     .then(response => response.json())
     .then(result => {
         alert('Data submitted successfully!');
-        console.log('Success:', result);
     })
     .catch(error => {
-        alert('Error submitting data. Please try again.');
+        alert('Error submitting data. Check the web app URL and permissions.');
         console.error('Error:', error);
     });
 }
 
-// Attach the form submit listener
 document.addEventListener('DOMContentLoaded', () => {
     const contactForm = document.querySelector('.contact-form');
     if (contactForm) {
         contactForm.addEventListener('submit', submitFormData);
     }
 });
+
 
 </script>
 
