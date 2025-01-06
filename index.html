@@ -1197,37 +1197,34 @@ document.addEventListener('DOMContentLoaded', () => {
     </form>
 </section>
 
-<!-- JavaScript for Form Submission with reCAPTCHA -->
-<script src="https://www.google.com/recaptcha/api.js"></script>
+<!-- JavaScript for reCAPTCHA v3 -->
+<script src="https://www.google.com/recaptcha/api.js?render=6Lf_qqcqAAAAAFF_woYz7bR80hzzUjmgFzIHOEsZ"></script>
 <script>
     document.getElementById('googleForm').onsubmit = function(event){
         event.preventDefault();  // Prevent the default form submission
 
-        // Validate reCAPTCHA
-        var recaptchaResponse = grecaptcha.getResponse();
-        if(!recaptchaResponse) {
-            alert("Please verify the reCAPTCHA.");
-            return;
-        }
+        grecaptcha.ready(function() {
+            grecaptcha.execute('YOUR_NEW_SITE_KEY', {action: 'submit'}).then(function(token) {
+                document.getElementById('recaptchaResponse').value = token;
 
-        var form = event.target;
-        var formData = new FormData(form);
-        formData.append('recaptchaResponse', recaptchaResponse);
-
-        fetch(form.action, {
-            method: 'POST',
-            body: formData
-        }).then(response => {
-            if(response.ok) {
-                document.getElementById('successMessage').style.display = 'block';
-                document.getElementById('errorMessage').style.display = 'none';
-                grecaptcha.reset();  // Reset reCAPTCHA
-                form.reset();       // Reset form fields
-            } else {
-                document.getElementById('errorMessage').style.display = 'block';
-            }
-        }).catch(error => {
-            document.getElementById('errorMessage').style.display = 'block';
+                var form = event.target;
+                var formData = new FormData(form);
+                
+                fetch(form.action, {
+                    method: 'POST',
+                    body: formData
+                }).then(response => {
+                    if(response.ok) {
+                        document.getElementById('successMessage').style.display = 'block';
+                        document.getElementById('errorMessage').style.display = 'none';
+                        form.reset();
+                    } else {
+                        document.getElementById('errorMessage').style.display = 'block';
+                    }
+                }).catch(error => {
+                    document.getElementById('errorMessage').style.display = 'block';
+                });
+            });
         });
     }
 </script>
